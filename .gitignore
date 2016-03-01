@@ -1,0 +1,7 @@
+*.wav
+*.mp4
+*.m4v
+*.txt
+bin/data/.gitkeep
+*.jpg
+*.png
