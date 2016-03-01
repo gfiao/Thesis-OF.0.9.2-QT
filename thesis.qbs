@@ -18,9 +18,9 @@ Project{
             "src/EmotionData.h",
             "src/EmotionInterval.cpp",
             "src/EmotionInterval.h",
-            'src/main.cpp',
-            'src/ofApp.cpp',
-            'src/ofApp.h',
+            "src/main.cpp",
+            "src/ofApp.cpp",
+            "src/ofApp.h",
         ]
 
         of.addons: [

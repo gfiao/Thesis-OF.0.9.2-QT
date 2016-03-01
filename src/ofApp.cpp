@@ -6,8 +6,7 @@ QMLCallback qmlCallback;
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    // oF
-    x = 0;
+    ofBackground(ofColor::white);
 
     // qml
     QQmlComponent component(&qmlEngine,
@@ -30,11 +29,13 @@ void ofApp::setup(){
 void ofApp::update(){
     video.update();
 
+   /* if(video.isLoaded())
+        qmlButton->setProperty("enabled", false);*/
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofDrawCircle(x, ofGetHeight()/2, 50);
 
     //========================
     double videoWidth = video.getWidth();
@@ -65,7 +66,6 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::qmlButtonPressed(){
-    //ofSetColor(ofRandom(0, 255), ofRandom(0, 255), ofRandom(0, 255));
 
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a video file");
 
@@ -77,9 +77,10 @@ void ofApp::qmlButtonPressed(){
 
         video.play();
     }
+
 }
 
 //--------------------------------------------------------------
 void ofApp::qmlSliderChanged(float msg){
-    x = ofMap(msg, 0, 1, 0, ofGetWidth());
+    video.setVolume(msg);
 }

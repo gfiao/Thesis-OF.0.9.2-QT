@@ -26,6 +26,6 @@ public:
 	vector<float> getSamples();
 	float getMaxValue();
 	float getMinValue();
-	float convertToDb(float sample);
+    //float convertToDb(float sample);
 
 };

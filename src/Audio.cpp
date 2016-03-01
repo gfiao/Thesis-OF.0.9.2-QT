@@ -60,6 +60,6 @@ float Audio::getMinValue() {
 	return minValue;
 }
 
-float Audio::convertToDb(float sample) {
-	return 20 * log10f(abs(sample));
-}
+/*float Audio::convertToDb(float sample) {
+    return 20 * log10f(abs(sample));
+}*/

@@ -46,7 +46,7 @@ Window {
         objectName: "changeColorButton";
         x: 75; y: 40
         height: 25; width: 150
-        text: "Change Color";
+        text: "Load Video"
         z: 0
         rotation: 0
         transformOrigin: Item.Center
@@ -55,7 +55,7 @@ Window {
     Text {
         x: 75; y: 100
         height: 25; width: 150
-        text: "Change Position"
+        text: "Video Volume"
     }
 
     Slider {
@@ -66,6 +66,18 @@ Window {
         value: 0.0
         signal sliderSignal(var msg)
         onValueChanged: slider.sliderSignal(value)
+    }
+
+    Button {
+        x: 257
+        y: 40
+        width: 150
+        height: 25
+        text: "Load Data"
+        z: 0
+        objectName: "changeColorButton"
+        transformOrigin: Item.Center
+        rotation: 0
     }
 
     function myQmlFunction(msg) {
