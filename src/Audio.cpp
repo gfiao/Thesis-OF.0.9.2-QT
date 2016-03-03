@@ -1,32 +1,32 @@
-using namespace std;
-
 #include "Audio.h"
-#include <iostream>
 
-//code based on http://ofdsp.blogspot.pt/2011/07/loading-wav-file-with-sndfilehandle.html
+/*
+code based on http://ofdsp.blogspot.pt/2011/07/loading-wav-file-with-sndfilehandle.html and
+ https://github.com/erikd/libsndfile/blob/master/examples/sndfile-to-text.c
+ */
 Audio::Audio(const char* fileName) {
 	maxValue, minValue = 0;
 
 	//Bit rate = (bit depth) x (sampling rate) x (number of channels)
-	SndfileHandle myf = SndfileHandle(fileName);
+	SF_INFO sfinfo;
+	SNDFILE *infile = sf_open(fileName, SFM_READ, &sfinfo);
 
 	printf("Opened file '%s'\n", fileName);
-	printf("    Sample rate : %d\n", myf.samplerate());
-	printf("    Channels    : %d\n", myf.channels());
-	printf("    Error       : %s\n", myf.strError());
-	printf("    Frames     : %d\n", int(myf.frames()));
+	printf("    Sample rate : %d\n", sfinfo.samplerate);
+	printf("    Channels    : %d\n", sfinfo.channels);
+	printf("    Frames     : %d\n", int(sfinfo.frames));
 
 	//read all of the frames to a array of floats
-	float* frames = new float[myf.channels() * myf.frames()];
-	myf.readf(frames, myf.frames());
+	float* frames = new float[sfinfo.channels * sfinfo.frames];
+	sf_readf_float(infile, frames, sfinfo.channels * sfinfo.frames);
 
-	for (int i = 0; i < myf.frames(); i += myf.samplerate()) {
+	for (int i = 0; i < sfinfo.frames; i += sfinfo.samplerate) {
 		float sum = 0;
-		for (int j = i; j < i + myf.samplerate(); j++) {
+		for (int j = i; j < i + sfinfo.samplerate; j++) {
 			sum += frames[j];
 		}
 		//multiply by 1000 so we can have readable values
-		float normalizedValue = float(sum / myf.samplerate()) * 1000;
+		float normalizedValue = float(sum / sfinfo.samplerate) * 1000;
 		samples.push_back(normalizedValue);
 
 		if (normalizedValue > maxValue)
@@ -59,7 +59,3 @@ float Audio::getMaxValue() {
 float Audio::getMinValue() {
 	return minValue;
 }
-
-/*float Audio::convertToDb(float sample) {
-    return 20 * log10f(abs(sample));
-}*/

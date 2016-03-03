@@ -10,7 +10,7 @@ Window {
     visible: true
     title: "QML Window"
 
-   /* MessageDialog {
+    MessageDialog {
         id: aboutDialog
         icon: StandardIcon.Information
         title: "About"
@@ -40,7 +40,7 @@ Window {
                 onTriggered: aboutDialog.open()
             }
         }
-    }*/
+    }
 
     Button {
         objectName: "changeColorButton";

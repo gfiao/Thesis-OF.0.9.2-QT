@@ -12,6 +12,8 @@ Project{
         name: { return FileInfo.baseName(path) }
 
         files: [
+            "src/Audio.cpp",
+            "src/Audio.h",
             "src/AuxFunc.cpp",
             "src/AuxFunc.h",
             "src/EmotionData.cpp",

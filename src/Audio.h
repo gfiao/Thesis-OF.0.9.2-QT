@@ -1,14 +1,12 @@
 #pragma once
-#pragma comment(lib, "libsndfile-1.lib")
+//#pragma comment(lib, "libsndfile-1.lib")
 
 using namespace std;
 
 #include <vector>
 #include <string>
-#include <utility>
-#include "sndfile.hh"
-#include <math.h>
-
+#include "sndfile.h"
+#include <iostream>
 
 class Audio {
 
@@ -26,6 +24,5 @@ public:
 	vector<float> getSamples();
 	float getMaxValue();
 	float getMinValue();
-    //float convertToDb(float sample);
 
 };
