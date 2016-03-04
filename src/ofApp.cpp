@@ -78,6 +78,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::qmlLDButtonPressed(){
+    cout << "KEKEKEKEKEKEKEK" << endl;
     /* ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a data file");
 
     if (openFileResult.bSuccess) {

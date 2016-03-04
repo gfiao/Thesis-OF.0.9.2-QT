@@ -6,38 +6,32 @@ import QtQuick.Dialogs 1.2
 
 Window {
     id: qmlWindow
-    width: 600; height: 400
+    title: "Emotion Data Parameters"
+    width: 400; height: 350
 
-    Text{
-        text: "TOP KEK. TOP. KEK."
+    TextField {
+        id: textField1
+        x: 197
+        y: 52
+        inputMask: qsTr("")
+        placeholderText: qsTr("Value")
+        //inputMethodHints: Qt.ImhDigitsOnly
+        validator: IntValidator{bottom: 0; top: 100}
+    }
+
+    Text {
+        id: text1
+        x: 104
+        y: 55
+        text: qsTr("Interval:")
+        font.pixelSize: 13
     }
 
     Button {
         id: button1
-        x: 58
-        y: 59
-        text: qsTr("Button")
-    }
-
-    Button {
-        id: button2
-        x: 411
-        y: 270
-        text: qsTr("Button")
-    }
-
-    Button {
-        id: button3
-        x: 71
-        y: 389
-        text: qsTr("Button")
-    }
-
-    Button {
-        id: button4
-        x: 455
-        y: 52
-        text: qsTr("Button")
+        x: 163
+        y: 260
+        text: qsTr("Load Data")
     }
 
     //Other properties

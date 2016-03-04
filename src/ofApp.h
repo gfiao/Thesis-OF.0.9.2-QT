@@ -64,7 +64,7 @@ public slots:
     }
 
     void buttonSlot() {
- ofAppInstance->qmlLDButtonPressed();
+        ofAppInstance->qmlLDButtonPressed();
     }
 
     void sliderSlot(QVariant msg) {
