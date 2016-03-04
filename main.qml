@@ -4,11 +4,12 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 
-Window {
+ApplicationWindow {
     id: qmlWindow
     width: 600; height: 400
     visible: true
     title: "QML Window"
+
 
     MessageDialog {
         id: aboutDialog
@@ -18,17 +19,26 @@ Window {
         informativeText: "This example demonstrates most of the available Qt Quick Controls."
     }
 
-    MenuBar {
+    menuBar:  MenuBar {
         id: menu
 
         Menu {
             title: "File"
 
             MenuItem {
+
+                objectName: "loadData"
                 text: "Load Data"
+                onTriggered: {
+                    var component = Qt.createComponent("LoadDataWindow.qml")
+                    var window    = component.createObject(qmlWindow)
+                    window.show()
+                }
+
             }
 
             MenuItem {
+                objectName: "loadVideo"
                 text: "Load Video"
             }
         }
@@ -42,16 +52,6 @@ Window {
         }
     }
 
-    Button {
-        objectName: "changeColorButton";
-        x: 75; y: 40
-        height: 25; width: 150
-        text: "Load Video"
-        z: 0
-        rotation: 0
-        transformOrigin: Item.Center
-    }
-
     Text {
         x: 75; y: 100
         height: 25; width: 150
@@ -60,7 +60,7 @@ Window {
 
     Slider {
         id: slider;
-        objectName: "changePositionSlider";
+        objectName: "videoVolume";
         x: 75; y: 125
         height: 25; width: 150
         value: 0.0
@@ -68,21 +68,8 @@ Window {
         onValueChanged: slider.sliderSignal(value)
     }
 
-    Button {
-        x: 257
-        y: 40
-        width: 150
-        height: 25
-        text: "Load Data"
-        z: 0
-        objectName: "changeColorButton"
-        transformOrigin: Item.Center
-        rotation: 0
-    }
-
     function myQmlFunction(msg) {
         console.log("Got message:", msg)
         return "some return value"
     }
-
 }

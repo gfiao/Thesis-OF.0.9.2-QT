@@ -1,6 +1,11 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "EmotionData.h"
+#include "AuxFunc.h"
+#include "Audio.h"
+#include <vector>
+
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QObject>
@@ -20,13 +25,17 @@ static const string WRONG_NUMBER = "The value must be between 0 and 1!";
 class ofApp : public ofBaseApp {
 private:
     //oF
+    string emotionDataPath;
     ofVideoPlayer video;
+    EmotionData *emotionData;
+    Audio *audio;
 
     //qml
     QQmlApplicationEngine qmlEngine;
     QObject *qmlWindow;
-    QObject *qmlButton;
-    QObject *qmlSlider;
+    QObject *qmlLoadVideo;
+    QObject *qmlLoadData;
+    QObject *qmVideoVolSlider;
 
 public:
     // oF
@@ -36,8 +45,10 @@ public:
     void keyPressed(int key);
 
     // qml
-    void qmlButtonPressed();
-    void qmlSliderChanged(float msg);
+    void qmlSetup();
+    void qmlLVButtonPressed();
+    void qmlLDButtonPressed();
+    void qmlVolSliderChanged(float msg);
 };
 
 // qml signal to slot object
@@ -47,10 +58,16 @@ public:
     ofApp *ofAppInstance;
 
 public slots:
-    void buttonSlot() {
-        ofAppInstance->qmlButtonPressed();
+    void menuSlot(){
+        ofAppInstance->qmlLVButtonPressed();
+
     }
+
+    void buttonSlot() {
+ ofAppInstance->qmlLDButtonPressed();
+    }
+
     void sliderSlot(QVariant msg) {
-        ofAppInstance->qmlSliderChanged(msg.toFloat());
+        ofAppInstance->qmlVolSliderChanged(msg.toFloat());
     }
 };
