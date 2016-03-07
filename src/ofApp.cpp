@@ -28,6 +28,8 @@ void ofApp::qmlSetup(){
     qmlLoadDataFile = qmlWindow->findChild<QObject*>("loadDataFile");
     qmlLoadDataParameters = qmlWindow->findChild<QObject*>("loadDataParameters");
 
+    qmlClearSelection = qmlWindow->findChild<QObject*>("clearSelection");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -37,9 +39,12 @@ void ofApp::qmlSetup(){
                      &qmlCallback, SLOT( dataParametersSlot() ));
 
     QObject::connect(qmlLoadVideo, SIGNAL( triggered() ),
-                     &qmlCallback, SLOT( menuSlot() ));
+                     &qmlCallback, SLOT( loadVideoSlot() ));
     QObject::connect(qmVideoVolSlider, SIGNAL( sliderSignal(QVariant) ),
                      &qmlCallback, SLOT( sliderSlot(QVariant) ));
+
+    QObject::connect(qmlClearSelection, SIGNAL(triggered()),
+                     &qmlCallback, SLOT(clearSelectionSlot()));
 
 }
 
@@ -153,6 +158,12 @@ void ofApp::loadVideoFile(){
         video.play();
     }
 
+}
+
+void ofApp::clearSelection(){
+    video.close();
+    emotionData = nullptr;
+    emotionDataPath = "";
 }
 
 //--------------------------------------------------------------

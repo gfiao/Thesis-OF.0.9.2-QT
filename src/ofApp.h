@@ -42,6 +42,8 @@ private:
     QObject *qmlLoadDataFile;
     QObject *qmlLoadDataParameters;
 
+    QObject *qmlClearSelection;
+
 
 public:
     // oF
@@ -56,6 +58,7 @@ public:
     void loadDataFile();
     void loadDataParameters();
     void qmlVolSliderChanged(float msg);
+    void clearSelection();
 };
 
 // qml signal to slot object
@@ -65,7 +68,7 @@ public:
     ofApp *ofAppInstance;
 
 public slots:
-    void menuSlot(){
+    void loadVideoSlot(){
         ofAppInstance->loadVideoFile();
     }
 
@@ -74,6 +77,10 @@ public slots:
     }
     void dataParametersSlot(){
         ofAppInstance->loadDataParameters();
+    }
+
+    void clearSelectionSlot(){
+        ofAppInstance->clearSelection();
     }
 
     void sliderSlot(QVariant msg) {

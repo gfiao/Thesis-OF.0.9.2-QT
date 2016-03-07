@@ -42,6 +42,13 @@ ApplicationWindow {
                 objectName: "loadVideo"
                 text: "Load Video"
             }
+
+            MenuSeparator{}
+
+            MenuItem{
+                objectName: "clearSelection"
+                text: "Clear Selection"
+            }
         }
 
         Menu {
