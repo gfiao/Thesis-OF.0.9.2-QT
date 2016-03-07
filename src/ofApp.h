@@ -33,9 +33,15 @@ private:
     //qml
     QQmlApplicationEngine qmlEngine;
     QObject *qmlWindow;
+
+    //video
     QObject *qmlLoadVideo;
-    QObject *qmlLoadData;
     QObject *qmVideoVolSlider;
+
+    //emotion data
+    QObject *qmlLoadDataFile;
+    QObject *qmlLoadDataParameters;
+
 
 public:
     // oF
@@ -46,8 +52,9 @@ public:
 
     // qml
     void qmlSetup();
-    void qmlLVButtonPressed();
-    void qmlLDButtonPressed();
+    void loadVideoFile();
+    void loadDataFile();
+    void loadDataParameters();
     void qmlVolSliderChanged(float msg);
 };
 
@@ -59,12 +66,14 @@ public:
 
 public slots:
     void menuSlot(){
-        ofAppInstance->qmlLVButtonPressed();
-
+        ofAppInstance->loadVideoFile();
     }
 
-    void buttonSlot() {
-        ofAppInstance->qmlLDButtonPressed();
+    void dataFileSlot() {
+        ofAppInstance->loadDataFile();
+    }
+    void dataParametersSlot(){
+        ofAppInstance->loadDataParameters();
     }
 
     void sliderSlot(QVariant msg) {

@@ -21,15 +21,21 @@ void ofApp::qmlSetup(){
                             QUrl(QStringLiteral("qrc:/main.qml")) );
 
     qmlWindow = component.create();
-    qmlLoadData = qmlWindow->findChild<QObject*>("loadData");
+
     qmlLoadVideo = qmlWindow->findChild<QObject*>("loadVideo");
     qmVideoVolSlider = qmlWindow->findChild<QObject*>("videoVolume");
+
+    qmlLoadDataFile = qmlWindow->findChild<QObject*>("loadDataFile");
+    qmlLoadDataParameters = qmlWindow->findChild<QObject*>("loadDataParameters");
 
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
-    QObject::connect(qmlLoadData, SIGNAL( triggered() ),
-                     &qmlCallback, SLOT( buttonSlot() ));
+    QObject::connect(qmlLoadDataFile, SIGNAL( clicked() ),
+                     &qmlCallback, SLOT( dataFileSlot() ));
+    QObject::connect(qmlLoadDataParameters, SIGNAL( clicked() ),
+                     &qmlCallback, SLOT( dataParametersSlot() ));
+
     QObject::connect(qmlLoadVideo, SIGNAL( triggered() ),
                      &qmlCallback, SLOT( menuSlot() ));
     QObject::connect(qmVideoVolSlider, SIGNAL( sliderSignal(QVariant) ),
@@ -77,15 +83,16 @@ void ofApp::keyPressed(int key){
 }
 
 //--------------------------------------------------------------
-void ofApp::qmlLDButtonPressed(){
-    cout << "KEKEKEKEKEKEKEK" << endl;
-    /* ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a data file");
+void ofApp::loadDataFile(){
+    cout << "kwkwkwkwkwkw" << endl;
+
+    ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a data file");
 
     if (openFileResult.bSuccess) {
         ofLogVerbose("User selected a file");
         emotionDataPath = openFileResult.getPath();
 
-        if (intervalValue.size() > 0)
+        /* if (intervalValue.size() > 0)
             emotionData = new EmotionData(emotionDataPath, atoi(intervalInput->getText().c_str()));
         else if (intervalValue.size() > 0 && dynIntValue.size() > 0)
             emotionData = new EmotionData(emotionDataPath, atoi(intervalInput->getText().c_str()),
@@ -95,15 +102,44 @@ void ofApp::qmlLDButtonPressed(){
         else
             emotionData = new EmotionData(emotionDataPath); //5 second intervals
 
-        ofSystemAlertDialog("Data loaded successfully!");
-
+        ofSystemAlertDialog("Data loaded successfully!");*/
+        ofSystemAlertDialog("Data file loaded!");
+        cout << emotionDataPath << endl;
     }
-    else
-        ofLogVerbose("User hit cancel");*/
+}
+
+void ofApp::loadDataParameters(){
+
+    QObject *interval_textfield = qmlWindow->findChild<QObject*>("interval_textfield");
+    QString intervalValue = interval_textfield->property("text").toString();
+    cout << intervalValue.toStdString() << endl;
+
+    QObject *dynInter_textfield = qmlWindow->findChild<QObject*>("dynInter_textfield");
+    QString dynIntValue = dynInter_textfield->property("text").toString();
+    cout << dynIntValue.toStdString() << endl;
+
+    cout << intervalValue.size() << endl;
+    cout << dynIntValue.size() << endl;
+
+    if (intervalValue.size() > 0 && dynIntValue.size() == 0){
+        emotionData = new EmotionData(emotionDataPath, ofToInt(intervalValue.toStdString()));
+    }
+    else if (intervalValue.size() > 0 && dynIntValue.size() > 0){
+        emotionData = new EmotionData(emotionDataPath, ofToInt(intervalValue.toStdString()),
+                                      ofToInt(dynIntValue.toStdString()));
+    }
+    else if (dynIntValue.size() > 0){
+        emotionData = new EmotionData(emotionDataPath, 5, ofToInt(dynIntValue.toStdString()));
+    }
+    else{
+        emotionData = new EmotionData(emotionDataPath); //5 second intervals
+    }
+
+    ofSystemAlertDialog("Data loaded successfully!");
 
 }
 
-void ofApp::qmlLVButtonPressed(){
+void ofApp::loadVideoFile(){
 
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a video file");
 
