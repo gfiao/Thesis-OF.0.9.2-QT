@@ -55,6 +55,11 @@ void ofApp::update(){
     /* if(video.isLoaded())
         qmlButton->setProperty("enabled", false);*/
 
+    if(emotionDataPath.size() == 0)
+        qmlLoadDataParameters->setProperty("enabled", false);
+    else
+        qmlLoadDataParameters->setProperty("enabled", true);
+
 }
 
 //--------------------------------------------------------------
@@ -97,17 +102,6 @@ void ofApp::loadDataFile(){
         ofLogVerbose("User selected a file");
         emotionDataPath = openFileResult.getPath();
 
-        /* if (intervalValue.size() > 0)
-            emotionData = new EmotionData(emotionDataPath, atoi(intervalInput->getText().c_str()));
-        else if (intervalValue.size() > 0 && dynIntValue.size() > 0)
-            emotionData = new EmotionData(emotionDataPath, atoi(intervalInput->getText().c_str()),
-                                          atoi(dynIntValue.c_str()));
-        else if (dynIntValue.size() > 0)
-            emotionData = new EmotionData(emotionDataPath, 5, atoi(dynIntValue.c_str()));
-        else
-            emotionData = new EmotionData(emotionDataPath); //5 second intervals
-
-        ofSystemAlertDialog("Data loaded successfully!");*/
         ofSystemAlertDialog("Data file loaded!");
         cout << emotionDataPath << endl;
     }
@@ -141,6 +135,8 @@ void ofApp::loadDataParameters(){
     }
 
     ofSystemAlertDialog("Data loaded successfully!");
+
+    qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
 
 }
 
