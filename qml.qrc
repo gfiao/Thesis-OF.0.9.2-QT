@@ -872,5 +872,9 @@
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-70-stackexchange.png</file>
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-8-amazon.png</file>
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-9-tumblr.png</file>
+        <file>ColorTab.qml</file>
+        <file>CutDetectionTab.qml</file>
+        <file>EmotionsTab.qml</file>
+        <file>MovementTab.qml</file>
     </qresource>
 </RCC>

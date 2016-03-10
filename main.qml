@@ -68,89 +68,134 @@ ApplicationWindow {
     }
 
 
+    Item{
+        id: mediaPlayerButtons
+        width: 500
+        height: 51
 
-    Image {
-        id: playImage
+        Image {
+            id: playImage
+            x: 10
+            y: 12
+            objectName: "playImage"
+            width: 20
+            height: 20
+            fillMode: Image.PreserveAspectFit
+            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-174-play.png"
+
+            MouseArea{
+                objectName: "playMouseArea"
+                width: parent.width
+                height: parent.height
+
+                signal mouseAreaSignal(var signal)
+            }
+        }
+
+        Image{
+            id: pauseImage
+            x: 53
+            y: 12
+            objectName: "pauseImage"
+            width: 20
+            height: 20
+            fillMode: Image.PreserveAspectFit
+            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-175-pause.png"
+
+            MouseArea{
+                objectName: "pauseMouseArea"
+                width: parent.width
+                height: parent.height
+
+                signal mouseAreaSignal(var signal)
+            }
+        }
+
+        Image {
+            id: stopImage
+            x: 98
+            y: 12
+            objectName: "stopImage"
+            width: 20
+            height: 20
+            fillMode: Image.PreserveAspectFit
+            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-176-stop.png"
+
+            MouseArea{
+                objectName: "stopMouseArea"
+                width: parent.width
+                height: parent.height
+
+                signal mouseAreaSignal(var signal)
+            }
+        }
+
+
+        Image {
+            id: volumeImage
+            x: 296
+            y: 12
+            objectName: "volumeImage"
+            width: 20
+            height: 20
+            fillMode: Image.PreserveAspectFit
+            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-185-volume-up.png"
+        }
+
+        Slider {
+            id: slider;
+            objectName: "videoVolume";
+            x: 342
+            y: 12
+            width: 148
+            height: 20
+            value: 0.0
+
+            signal sliderSignal(var msg)
+            onValueChanged: slider.sliderSignal(value)
+        }
+    }
+
+    TabView{
         x: 10
-        y: 12
-        objectName: "playImage"
-        width: 20
-        height: 20
-        fillMode: Image.PreserveAspectFit
-        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-174-play.png"
+        anchors.top: mediaPlayerButtons.bottom
+        anchors.topMargin: 10
+        anchors.rightMargin: 10
+        anchors.leftMargin: 10
+        anchors.bottomMargin: 10
+        anchors.right: parent.right
+        anchors.bottom: bottomBar.top
+        anchors.left: parent.left
 
-        MouseArea{
-            objectName: "playMouseArea"
-            width: parent.width
-            height: parent.height
+        Tab{
+            title: "Emotions"
+        }
 
-            signal mouseAreaSignal(var signal)
+        Tab{
+            title: "Color"
+        }
+
+        Tab{
+            title: "Movement"
+        }
+
+        Tab{
+            title: "Cut Detection"
         }
     }
 
-    Image{
-        id: pauseImage
-        x: 53
-        y: 12
-        objectName: "pauseImage"
-        width: 20
-        height: 20
-        fillMode: Image.PreserveAspectFit
-        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-175-pause.png"
+    Rectangle{ //to house the run algorithm button and other stuff
+        id: bottomBar
+        y: 452
+        height: 38
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
 
-        MouseArea{
-            objectName: "pauseMouseArea"
-            width: parent.width
-            height: parent.height
-
-            signal mouseAreaSignal(var signal)
-        }
     }
-
-    Image {
-        id: stopImage
-        x: 98
-        y: 12
-        objectName: "stopImage"
-        width: 20
-        height: 20
-        fillMode: Image.PreserveAspectFit
-        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-176-stop.png"
-
-        MouseArea{
-            objectName: "stopMouseArea"
-            width: parent.width
-            height: parent.height
-
-            signal mouseAreaSignal(var signal)
-        }
-    }
-
-
-    Image {
-        id: volumeImage
-        x: 296
-        y: 12
-        objectName: "volumeImage"
-        width: 20
-        height: 20
-        fillMode: Image.PreserveAspectFit
-        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-185-volume-up.png"
-    }
-
-    Slider {
-        id: slider;
-        objectName: "videoVolume";
-        x: 329
-        y: 12
-        width: 148
-        height: 20
-        value: 0.0
-
-        signal sliderSignal(var msg)
-        onValueChanged: slider.sliderSignal(value)
-    }
-
 
 
     function myQmlFunction(msg) {
