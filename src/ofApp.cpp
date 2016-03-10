@@ -30,6 +30,10 @@ void ofApp::qmlSetup(){
 
     qmlClearSelection = qmlWindow->findChild<QObject*>("clearSelection");
 
+    qmlPlayButton = qmlWindow->findChild<QObject*>("playMouseArea");
+    qmlPauseButton = qmlWindow->findChild<QObject*>("pauseMouseArea");
+    qmlStopButton = qmlWindow->findChild<QObject*>("stopMouseArea");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -45,6 +49,13 @@ void ofApp::qmlSetup(){
 
     QObject::connect(qmlClearSelection, SIGNAL(triggered()),
                      &qmlCallback, SLOT(clearSelectionSlot()));
+
+    QObject::connect(qmlPlayButton, SIGNAL(entered()),
+                     &qmlCallback, SLOT(playButtonSlot()));
+    QObject::connect(qmlPauseButton, SIGNAL(entered()),
+                     &qmlCallback, SLOT(pauseButtonSlot()));
+    QObject::connect(qmlStopButton, SIGNAL(entered()),
+                     &qmlCallback, SLOT(stopButtonSlot()));
 
 }
 
@@ -165,4 +176,19 @@ void ofApp::clearSelection(){
 //--------------------------------------------------------------
 void ofApp::qmlVolSliderChanged(float msg){
     video.setVolume(msg);
+}
+
+void ofApp::play(){
+    video.play();
+}
+
+void ofApp::pause(){
+    if(video.isPaused())
+        play();
+    else
+        video.setPaused(true);
+}
+
+void ofApp::stop(){
+    video.stop();
 }

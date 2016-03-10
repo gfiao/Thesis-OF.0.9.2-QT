@@ -44,6 +44,11 @@ private:
 
     QObject *qmlClearSelection;
 
+    //video controls
+    QObject* qmlPlayButton;
+    QObject* qmlPauseButton;
+    QObject* qmlStopButton;
+
 
 public:
     // oF
@@ -59,6 +64,9 @@ public:
     void loadDataParameters();
     void qmlVolSliderChanged(float msg);
     void clearSelection();
+    void play();
+    void pause();
+    void stop();
 };
 
 // qml signal to slot object
@@ -81,6 +89,16 @@ public slots:
 
     void clearSelectionSlot(){
         ofAppInstance->clearSelection();
+    }
+
+    void playButtonSlot(){
+        ofAppInstance->play();
+    }
+    void pauseButtonSlot(){
+        ofAppInstance->pause();
+    }
+    void stopButtonSlot(){
+        ofAppInstance->stop();
     }
 
     void sliderSlot(QVariant msg) {

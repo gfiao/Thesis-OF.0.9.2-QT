@@ -8,15 +8,14 @@ import QtQuick.Extras 1.4
 
 ApplicationWindow {
     id: qmlWindow
-    width: 400; height: 500
+    minimumWidth: 400
+    minimumHeight: 500
+
+    width: 500
+    height: 500
+
     visible: true
     title: "QML Window"
-
-    /* Layout.minimumWidth: 600
-    Layout.minimumHeight: 400
-    Layout.preferredWidth: 300
-    Layout.preferredHeight: 200*/
-
 
     MessageDialog {
         id: aboutDialog
@@ -67,6 +66,92 @@ ApplicationWindow {
         }
     }
 
+
+
+    Image {
+        id: playImage
+        x: 10
+        y: 12
+        objectName: "playImage"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-174-play.png"
+
+        MouseArea{
+            objectName: "playMouseArea"
+            width: parent.width
+            height: parent.height
+
+            signal mouseAreaSignal(var signal)
+        }
+    }
+
+    Image{
+        id: pauseImage
+        x: 53
+        y: 12
+        objectName: "pauseImage"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-175-pause.png"
+
+        MouseArea{
+            objectName: "pauseMouseArea"
+            width: parent.width
+            height: parent.height
+
+            signal mouseAreaSignal(var signal)
+        }
+    }
+
+    Image {
+        id: stopImage
+        x: 98
+        y: 12
+        objectName: "stopImage"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-176-stop.png"
+
+        MouseArea{
+            objectName: "stopMouseArea"
+            width: parent.width
+            height: parent.height
+
+            signal mouseAreaSignal(var signal)
+        }
+    }
+
+
+    Image {
+        id: volumeImage
+        x: 296
+        y: 12
+        objectName: "volumeImage"
+        width: 20
+        height: 20
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-185-volume-up.png"
+    }
+
+    Slider {
+        id: slider;
+        objectName: "videoVolume";
+        x: 329
+        y: 12
+        width: 148
+        height: 20
+        value: 0.0
+
+        signal sliderSignal(var msg)
+        onValueChanged: slider.sliderSignal(value)
+    }
+
+
+
     function myQmlFunction(msg) {
         console.log("Got message:", msg)
         return "some return value"
@@ -102,7 +187,7 @@ ApplicationWindow {
                     left: parent.left
                     right: parent.right
                     top: parent.top
-                    bottom: bottomBar.top
+                    //bottom: bottomBar.top
                     leftMargin: -8
                 }
                 ColumnLayout {
@@ -189,77 +274,6 @@ ApplicationWindow {
     //==============================
     // END OF LOAD DATA WINDOW
     //===============================
-
-    RowLayout {
-        id: mediaPlayerButtons
-        x: 0
-        y: 11
-        width: 400
-        height: 33
-        spacing: 6
-        anchors.rightMargin: 8
-        anchors.leftMargin: 8
-        anchors.right: parent.right
-        anchors.left: parent.left
-
-        Image {
-            id: playImage
-            objectName: "playImage"
-            //x: 35
-            //y: 136
-            width: 27
-            height: 26
-            fillMode: Image.PreserveAspectFit
-            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-174-play.png"
-
-            MouseArea{
-                width: parent.width
-                height: parent.height
-
-                onClicked: console.log("top kek");
-            }
-        }
-
-        Image{
-            id: pauseImage
-            objectName: "pauseImage"
-            width: 27
-            height: 26
-            fillMode: Image.PreserveAspectFit
-            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-175-pause.png"
-        }
-
-        Image {
-            id: stopImage
-            objectName: "stopImage"
-            width: 27
-            height: 26
-            fillMode: Image.PreserveAspectFit
-            source: "qrc:/glyphicons_free/glyphicons/png/glyphicons-176-stop.png"
-        }
-    }
-
-    Text {
-        x: 62
-        y: 212
-        width: 150
-        height: 25;        text: "Video Volume"
-    }
-
-    Slider {
-        id: slider;
-        objectName: "videoVolume";
-        value: 0.0
-        signal sliderSignal(var msg)
-        x: 62
-        y: 239
-        width: 150
-        height: 25
-        onValueChanged: slider.sliderSignal(value)
-    }
-
-
-
 
 
 
