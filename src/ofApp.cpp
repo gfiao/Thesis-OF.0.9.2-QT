@@ -63,9 +63,6 @@ void ofApp::qmlSetup(){
 void ofApp::update(){
     video.update();
 
-    /* if(video.isLoaded())
-        qmlButton->setProperty("enabled", false);*/
-
     if(emotionDataPath.size() == 0)
         qmlLoadDataParameters->setProperty("enabled", false);
     else
@@ -75,8 +72,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofSetHexColor(0xFFFFFF);
 
-    //========================
     double videoWidth = video.getWidth();
     double videoHeight = video.getHeight();
     double newWidth = ofGetWidth() - (VIDEO_OFFSET_WIDTH + 10);
@@ -87,7 +84,22 @@ void ofApp::draw(){
         videoHeight = videoHeight * ratio;
     }
     video.draw(VIDEO_OFFSET_WIDTH, VIDEO_OFFSET_HEIGHT, videoWidth, videoHeight);
-    //
+
+    //=============================
+
+    ofSetHexColor(0x000000);
+    if (video.isLoaded()) {
+        vector<string> videoPathSplit = AuxFunc::split(video.getMoviePath(), '\\');
+        ofDrawBitmapString("Video file: " + videoPathSplit.back(),
+                           VIDEO_OFFSET_WIDTH, VIDEO_OFFSET_HEIGHT + videoHeight + 25);
+    }
+
+    if (emotionData != nullptr) {
+        vector<string> emotionDataPathSplit = AuxFunc::split(emotionDataPath, '\\');
+        ofDrawBitmapString("Data file: " + emotionDataPathSplit.back(),
+                           VIDEO_OFFSET_WIDTH, VIDEO_OFFSET_HEIGHT + videoHeight + 50);
+    }
+
 }
 
 //--------------------------------------------------------------
@@ -105,7 +117,6 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::loadDataFile(){
-    cout << "kwkwkwkwkwkw" << endl;
 
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a data file");
 

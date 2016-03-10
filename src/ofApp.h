@@ -10,8 +10,8 @@
 #include <QQmlComponent>
 #include <QObject>
 
-static const int VIDEO_OFFSET_WIDTH = 0;
-static const int VIDEO_OFFSET_HEIGHT = 0;
+static const int VIDEO_OFFSET_WIDTH = 10;
+static const int VIDEO_OFFSET_HEIGHT = 10;
 static const int DEFAULT_INTERVAL_VAL = 5;
 
 static const int LONG_SHOT = 0;
