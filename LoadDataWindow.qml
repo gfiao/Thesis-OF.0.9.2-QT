@@ -15,8 +15,8 @@ Window {
 
     Item {
         id: item
-        width: 539
-        height: 402
+        width: parent.width
+        height: parent.height
 
         ScrollView {
             id: scrollView
@@ -32,10 +32,18 @@ Window {
                 spacing: 8
                 Item { Layout.preferredHeight: 4 } // padding
 
-                Button {
-                    objectName: "loadDataFile"
-                    id: loadDataFile
-                    text: qsTr("Load CSV File")
+                RowLayout{
+                    Button {
+                        objectName: "loadDataFile"
+                        id: loadDataFile
+                        text: qsTr("Load CSV File")
+                    }
+
+                    Label{
+                        objectName: "loadFileLabel"
+                        visible: false
+                        text: ""
+                    }
                 }
                 Item { Layout.preferredHeight: 5 } // padding
 

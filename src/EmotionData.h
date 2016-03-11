@@ -1,6 +1,7 @@
 using namespace std;
 
 #include <vector>
+#include <set>
 #include <string>
 #include <sstream>
 #include "AuxFunc.h"
@@ -18,6 +19,9 @@ private:
 	//highest number of emotions shared, used in the creation of the emotions chart
 	int maxValue;
 
+    //the emotions present in the data, used to create a combobox in the UI
+    set<string> distinctEmotions;
+
 public:
 
 	EmotionData(string filePath, int interval = 5, int minNumEmotion = 0);
@@ -25,5 +29,7 @@ public:
 	//returns vector with all the intervals
 	vector<EmotionInterval> getEmotionIntervals();
 	int getInterval();
-	int getMaxValue();
+    int getMaxValue();
+
+    set<string> getDistinctEmotions();
 };

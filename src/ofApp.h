@@ -67,6 +67,7 @@ public:
     void play();
     void pause();
     void stop();
+
 };
 
 // qml signal to slot object

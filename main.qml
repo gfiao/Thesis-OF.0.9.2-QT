@@ -8,7 +8,7 @@ import QtQuick.Extras 1.4
 
 ApplicationWindow {
     id: qmlWindow
-    minimumWidth: 400
+    minimumWidth: 500
     minimumHeight: 500
 
     width: 500
@@ -87,8 +87,6 @@ ApplicationWindow {
                 objectName: "playMouseArea"
                 width: parent.width
                 height: parent.height
-
-                signal mouseAreaSignal(var signal)
             }
         }
 
@@ -106,8 +104,6 @@ ApplicationWindow {
                 objectName: "pauseMouseArea"
                 width: parent.width
                 height: parent.height
-
-                signal mouseAreaSignal(var signal)
             }
         }
 
@@ -125,15 +121,13 @@ ApplicationWindow {
                 objectName: "stopMouseArea"
                 width: parent.width
                 height: parent.height
-
-                signal mouseAreaSignal(var signal)
             }
         }
 
 
         Image {
             id: volumeImage
-            x: 296
+            x: 304
             y: 12
             objectName: "volumeImage"
             width: 20
@@ -169,6 +163,7 @@ ApplicationWindow {
 
         Tab{
             title: "Emotions"
+            EmotionsTab{}
         }
 
         Tab{

@@ -127,6 +127,11 @@ void ofApp::loadDataFile(){
         ofSystemAlertDialog("Data file loaded!");
         cout << emotionDataPath << endl;
     }
+
+    QObject* label = qmlWindow->findChild<QObject*>("loadFileLabel");
+    string emotionDataFileName = AuxFunc::split(emotionDataPath, '\\').back();
+    label->setProperty("visible", true);
+    label->setProperty("text", QVariant(emotionDataFileName.c_str()));
 }
 
 void ofApp::loadDataParameters(){

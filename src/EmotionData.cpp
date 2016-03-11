@@ -4,63 +4,70 @@
 
 EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
 
-	this->interval = interval;
-	maxValue = 0;
-	int i = interval;
+    this->interval = interval;
+    maxValue = 0;
+    int i = interval;
 
-	cout << "Interval: " << interval << endl;
+    cout << "Interval: " << interval << endl;
 
-	ifstream file(filePath);
-	string line;
-	getline(file, line, '\n'); //skip first line
-	vector<string> emotions;
+    ifstream file(filePath);
+    string line;
+    getline(file, line, '\n'); //skip first line
+    vector<string> emotions;
 
-	getline(file, line, '\n'); // read a string until next newline
-	int timestamp;
-	timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-	while (file) {
+    getline(file, line, '\n'); // read a string until next newline
+    int timestamp;
+    timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
+    while (file) {
 
-		while (timestamp < interval && file/*wtf*/) {
+        while (timestamp < interval && file/*wtf*/) {
 
-			timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
+            timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
 
-			if (timestamp >= interval)
-				continue;
+            if (timestamp >= interval)
+                continue;
 
-			//cout << interval << "=============" << line << endl;
+            emotions.push_back(AuxFunc::split(line, ';').at(1));
 
-			emotions.push_back(AuxFunc::split(line, ';').at(1));
+            distinctEmotions.insert(AuxFunc::split(line, ';').at(1));
 
-			getline(file, line, '\n');
+            getline(file, line, '\n');
 
-		}
-		if (emotions.size() >= minNumEmotions) {
-			emotionIntervals.push_back(EmotionInterval(interval, emotions));
+        }
+        if (emotions.size() >= minNumEmotions) {
+            emotionIntervals.push_back(EmotionInterval(interval, emotions));
 
-			if (emotions.size() > maxValue)
-				maxValue = emotions.size();
+            if (emotions.size() > maxValue)
+                maxValue = emotions.size();
 
-			emotions.clear();
-		}
-		interval += i;
-	}
+            emotions.clear();
+        }
+        interval += i;
+    }
 
-	//cout << "MaxValue: " << maxValue << endl;
-	//cout << emotionIntervals.size() << endl;
+    //cout << "MaxValue: " << maxValue << endl;
+    //cout << emotionIntervals.size() << endl;
     //for (EmotionInterval e : emotionIntervals)
-        //cout << "Timestamp: " << e.getTimestamp() << "     NrEmocoes: " << e.getNumberOfEmotions() << endl;
+    //cout << "Timestamp: " << e.getTimestamp() << "     NrEmocoes: " << e.getNumberOfEmotions() << endl;
 
-	file.close();
+    //for(string s: distinctEmotions)
+    //cout << s << endl;
+
+    file.close();
 }
 
 vector<EmotionInterval> EmotionData::getEmotionIntervals() {
-	return emotionIntervals;
+    return emotionIntervals;
 }
 
 int EmotionData::getInterval() {
-	return interval;
+    return interval;
 }
 
 int EmotionData::getMaxValue() {
-	return maxValue;
+    return maxValue;
+}
+
+set<string> EmotionData::getDistinctEmotions(){
+    return distinctEmotions;
 }
