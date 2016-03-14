@@ -165,6 +165,17 @@ void ofApp::loadDataParameters(){
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
 
+    //add distinct emotions to the combobox
+    QObject* cb = qmlWindow->findChild<QObject*>("comboBox");
+    QVariantList list;
+
+    list.append("any");
+    for(string emotion: emotionData->getDistinctEmotions())
+        list.append(QVariant(emotion.c_str()));
+
+    cb->setProperty("model", list);
+    cb->setProperty("enabled", true);
+
 }
 
 void ofApp::loadVideoFile(){

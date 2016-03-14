@@ -24,7 +24,16 @@ Item {
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
-            Label {
+
+
+            ComboBox{
+                objectName: "comboBox"
+                enabled: false
+                width: 200
+            }
+
+
+            /* Label {
                 font.bold: true
                 text: "Message dialog properties:"
             }
@@ -231,6 +240,8 @@ Item {
                 id: lastChosen
             }
         }
-    }
+    }*/
 
+        }
+    }
 }
