@@ -4,6 +4,8 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 
+
+
 Item {
 
     id: root
@@ -26,10 +28,45 @@ Item {
             Item { Layout.preferredHeight: 4 } // padding
 
 
-            ComboBox{
+           /* ComboBox{
                 objectName: "comboBox"
                 enabled: false
                 width: 200
+            }*/
+
+            Label {
+                font.bold: true
+                text: "What emotions will be used?:"
+            }
+
+            RowLayout{
+                id: checkboxRow
+                objectName: "checkboxRow"
+
+                CheckBox{
+                    text: "Anger"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Connectedness"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Elation"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Surprise"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Unhappiness"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Worry"
+                    checked: true
+                }
             }
 
 
