@@ -12,11 +12,15 @@ void ofApp::setup(){
     ofBackground(ofColor::white);
 
     qmlSetup();
+
+    //TODO: code to get the text from the checkboxes, use later
+   /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    for(QObject* obj : checkboxes)
+        cout << obj->property("text").toString().toStdString() << endl;*/
 }
 
 void ofApp::qmlSetup(){
 
-    // qml
     QQmlComponent component(&qmlEngine,
                             QUrl(QStringLiteral("qrc:/main.qml")) );
 
@@ -175,6 +179,7 @@ void ofApp::loadDataParameters(){
 
     cb->setProperty("model", list);
     cb->setProperty("enabled", true);
+
 
 }
 
