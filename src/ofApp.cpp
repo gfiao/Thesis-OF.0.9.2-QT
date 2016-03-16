@@ -14,7 +14,7 @@ void ofApp::setup(){
     qmlSetup();
 
     //TODO: code to get the text from the checkboxes, use later
-   /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
 }
@@ -169,18 +169,6 @@ void ofApp::loadDataParameters(){
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
 
-    //add distinct emotions to the combobox
-    QObject* cb = qmlWindow->findChild<QObject*>("comboBox");
-    QVariantList list;
-
-    list.append("any");
-    for(string emotion: emotionData->getDistinctEmotions())
-        list.append(QVariant(emotion.c_str()));
-
-    cb->setProperty("model", list);
-    cb->setProperty("enabled", true);
-
-
 }
 
 void ofApp::loadVideoFile(){
@@ -193,8 +181,20 @@ void ofApp::loadVideoFile(){
         cout << "Video Res: " << video.getWidth() << "x" << video.getHeight() << endl;
         cout << "Nr of frames: " << video.getTotalNumFrames() << endl;
 
+        string videoName = AuxFunc::split(video.getMoviePath().c_str(), '\\').back();
+        //audio files will use the .wav container
+        if (!boost::filesystem::exists("data\\" + AuxFunc::split(videoName, '.')[0] + ".wav")) {
+            //extract the audio from the video file
+            string cmd = "ffmpeg -i " + video.getMoviePath() + " data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
+            system(cmd.c_str());
+        }
+
+        string audioFile = "data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
+        audio = nullptr;
+        audio = new Audio(audioFile.c_str());
+
         video.setVolume(qmVideoVolSlider->property("value").toFloat());
-        video.play();
+        //video.play();
     }
 
 }

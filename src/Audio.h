@@ -5,7 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
-#include "sndfile.h"
+#include "sndfile.hh"
 #include <iostream>
 
 class Audio {
