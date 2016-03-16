@@ -1,11 +1,10 @@
 #pragma once
-//#pragma comment(lib, "libsndfile-1.lib")
 
 using namespace std;
 
 #include <vector>
 #include <string>
-#include "sndfile.hh"
+#include "sndfile.h"
 #include <iostream>
 
 class Audio {
