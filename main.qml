@@ -151,6 +151,8 @@ ApplicationWindow {
     }
 
     TabView{
+        objectName: "tabView"
+       // enabled: false
         x: 10
         anchors.top: mediaPlayerButtons.bottom
         anchors.topMargin: 10
@@ -168,14 +170,17 @@ ApplicationWindow {
 
         Tab{
             title: "Color"
+            ColorTab{}
         }
 
         Tab{
             title: "Movement"
+            MovementTab{}
         }
 
         Tab{
             title: "Cut Detection"
+            CutDetectionTab{}
         }
     }
 

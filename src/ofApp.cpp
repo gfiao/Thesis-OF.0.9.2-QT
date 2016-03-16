@@ -72,6 +72,13 @@ void ofApp::update(){
     else
         qmlLoadDataParameters->setProperty("enabled", true);
 
+    //TODO: change later
+    /* if(video.isLoaded() && emotionDataPath.size() != 0){
+        QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
+        tabView->setProperty("enabled", true);
+    }*/
+
+
 }
 
 //--------------------------------------------------------------
@@ -117,6 +124,166 @@ void ofApp::keyPressed(int key){
 
     QString returnedValueString = returnedValue.toString();
     cout << "QML function returned: " << returnedValueString.toStdString() << endl;
+}
+
+//code originally from http://docs.opencv.org/2.4/modules/imgproc/doc/histograms.html?highlight=calcHist
+pair<ofImage, cv::MatND> ofApp::calcDominantColor(ofImage image) {
+
+    cv::Mat cvImg = ofxCv::toCv(image);
+    cv::Mat hsvImage;
+
+    cvtColor(cvImg, hsvImage, CV_RGB2HSV);
+
+    // Quantize the hue to 50 levels
+    // and the saturation to 32 levels
+    int hbins = 180, sbins = 32;
+    int histSize[] = { hbins, sbins };
+    // hue varies from 0 to 179, see cvtColor
+    float hranges[] = { 0, 180 };
+    // saturation varies from 0 (black-gray-white) to
+    // 255 (pure spectrum color)
+    float sranges[] = { 0, 256 };
+    const float* ranges[] = { hranges, sranges };
+    cv::MatND hist;
+    // we compute the histogram from the 0-th and 1-st channels
+    int channels[] = { 0, 1 };
+
+    calcHist(&hsvImage, 1, channels, cv::Mat(), // do not use mask
+             hist, 2, histSize, ranges,
+             true, // the histogram is uniform
+             false);
+    double maxVal = 0;
+    minMaxLoc(hist, 0, &maxVal, 0, 0);
+
+    int scale = 10;
+    cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);
+
+    /*for (int h = 0; h < hbins; h++)
+        for (int s = 0; s < sbins; s++)
+        {
+            float binVal = hist.at<float>(h, s);
+            int intensity = cvRound(binVal * 255 / maxVal);
+            rectangle(histImg, cv::Point(h*scale, s*scale),
+                cv::Point((h + 1)*scale - 1, (s + 1)*scale - 1),
+                cv::Scalar::all(intensity),
+                CV_FILLED);
+        }*/
+
+    /*for (int h = 0; h < hbins; h++) {
+            float sum = 0;
+            for (int s = 0; s < sbins; s++)
+            {
+                //cout << hist.at<float>(i) << endl;
+                sum += hist.at<float>(h, s);
+            }
+            string cmd = "echo " + to_string(sum) + " >> teste.txt";
+            system(cmd.c_str());
+        }*/
+
+    ofxCv::toOf(histImg, image);
+    image.update(); //update changes done by openCV
+
+    return pair<ofImage, cv::MatND>(image, hist);
+}
+
+//TODO: rever valores
+int ofApp::checkShotType(cv::MatND hist) {
+
+    int hbins = 180, sbins = 32;
+    vector<float> sums; //sum of all the intesities of given color
+
+    for (int h = 0; h < hbins; h++) {
+        float sum = 0;
+        for (int s = 0; s < sbins; s++) {
+            sum += hist.at<float>(h, s);
+        }
+        sums.push_back(sum);
+    }
+
+    int validWindows = 0; //more than 1 validWindow means the shot is not a long shot
+    for (int i = 0; i < sums.size() - 10; i++) {
+        int count = 0;
+        for (int j = 0; j < 10; j++) {
+            if (sums[j] > 20000) count++;
+        }
+        if (count >= 5) validWindows++; //a color can be considered dominant
+    }
+
+    if (validWindows == 1)
+        return LONG_SHOT;
+    else if (validWindows == 2 || validWindows == 3)
+        return CLOSEUP_SHOT;
+    return OUT_OF_FIELD;
+
+}
+
+
+vector<cv::KeyPoint> ofApp::extractKeypoints(int timestamp) {
+
+    //=======================
+    //so we can extract the keypoints, we need to start the video first
+    video.play();
+    video.setPaused(true);
+    //=======================
+
+    cv::Mat grey;
+
+    //extract the start keypoints
+    vector<cv::KeyPoint> keypoints;
+    video.setPosition(timestamp / video.getDuration());
+    video.update();
+    ofxCv::copyGray(video, grey);
+    cv::FAST(grey, keypoints, 2);
+    cv::KeyPointsFilter::retainBest(keypoints, 30);
+
+    return keypoints;
+
+}
+
+//TODO: for now use only the first and last frame
+pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
+
+    startTimestamp = 200;
+    endTimestamp = 220;
+
+    auto start = ofGetElapsedTimeMillis();
+
+    //extract the start keypoints
+    vector<cv::KeyPoint> startKeypoints = extractKeypoints(startTimestamp);
+    cout << "startKeypoints: " << startKeypoints.size() << endl;
+
+    //extract the end keypoints
+    vector<cv::KeyPoint> endKeypoints = extractKeypoints(endTimestamp);
+    cout << "endKeypoints: " << endKeypoints.size() << endl;
+
+    cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << endl;
+
+    //TODO: resolver o problema (se é que é um problema)
+    if (startKeypoints.size() == 0 || endKeypoints.size() == 0) {
+        ofSystemAlertDialog("extractKeypoints returns 0");
+        return pair<int, int>(0, 0);
+    }
+
+    /* Compare each of the keypoints with it's counterpart (best approach?) */
+    int rightCounter = 0, leftCounter = 0;
+    if (startKeypoints.size() <= endKeypoints.size())
+        for (int i = 0; i < startKeypoints.size(); i++) {
+            //cout << startKeypoints[i].pt << " ======== " << endKeypoints[i].pt << endl;
+            if (startKeypoints[i].pt.x < endKeypoints[i].pt.x)
+                rightCounter++;
+            else leftCounter++;
+        }
+    else
+        for (int i = 0; i < endKeypoints.size(); i++) {
+            //cout << startKeypoints[i].pt << " ======== " << endKeypoints[i].pt << endl;
+            if (startKeypoints[i].pt.x < endKeypoints[i].pt.x)
+                rightCounter++;
+            else leftCounter++;
+        }
+
+    cout << "leftCounter: " << leftCounter << " ===== " << "rightCounter: " << rightCounter << endl;
+
+    return pair<int, int>(leftCounter, rightCounter);
 }
 
 //--------------------------------------------------------------
@@ -195,6 +362,10 @@ void ofApp::loadVideoFile(){
 
         video.setVolume(qmVideoVolSlider->property("value").toFloat());
         //video.play();
+
+
+
+        calcMotionDirection(0, 0);
     }
 
 }

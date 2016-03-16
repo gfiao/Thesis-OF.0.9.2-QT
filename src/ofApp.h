@@ -57,6 +57,14 @@ public:
     void draw();
     void keyPressed(int key);
 
+    //color
+    pair<ofImage, cv::MatND> calcDominantColor(ofImage fileName);
+    int checkShotType(cv::MatND hist);
+
+    //movement
+    vector<cv::KeyPoint> extractKeypoints(int timestamp);
+    pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
+
     // qml
     void qmlSetup();
     void loadVideoFile();
