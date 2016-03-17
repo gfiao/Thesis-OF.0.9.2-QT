@@ -152,7 +152,7 @@ ApplicationWindow {
 
     TabView{
         objectName: "tabView"
-       // enabled: false
+        // enabled: false
         x: 10
         anchors.top: mediaPlayerButtons.bottom
         anchors.topMargin: 10
@@ -184,7 +184,7 @@ ApplicationWindow {
         }
     }
 
-    Rectangle{ //to house the run algorithm button and other stuff
+    Item{ //to house the run algorithm button and other stuff
         id: bottomBar
         y: 452
         height: 38
@@ -195,6 +195,15 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
 
+        RowLayout{
+            Button{
+                text: "Set Scores"
+            }
+
+            Button{
+                text: "Run Algorithm"
+            }
+        }
     }
 
 

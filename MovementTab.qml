@@ -23,6 +23,29 @@ Item {
             Item { Layout.preferredHeight: 4 } // padding
 
 
+            Label{
+                text: "Timeframe:"
+                font.bold: true
+            }
+            RowLayout{
+                id: timeframeRow
+                objectName: "timeframeRow"
+
+                //more validation will be done on the C++ side
+                TextField {
+                    placeholderText: qsTr("Start Timestamp")
+                    validator: IntValidator{bottom: 0; top: 10000}
+                }
+
+                Text {
+                    text: qsTr(" to ")
+                }
+
+                TextField {
+                    placeholderText: qsTr("End Timestamp")
+                    validator: IntValidator{bottom: 0; top: 10000}
+                }
+            }
         }
     }
 

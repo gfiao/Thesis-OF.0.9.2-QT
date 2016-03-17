@@ -286,6 +286,56 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
     return pair<int, int>(leftCounter, rightCounter);
 }
 
+//uses ffprobe to detect cuts in the video
+void ofApp::detectCuts(double threshold) {
+
+    string videoPath = video.getMoviePath();
+    /*
+    we need to remove the c: portion of the path and replace all of the \ with /,
+    or else ffprobe can't parse the path
+    */
+    vector<string> splitVideoPath = AuxFunc::split(videoPath, ':');
+    replace(splitVideoPath[1].begin(), splitVideoPath[1].end(), '\\', '/');
+    //filename: threshold-videoName.txt
+    string fileName = "data\\" + to_string(threshold) + "-" + AuxFunc::split(AuxFunc::split(video.getMoviePath(), '\\').back(), '.')[0] + "_cuts.txt";
+
+    //this command will detect cuts in the video
+    //the output is then written to a text file that will be parsed
+    string cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie="
+            + splitVideoPath[1] + ", select=gt(scene\\," + to_string(threshold) + ")\" > " + fileName;
+
+    cout << cmd << endl;
+    if (boost::filesystem::exists(fileName)) {
+        ofSystemAlertDialog("File already exists!");
+    }
+    //cut detection was already done with a different threshold
+    else if (AuxFunc::split(fileName, '-')[0].compare(to_string(threshold)) != 0) {
+        bool result = ofSystemYesNoDialoge("File already exists.", "A file with a different threshold already exists, do you wish to create a new one?");
+        if (result) system(cmd.c_str());
+        ofSystemAlertDialog("Cuts detected!");
+    }
+    else { //file doesn't exist
+        system(cmd.c_str());
+        ofSystemAlertDialog("Cuts detected!");
+    }
+
+    //now we need to parse the data given by ffprobe
+    //the only information we are looking for is the timestamps of the cuts
+    vector<string> cuts;
+    ifstream file(fileName);
+    string line;
+    vector<string> splitLine;
+    while (file) {
+        getline(file, line, '\n');
+        //cout << line << endl;
+        splitLine = AuxFunc::split(line, '|');
+        if (splitLine.size() != 0) // last line is empty
+            cuts.push_back(splitLine[4]);
+    }
+
+}
+
+
 //--------------------------------------------------------------
 void ofApp::loadDataFile(){
 

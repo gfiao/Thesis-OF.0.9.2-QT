@@ -65,6 +65,9 @@ public:
     vector<cv::KeyPoint> extractKeypoints(int timestamp);
     pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
 
+    //cut detetion
+    void detectCuts(double threshold = 0.4);
+
     // qml
     void qmlSetup();
     void loadVideoFile();
