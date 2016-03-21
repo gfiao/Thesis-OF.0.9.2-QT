@@ -296,7 +296,13 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
 //uses ffprobe to detect cuts in the video
 void ofApp::detectCuts() {
 
+    if(!video.isLoaded()){
+        ofSystemAlertDialog("Load a video first!");
+        return;
+    }
+
     string threshold = qmlWindow->findChild<QObject*>("cutThreshold")->property("text").toString().toStdString();
+    cout << threshold << endl;
 
     string videoPath = video.getMoviePath();
     /*
@@ -320,31 +326,32 @@ void ofApp::detectCuts() {
     //cut detection was already done with a different threshold
     else if (AuxFunc::split(fileName, '-')[0].compare(threshold) != 0) {
         bool result = ofSystemYesNoDialoge("File already exists.", "A file with a different threshold already exists, do you wish to create a new one?");
-        if (result) system(cmd.c_str());
-        ofSystemAlertDialog("Cuts detected!");
+        if (result) {
+            system(cmd.c_str());
+            ofSystemAlertDialog("Cuts detected!");
+        }
     }
     else { //file doesn't exist
         system(cmd.c_str());
         ofSystemAlertDialog("Cuts detected!");
     }
 
-
 }
 
 void ofApp::processCutsFile(){
 
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a file");
-    string fileName;
+    string filePath;
     if (openFileResult.bSuccess) {
 
-        fileName = openFileResult.getPath();
-        cout << fileName << endl;
+        filePath = openFileResult.getPath();
+        cout << filePath << endl;
     }
 
     //now we need to parse the data given by ffprobe
     //the only information we are looking for is the timestamps of the cuts
     vector<string> cuts;
-    ifstream file(fileName);
+    ifstream file(filePath);
     string line;
     vector<string> splitLine;
     while (file) {
@@ -354,6 +361,17 @@ void ofApp::processCutsFile(){
         if (splitLine.size() != 0) // last line is empty
             cuts.push_back(splitLine[4]);
     }
+
+    QVariantList timestamps;
+    for(string cut : cuts){
+        cut = AuxFunc::formatSeconds(ofToInt(AuxFunc::split(cut, '=')[1]));
+        timestamps.append(QVariant(cut.c_str()));
+    }
+
+    qmlWindow->findChild<QObject*>("cutsList")->setProperty("model", timestamps);
+
+    string fileName = AuxFunc::split(filePath.c_str(), '\\').back();
+    qmlWindow->findChild<QObject*>("loadedCutFile")->setProperty("text", fileName.c_str());
 
 }
 

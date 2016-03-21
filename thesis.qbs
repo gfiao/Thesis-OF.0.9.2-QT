@@ -68,6 +68,10 @@ Project{
             name: "Qt.qml"
         }
 
+        Depends{
+            name: "Qt.widgets"
+        }
+
         Group {
             name: "QML Resources"
             files: [

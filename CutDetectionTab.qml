@@ -35,34 +35,42 @@ Item {
                 TextField{
                     objectName: "cutThreshold"
                     placeholderText: qsTr("Choose the threshold")
-                    validator: DoubleValidator{bottom: 0; top: 1; decimals: 4}
+                    validator: DoubleValidator{locale: Qt.UTC;bottom: 0; top: 1; decimals: 4}
+
+                    onAccepted: newCutButton.enabled = true
                 }
                 Button{
+                    id: newCutButton
                     text: "Create new file"
                     objectName: "newCutButton"
+                    enabled: false
 
-                    /*onClicked: {
-                        if (newFileLayout.visible)
-                            newFileLayout.visible = false
-                        else newFileLayout.visible = true
-                    }*/
+                    onClicked: {
+                        if (existingButtonLayout.visible)
+                            existingButtonLayout.visible = false
+                    }
+
                 }
             }
 
             Item { Layout.preferredHeight: 4 } // padding
             RowLayout{
-                objectName: "buttonRow"
+                id: existingButtonLayout
                 spacing: 15
 
                 Button{
                     text: "Load existing file"
                     objectName: "existingCutButton"
 
-                    /*  onClicked: {
+                    onClicked: {
                         if (cutsList.visible)
                             cutsList.visible = false
                         else cutsList.visible = true
-                    }*/
+                    }
+                }
+
+                Label{
+                    objectName: "loadedCutFile"
                 }
             }
 
@@ -70,83 +78,15 @@ Item {
                 //width: 180; height: 200
                 id: cutsList
                 objectName: "cutsList"
-                // visible: false
+                visible: false
 
                 TableViewColumn {
-                    role: "name"
-                    title: "Name"
-                    width: 100
-                }
-                TableViewColumn {
-                    role: "number"
-                    title: "Number"
-                    width: 200
-                }
-
-                model: ListModel {
-                    ListElement {
-                        name: "Bill Smith"
-                        number: "555 3264"
-                    }
-                    ListElement {
-                        name: "John Brown"
-                        number: "555 8426"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        number: "555 0473"
-                    }
-                    ListElement {
-                        name: "Bill Smith"
-                        number: "555 3264"
-                    }
-                    ListElement {
-                        name: "John Brown"
-                        number: "555 8426"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        number: "555 0473"
-                    }
-                    ListElement {
-                        name: "Bill Smith"
-                        number: "555 3264"
-                    }
-                    ListElement {
-                        name: "John Brown"
-                        number: "555 8426"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        number: "555 0473"
-                    }
-                    ListElement {
-                        name: "Bill Smith"
-                        number: "555 3264"
-                    }
-                    ListElement {
-                        name: "John Brown"
-                        number: "555 8426"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        number: "555 0473"
-                    }
-                    ListElement {
-                        name: "Bill Smith"
-                        number: "555 3264"
-                    }
-                    ListElement {
-                        name: "John Brown"
-                        number: "555 8426"
-                    }
-                    ListElement {
-                        name: "Sam Wise"
-                        number: "555 0473"
-                    }
+                    role: "timestamp"
+                    title: "Timestamp"
                 }
             }
         }
-
     }
+
 }
+
