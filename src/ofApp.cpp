@@ -38,6 +38,9 @@ void ofApp::qmlSetup(){
     qmlPauseButton = qmlWindow->findChild<QObject*>("pauseMouseArea");
     qmlStopButton = qmlWindow->findChild<QObject*>("stopMouseArea");
 
+    qmlNewCutButton = qmlWindow->findChild<QObject*>("newCutButton");
+    qmlExistingCutButton = qmlWindow->findChild<QObject*>("existingCutButton");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -61,6 +64,10 @@ void ofApp::qmlSetup(){
     QObject::connect(qmlStopButton, SIGNAL(entered()),
                      &qmlCallback, SLOT(stopButtonSlot()));
 
+    QObject::connect(qmlNewCutButton, SIGNAL( clicked() ),
+                     &qmlCallback, SLOT(newCutButtonSlot()));
+    QObject::connect(qmlExistingCutButton, SIGNAL( clicked() ),
+                     &qmlCallback, SLOT(existingCutButtonSlot()));
 }
 
 //--------------------------------------------------------------
@@ -287,7 +294,9 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
 }
 
 //uses ffprobe to detect cuts in the video
-void ofApp::detectCuts(double threshold) {
+void ofApp::detectCuts() {
+
+    string threshold = qmlWindow->findChild<QObject*>("cutThreshold")->property("text").toString().toStdString();
 
     string videoPath = video.getMoviePath();
     /*
@@ -297,19 +306,19 @@ void ofApp::detectCuts(double threshold) {
     vector<string> splitVideoPath = AuxFunc::split(videoPath, ':');
     replace(splitVideoPath[1].begin(), splitVideoPath[1].end(), '\\', '/');
     //filename: threshold-videoName.txt
-    string fileName = "data\\" + to_string(threshold) + "-" + AuxFunc::split(AuxFunc::split(video.getMoviePath(), '\\').back(), '.')[0] + "_cuts.txt";
+    string fileName = "data\\" + threshold + "-" + AuxFunc::split(AuxFunc::split(video.getMoviePath(), '\\').back(), '.')[0] + "_cuts.txt";
 
     //this command will detect cuts in the video
     //the output is then written to a text file that will be parsed
     string cmd = "ffprobe -show_frames -of compact=p=0 -f lavfi \"movie="
-            + splitVideoPath[1] + ", select=gt(scene\\," + to_string(threshold) + ")\" > " + fileName;
+            + splitVideoPath[1] + ", select=gt(scene\\," + threshold + ")\" > " + fileName;
 
     cout << cmd << endl;
     if (boost::filesystem::exists(fileName)) {
         ofSystemAlertDialog("File already exists!");
     }
     //cut detection was already done with a different threshold
-    else if (AuxFunc::split(fileName, '-')[0].compare(to_string(threshold)) != 0) {
+    else if (AuxFunc::split(fileName, '-')[0].compare(threshold) != 0) {
         bool result = ofSystemYesNoDialoge("File already exists.", "A file with a different threshold already exists, do you wish to create a new one?");
         if (result) system(cmd.c_str());
         ofSystemAlertDialog("Cuts detected!");
@@ -317,6 +326,19 @@ void ofApp::detectCuts(double threshold) {
     else { //file doesn't exist
         system(cmd.c_str());
         ofSystemAlertDialog("Cuts detected!");
+    }
+
+
+}
+
+void ofApp::processCutsFile(){
+
+    ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a file");
+    string fileName;
+    if (openFileResult.bSuccess) {
+
+        fileName = openFileResult.getPath();
+        cout << fileName << endl;
     }
 
     //now we need to parse the data given by ffprobe

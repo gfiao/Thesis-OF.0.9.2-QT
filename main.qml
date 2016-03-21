@@ -165,21 +165,25 @@ ApplicationWindow {
 
         Tab{
             title: "Emotions"
+            active: true
             EmotionsTab{}
         }
 
         Tab{
             title: "Color"
+            active: true
             ColorTab{}
         }
 
         Tab{
             title: "Movement"
+            active: true
             MovementTab{}
         }
 
         Tab{
             title: "Cut Detection"
+            active: true
             CutDetectionTab{}
         }
     }

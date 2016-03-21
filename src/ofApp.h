@@ -44,10 +44,14 @@ private:
 
     QObject *qmlClearSelection;
 
+    //cut detection buttons
+    QObject *qmlNewCutButton;
+    QObject *qmlExistingCutButton;
+
     //video controls
-    QObject* qmlPlayButton;
-    QObject* qmlPauseButton;
-    QObject* qmlStopButton;
+    QObject *qmlPlayButton;
+    QObject *qmlPauseButton;
+    QObject *qmlStopButton;
 
 
 public:
@@ -66,7 +70,8 @@ public:
     pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
 
     //cut detetion
-    void detectCuts(double threshold = 0.4);
+    void detectCuts();
+    void processCutsFile();
 
     // qml
     void qmlSetup();
@@ -115,5 +120,12 @@ public slots:
 
     void sliderSlot(QVariant msg) {
         ofAppInstance->qmlVolSliderChanged(msg.toFloat());
+    }
+
+    void newCutButtonSlot(){
+        ofAppInstance->detectCuts();
+    }
+    void existingCutButtonSlot(){
+        ofAppInstance->processCutsFile();
     }
 };
