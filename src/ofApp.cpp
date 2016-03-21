@@ -336,6 +336,31 @@ void ofApp::detectCuts() {
         ofSystemAlertDialog("Cuts detected!");
     }
 
+
+    //now we need to parse the data given by ffprobe
+    //the only information we are looking for is the timestamps of the cuts
+    vector<string> cuts;
+    ifstream file(fileName);
+    string line;
+    vector<string> splitLine;
+    while (file) {
+        getline(file, line, '\n');
+        //cout << line << endl;
+        splitLine = AuxFunc::split(line, '|');
+        if (splitLine.size() != 0) // last line is empty
+            cuts.push_back(splitLine[4]);
+    }
+
+    QVariantList timestamps;
+    for(string cut : cuts){
+        cut = AuxFunc::formatSeconds(ofToInt(AuxFunc::split(cut, '=')[1]));
+        timestamps.append(QVariant(cut.c_str()));
+    }
+    qmlWindow->findChild<QObject*>("cutsList")->setProperty("model", timestamps);
+    qmlWindow->findChild<QObject*>("cutsList")->setProperty("visible", true);
+
+    qmlWindow->findChild<QObject*>("loadedCutFile")->setProperty("text", fileName.c_str());
+
 }
 
 void ofApp::processCutsFile(){
@@ -367,8 +392,8 @@ void ofApp::processCutsFile(){
         cut = AuxFunc::formatSeconds(ofToInt(AuxFunc::split(cut, '=')[1]));
         timestamps.append(QVariant(cut.c_str()));
     }
-
     qmlWindow->findChild<QObject*>("cutsList")->setProperty("model", timestamps);
+    qmlWindow->findChild<QObject*>("cutsList")->setProperty("visible", true);
 
     string fileName = AuxFunc::split(filePath.c_str(), '\\').back();
     qmlWindow->findChild<QObject*>("loadedCutFile")->setProperty("text", fileName.c_str());
