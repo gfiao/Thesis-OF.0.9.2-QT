@@ -29,6 +29,7 @@ private:
     ofVideoPlayer video;
     EmotionData *emotionData;
     Audio *audio;
+    vector<string> cuts;
 
     //qml
     QQmlApplicationEngine qmlEngine;
@@ -52,6 +53,8 @@ private:
     QObject *qmlPlayButton;
     QObject *qmlPauseButton;
     QObject *qmlStopButton;
+
+    QObject* qmlCurrentRow;
 
 
 public:
@@ -83,6 +86,8 @@ public:
     void play();
     void pause();
     void stop();
+
+    void selectRow(int row);
 
 };
 
@@ -127,5 +132,9 @@ public slots:
     }
     void existingCutButtonSlot(){
         ofAppInstance->processCutsFile();
+    }
+
+    void currentRowSlot(QVariant row){
+        ofAppInstance->selectRow(row.toInt());
     }
 };

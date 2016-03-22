@@ -80,10 +80,14 @@ Item {
                 objectName: "cutsList"
                 visible: false
 
+                signal currentRow(var row)
+
                 TableViewColumn {
                     role: "timestamp"
                     title: "Timestamp"
                 }
+
+                onActivated: cutsList.currentRow(row)
             }
         }
     }

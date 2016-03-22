@@ -41,6 +41,8 @@ void ofApp::qmlSetup(){
     qmlNewCutButton = qmlWindow->findChild<QObject*>("newCutButton");
     qmlExistingCutButton = qmlWindow->findChild<QObject*>("existingCutButton");
 
+    qmlCurrentRow = qmlWindow->findChild<QObject*>("cutsList");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -68,6 +70,9 @@ void ofApp::qmlSetup(){
                      &qmlCallback, SLOT(newCutButtonSlot()));
     QObject::connect(qmlExistingCutButton, SIGNAL( clicked() ),
                      &qmlCallback, SLOT(existingCutButtonSlot()));
+
+    QObject::connect(qmlCurrentRow, SIGNAL( currentRow(QVariant) ),
+                     &qmlCallback, SLOT(currentRowSlot(QVariant)));
 }
 
 //--------------------------------------------------------------
@@ -86,6 +91,8 @@ void ofApp::update(){
     }*/
 
 
+    /* QObject* table = qmlWindow->findChild<QObject*>("cutsList");
+    cout << table->property("currentRow").toString().toStdString() << endl;*/
 }
 
 //--------------------------------------------------------------
@@ -339,7 +346,8 @@ void ofApp::detectCuts() {
 
     //now we need to parse the data given by ffprobe
     //the only information we are looking for is the timestamps of the cuts
-    vector<string> cuts;
+    //  vector<string> cuts;
+    cuts.clear();
     ifstream file(fileName);
     string line;
     vector<string> splitLine;
@@ -375,7 +383,7 @@ void ofApp::processCutsFile(){
 
     //now we need to parse the data given by ffprobe
     //the only information we are looking for is the timestamps of the cuts
-    vector<string> cuts;
+    cuts.clear();
     ifstream file(filePath);
     string line;
     vector<string> splitLine;
@@ -397,6 +405,14 @@ void ofApp::processCutsFile(){
 
     string fileName = AuxFunc::split(filePath.c_str(), '\\').back();
     qmlWindow->findChild<QObject*>("loadedCutFile")->setProperty("text", fileName.c_str());
+
+}
+
+void ofApp::selectRow(int row){
+    cout << cuts[row] << endl;
+    cout << ofToFloat(cuts[row]) << endl;
+    if(video.isLoaded())
+        video.setPosition(ofToFloat(AuxFunc::split(cuts[row], '=')[1]) / video.getDuration());
 
 }
 
