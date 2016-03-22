@@ -53,6 +53,7 @@ private:
     QObject *qmlPlayButton;
     QObject *qmlPauseButton;
     QObject *qmlStopButton;
+    QObject *qmlVideoSeekbar;
 
     QObject* qmlCurrentRow;
 
@@ -81,11 +82,12 @@ public:
     void loadVideoFile();
     void loadDataFile();
     void loadDataParameters();
-    void qmlVolSliderChanged(float msg);
+    void volSliderChanged(float msg);
     void clearSelection();
     void play();
     void pause();
     void stop();
+    void videoSeekbarChanged(float pos);
 
     void selectRow(int row);
 
@@ -122,9 +124,12 @@ public slots:
     void stopButtonSlot(){
         ofAppInstance->stop();
     }
+    void videoSeekbarSlot(QVariant pos){
+        ofAppInstance->videoSeekbarChanged(pos.toFloat());
+    }
 
     void sliderSlot(QVariant msg) {
-        ofAppInstance->qmlVolSliderChanged(msg.toFloat());
+        ofAppInstance->volSliderChanged(msg.toFloat());
     }
 
     void newCutButtonSlot(){

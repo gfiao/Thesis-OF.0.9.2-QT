@@ -37,6 +37,7 @@ void ofApp::qmlSetup(){
     qmlPlayButton = qmlWindow->findChild<QObject*>("playMouseArea");
     qmlPauseButton = qmlWindow->findChild<QObject*>("pauseMouseArea");
     qmlStopButton = qmlWindow->findChild<QObject*>("stopMouseArea");
+    qmlVideoSeekbar = qmlWindow->findChild<QObject*>("videoSeekbar");
 
     qmlNewCutButton = qmlWindow->findChild<QObject*>("newCutButton");
     qmlExistingCutButton = qmlWindow->findChild<QObject*>("existingCutButton");
@@ -65,6 +66,8 @@ void ofApp::qmlSetup(){
                      &qmlCallback, SLOT(pauseButtonSlot()));
     QObject::connect(qmlStopButton, SIGNAL(entered()),
                      &qmlCallback, SLOT(stopButtonSlot()));
+    QObject::connect(qmlVideoSeekbar, SIGNAL( videoSeekSignal(QVariant) ),
+                     &qmlCallback, SLOT( videoSeekbarSlot(QVariant) ));
 
     QObject::connect(qmlNewCutButton, SIGNAL( clicked() ),
                      &qmlCallback, SLOT(newCutButtonSlot()));
@@ -83,6 +86,12 @@ void ofApp::update(){
         qmlLoadDataParameters->setProperty("enabled", false);
     else
         qmlLoadDataParameters->setProperty("enabled", true);
+
+    QObject* videoPosLabel = qmlWindow->findChild<QObject*>("videoPosition");
+    string updLabel = AuxFunc::formatSeconds(video.getPosition() * video.getDuration())
+            + " / " + AuxFunc::formatSeconds(video.getDuration());
+    videoPosLabel->setProperty("text", QVariant(updLabel.c_str()));
+    //qmlWindow->findChild<QObject*>("videoSeekbar")->setProperty("value", QVariant(video.getPosition()));
 
     //TODO: change later
     /* if(video.isLoaded() && emotionDataPath.size() != 0){
@@ -409,11 +418,8 @@ void ofApp::processCutsFile(){
 }
 
 void ofApp::selectRow(int row){
-    cout << cuts[row] << endl;
-    cout << ofToFloat(cuts[row]) << endl;
     if(video.isLoaded())
         video.setPosition(ofToFloat(AuxFunc::split(cuts[row], '=')[1]) / video.getDuration());
-
 }
 
 
@@ -496,7 +502,7 @@ void ofApp::loadVideoFile(){
 
 
 
-        calcMotionDirection(0, 0);
+        //calcMotionDirection(0, 0);
     }
 
 }
@@ -508,7 +514,7 @@ void ofApp::clearSelection(){
 }
 
 //--------------------------------------------------------------
-void ofApp::qmlVolSliderChanged(float msg){
+void ofApp::volSliderChanged(float msg){
     video.setVolume(msg);
 }
 
@@ -525,4 +531,9 @@ void ofApp::pause(){
 
 void ofApp::stop(){
     video.stop();
+}
+
+void ofApp::videoSeekbarChanged(float pos){
+    // cout << pos << endl;
+    video.setPosition(pos);
 }

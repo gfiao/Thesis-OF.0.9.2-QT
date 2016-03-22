@@ -11,7 +11,7 @@ ApplicationWindow {
     minimumWidth: 500
     minimumHeight: 500
 
-    width: 500
+    width: 505
     height: 500
 
     visible: true
@@ -70,8 +70,8 @@ ApplicationWindow {
 
     Item{
         id: mediaPlayerButtons
-        width: 500
-        height: 51
+        width: parent.width
+        height: 86
 
         Image {
             id: playImage
@@ -125,10 +125,31 @@ ApplicationWindow {
         }
 
 
+        Slider{
+            id: videoSeekbar
+            x: 142
+            y: 12
+            objectName: "videoSeekbar"
+            width: 242
+            height: 20
+            value: 0.0
+
+            signal videoSeekSignal(var pos)
+            onValueChanged: videoSeekbar.videoSeekSignal(value)
+        }
+
+        Label{
+            id: videoPosition
+            x: 405
+            y: 16
+            objectName: "videoPosition"
+        }
+
+
         Image {
             id: volumeImage
-            x: 304
-            y: 12
+            x: 10
+            y: 52
             objectName: "volumeImage"
             width: 20
             height: 20
@@ -139,8 +160,8 @@ ApplicationWindow {
         Slider {
             id: slider;
             objectName: "videoVolume";
-            x: 342
-            y: 12
+            x: 53
+            y: 52
             width: 148
             height: 20
             value: 0.0
