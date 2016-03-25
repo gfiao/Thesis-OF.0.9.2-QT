@@ -66,6 +66,7 @@ public:
     void keyPressed(int key);
 
     //color
+    vector<ofImage> divideImage(int nrOfImages, ofImage img);
     pair<ofImage, cv::MatND> calcDominantColor(ofImage fileName);
     int checkShotType(cv::MatND hist);
 

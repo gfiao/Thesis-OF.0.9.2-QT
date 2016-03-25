@@ -17,6 +17,10 @@ void ofApp::setup(){
     /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
+
+    /*ofImage img;
+    img.load("ibra.jpg");
+    divideImage(9, img);*/
 }
 
 void ofApp::qmlSetup(){
@@ -91,7 +95,7 @@ void ofApp::update(){
     string updLabel = AuxFunc::formatSeconds(video.getPosition() * video.getDuration())
             + " / " + AuxFunc::formatSeconds(video.getDuration());
     videoPosLabel->setProperty("text", QVariant(updLabel.c_str()));
-    //qmlWindow->findChild<QObject*>("videoSeekbar")->setProperty("value", QVariant(video.getPosition()));
+    //qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));
 
     //TODO: change later
     /* if(video.isLoaded() && emotionDataPath.size() != 0){
@@ -99,9 +103,6 @@ void ofApp::update(){
         tabView->setProperty("enabled", true);
     }*/
 
-
-    /* QObject* table = qmlWindow->findChild<QObject*>("cutsList");
-    cout << table->property("currentRow").toString().toStdString() << endl;*/
 }
 
 //--------------------------------------------------------------
@@ -139,14 +140,85 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     // call a qml function
-    QVariant returnedValue;
+    /*  QVariant returnedValue;
     QVariant msg = "Hello from C++";
     QMetaObject::invokeMethod(qmlWindow, "myQmlFunction",
                               Q_RETURN_ARG(QVariant, returnedValue),
                               Q_ARG(QVariant, msg));
 
     QString returnedValueString = returnedValue.toString();
-    cout << "QML function returned: " << returnedValueString.toStdString() << endl;
+    cout << "QML function returned: " << returnedValueString.toStdString() << endl;*/
+}
+
+vector<ofImage> ofApp::divideImage(int nrOfImages, ofImage img){
+
+    vector<ofImage> subImages;
+    int w = img.getWidth();
+    int h = img.getHeight();
+
+    if(nrOfImages == 2){
+        ofImage img1, img2;
+        img1.cropFrom(img, 0, 0, w/2, h);
+        img2.cropFrom(img, w/2, 0, w/2, h);
+
+        subImages.push_back(img1);
+        subImages.push_back(img2);
+    }
+
+    else if(nrOfImages == 4){
+        ofImage img1, img2, img3, img4;
+        img1.cropFrom(img, 0, 0, w/2, h/2);
+        img2.cropFrom(img, w/2, 0, w/2, h/2);
+        img3.cropFrom(img, 0, h/2, w/2, h/2);
+        img4.cropFrom(img, w/2, h/2, w/2, h/2);
+
+        subImages.push_back(img1);
+        subImages.push_back(img2);
+        subImages.push_back(img3);
+        subImages.push_back(img4);
+    }
+
+    else if(nrOfImages == 6){
+        ofImage img1, img2, img3, img4, img5, img6;
+        img1.cropFrom(img, 0, 0, w/3, h/2);
+        img2.cropFrom(img, w/3, 0, w/3, h/2);
+        img3.cropFrom(img, (w/3)*2, 0, w/3, h/2);
+        img4.cropFrom(img, 0, h/2, w/3, h/2);
+        img5.cropFrom(img, w/3, h/2, w/3, h/2);
+        img6.cropFrom(img, (w/3)*2, h/2, w/3, h/2);
+
+        subImages.push_back(img1);
+        subImages.push_back(img2);
+        subImages.push_back(img3);
+        subImages.push_back(img4);
+        subImages.push_back(img5);
+        subImages.push_back(img6);
+    }
+
+    else if(nrOfImages == 9){
+        ofImage img1, img2, img3, img4, img5, img6, img7, img8, img9;
+        img1.cropFrom(img, 0, 0, w/3, h/3);
+        img2.cropFrom(img, w/3, 0, w/3, h/3);
+        img3.cropFrom(img, (w/3)*2, 0, w/3, h/3);
+        img4.cropFrom(img, 0, h/3, w/3, h/3);
+        img5.cropFrom(img, w/3, h/3, w/3, h/3);
+        img6.cropFrom(img, (w/3)*2, h/3, w/3, h/3);
+        img7.cropFrom(img, 0, (h/3)*2, w/3, h/3);
+        img8.cropFrom(img, w/3, (h/3)*2, w/3, h/3);
+        img9.cropFrom(img, (w/3)*2, (h/3)*2, w/3, h/3);
+
+        subImages.push_back(img1);
+        subImages.push_back(img2);
+        subImages.push_back(img3);
+        subImages.push_back(img4);
+        subImages.push_back(img5);
+        subImages.push_back(img6);
+        subImages.push_back(img7);
+        subImages.push_back(img8);
+        subImages.push_back(img9);
+    }
+
+    return subImages;
 }
 
 //code originally from http://docs.opencv.org/2.4/modules/imgproc/doc/histograms.html?highlight=calcHist
