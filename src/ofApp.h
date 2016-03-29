@@ -66,7 +66,7 @@ public:
     void keyPressed(int key);
 
     //color
-    vector<ofImage> divideImage(int nrOfImages, ofImage img);
+    vector<ofImage> divideImage(ofImage img, int nrOfImages);
     pair<ofImage, cv::MatND> calcDominantColor(ofImage fileName);
     int checkShotType(cv::MatND hist);
 
@@ -77,6 +77,9 @@ public:
     //cut detetion
     void detectCuts();
     void processCutsFile();
+
+    void cutVideo(vector<pair<int, int>> timestamps);
+    void algorithm(int minNumberOfEmotions);
 
     // qml
     void qmlSetup();

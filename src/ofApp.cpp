@@ -20,7 +20,7 @@ void ofApp::setup(){
 
     /*ofImage img;
     img.load("ibra.jpg");
-    divideImage(9, img);*/
+    divideImage(img, 9);*/
 }
 
 void ofApp::qmlSetup(){
@@ -150,7 +150,7 @@ void ofApp::keyPressed(int key){
     cout << "QML function returned: " << returnedValueString.toStdString() << endl;*/
 }
 
-vector<ofImage> ofApp::divideImage(int nrOfImages, ofImage img){
+vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
 
     vector<ofImage> subImages;
     int w = img.getWidth();
@@ -608,4 +608,121 @@ void ofApp::stop(){
 void ofApp::videoSeekbarChanged(float pos){
     // cout << pos << endl;
     video.setPosition(pos);
+}
+
+void ofApp::cutVideo(vector<pair<int, int>> timestamps) {
+
+    //create a folder for each run of the algorithm
+    //code originally from http://en.cppreference.com/w/cpp/chrono/c/time and http://stackoverflow.com/a/997531
+    time_t folderName = time(nullptr);
+    string newFolder = "data\\" + to_string(folderName);
+    boost::filesystem::create_directory(newFolder);
+    string tempFolder = "data\\" + to_string(folderName) + "\\temp";
+    boost::filesystem::create_directory(tempFolder);
+
+    //the created clips will have the same extension as the input
+    ofFile file;
+    file.open(video.getMoviePath());
+    string extension = file.getExtension();
+
+    ofVideoPlayer clip;
+    //extract each clip and apply the fade in/out effect
+    for (int i = 0; i < timestamps.size(); i++) {
+        pair<int, int> timestamp = timestamps.at(i);
+
+        //create the ffmpeg command to extract the clip
+        string command = "ffmpeg -i " + video.getMoviePath() + " -ss ";
+        command += AuxFunc::formatSeconds(timestamp.first) + " -to " + AuxFunc::formatSeconds(timestamp.second);
+        command += " -y " + tempFolder + "\\clip" + to_string(i) + "." + extension;
+        //command += " -c:v ffv1 data\\" + to_string(folderName) + "\\temp\\clip" + to_string(i) + "." + extension;
+        cout << command << endl;
+
+        //system("ffmpeg -i data\\WeFeel.m4v -ss 00:01:00 -to 00:02:00 -c copy data\\cut.m4v"); //example
+        std::system(command.c_str());
+
+        //create the command to apply the fade in/out effects
+        string fadeCommand = "ffmpeg -i " + tempFolder + "\\clip" + to_string(i) + "." + extension;
+
+        clip.loadMovie(tempFolder + "\\clip" + to_string(i) + "." + extension);
+
+        //fade in is not to be added to the first clip
+        if (i == 0) {
+            fadeCommand += " -vf \"fade=type=out:start_frame=" + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
+        }
+        else {
+            fadeCommand += " -vf \"fade=type=in:start_frame=0:d=0.5, fade=type=out:start_frame="
+                    + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
+        }
+
+        fadeCommand += " -y " + newFolder + "\\clipFade" + to_string(i) + "." + extension;
+        cout << fadeCommand << endl;
+        std::system(fadeCommand.c_str());
+
+
+        //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+        if (i == 0) {
+            //first clip to be extracted, so the txt file also has to be created
+            string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
+                    "." + extension + "' > " + newFolder + "\\concat.txt";
+            std::system(newClip.c_str());
+        }
+        else {
+            string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
+                    "." + extension + "' >> " + newFolder + "\\concat.txt";
+            std::system(newClip.c_str());
+        }
+    }
+
+    //concatenate the clips
+    string concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -r 25 " + newFolder + "\\output." + extension;
+    std::system(concatCmd.c_str());
+
+    //this command is faster, but loses frames after the second clip
+    /*string concatCmd = "ffmpeg -f concat -i data\\" + to_string(folderName) + "\\concat.txt -codec copy -r 25 data\\" +
+    to_string(folderName) + "\\output.m4v";
+    system(concatCmd.c_str());
+    system("ffmpeg -f concat -i concat.txt -codec copy data\\output.m4v");*/
+
+}
+
+void ofApp::algorithm(int minNumberOfEmotions) {
+
+    //min number of emotions a clip must have to be included in the summary
+    cout << minNumberOfEmotions << endl;
+
+    int numberOfEmotions;
+
+    int endTimestamp;
+
+    //timestamps of the clips to be included in the final video
+    vector<pair<int, int>> timestamps;
+
+    //peaks in the number of emotions
+    //vector<int> peaks;
+
+    vector<EmotionInterval> emotions = emotionData->getEmotionIntervals();
+    int startTimestamp = emotions.at(0).getTimestamp();
+    for (int i = 1; i < emotions.size() - 1; i++) {
+        numberOfEmotions = emotions.at(i).getNumberOfEmotions();
+        int valueBefore = emotions.at(i - 1).getNumberOfEmotions();
+        int valueAfter = emotions.at(i + 1).getNumberOfEmotions();
+
+        //found a peak
+        if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
+                && numberOfEmotions >= minNumberOfEmotions) {
+            //	peaks.push_back(emotions.at(i).getTimestamp());
+
+            //TODO: for test purposes
+            startTimestamp = emotions.at(i).getTimestamp() - 10;
+            endTimestamp = emotions.at(i).getTimestamp() + 5;
+
+
+
+            pair<int, int> ts(startTimestamp, endTimestamp);
+            timestamps.push_back(ts);
+        }
+    }
+
+    cutVideo(timestamps);
+
 }

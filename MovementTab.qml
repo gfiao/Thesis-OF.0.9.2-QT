@@ -17,7 +17,7 @@ Item {
             leftMargin: 12
         }
         ColumnLayout {
-            spacing: 8
+            spacing: 10
             Item { Layout.preferredHeight: 4 } // padding
 
 
@@ -42,6 +42,22 @@ Item {
                 TextField {
                     placeholderText: qsTr("End Timestamp")
                     validator: IntValidator{bottom: 0; top: 10000}
+                }
+            }
+
+            Label{
+                text: "Direction:"
+                font.bold: true
+            }
+            RowLayout{
+                id: directionRow
+                objectName: "directionRow"
+
+                CheckBox{
+                    text: "Left"
+                }
+                CheckBox{
+                    text: "Right"
                 }
             }
         }

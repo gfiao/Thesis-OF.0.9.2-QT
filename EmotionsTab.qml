@@ -56,6 +56,16 @@ Item {
                     checked: true
                 }
             }
+
+            RowLayout{
+                Label{
+                    text: "Mininum number of emotions:"
+                    font.bold: true
+                }
+                TextField{
+                    validator: IntValidator{bottom: 0; top: 1000}
+                }
+            }
         }
     }
 }
