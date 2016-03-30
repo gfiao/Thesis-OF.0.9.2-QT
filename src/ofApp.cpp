@@ -48,6 +48,8 @@ void ofApp::qmlSetup(){
 
     qmlCurrentRow = qmlWindow->findChild<QObject*>("cutsList");
 
+    qmlRunAlgorithm = qmlWindow->findChild<QObject*>("runAlgorithm");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -80,6 +82,9 @@ void ofApp::qmlSetup(){
 
     QObject::connect(qmlCurrentRow, SIGNAL( currentRow(QVariant) ),
                      &qmlCallback, SLOT(currentRowSlot(QVariant)));
+
+    QObject::connect(qmlRunAlgorithm, SIGNAL( clicked() ),
+                     &qmlCallback, SLOT(runAlgorithmSlot()));
 }
 
 //--------------------------------------------------------------
@@ -685,10 +690,17 @@ void ofApp::cutVideo(vector<pair<int, int>> timestamps) {
 
 }
 
-void ofApp::algorithm(int minNumberOfEmotions) {
+void ofApp::algorithm() {
+
+    int minNumberOfEmotions = qmlWindow->findChild<QObject*>("minNumberOfEmotions")->property("text").toInt();
+
+    if(minNumberOfEmotions == 0){
+        ofSystemAlertDialog("Please choose a minimum number of emotions!");
+        return;
+    }
 
     //min number of emotions a clip must have to be included in the summary
-    cout << minNumberOfEmotions << endl;
+    cout << "minNumberOfEmotions: " << minNumberOfEmotions << endl;
 
     int numberOfEmotions;
 

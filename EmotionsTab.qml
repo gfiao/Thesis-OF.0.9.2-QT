@@ -63,6 +63,8 @@ Item {
                     font.bold: true
                 }
                 TextField{
+                    objectName: "minNumberOfEmotions"
+
                     validator: IntValidator{bottom: 0; top: 1000}
                 }
             }

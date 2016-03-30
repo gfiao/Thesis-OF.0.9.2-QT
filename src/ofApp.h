@@ -57,6 +57,8 @@ private:
 
     QObject* qmlCurrentRow;
 
+    QObject* qmlRunAlgorithm;
+
 
 public:
     // oF
@@ -79,7 +81,7 @@ public:
     void processCutsFile();
 
     void cutVideo(vector<pair<int, int>> timestamps);
-    void algorithm(int minNumberOfEmotions);
+    void algorithm();
 
     // qml
     void qmlSetup();
@@ -145,5 +147,9 @@ public slots:
 
     void currentRowSlot(QVariant row){
         ofAppInstance->selectRow(row.toInt());
+    }
+
+    void runAlgorithmSlot(){
+        ofAppInstance->algorithm();
     }
 };

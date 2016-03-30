@@ -226,6 +226,7 @@ ApplicationWindow {
             }
 
             Button{
+                objectName: "runAlgorithm"
                 text: "Run Algorithm"
             }
         }
