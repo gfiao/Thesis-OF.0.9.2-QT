@@ -55,9 +55,11 @@ Item {
 
                 CheckBox{
                     text: "Left"
+                    checked: true
                 }
                 CheckBox{
                     text: "Right"
+                    checked: true
                 }
             }
         }

@@ -3,6 +3,134 @@
 // global qml signal to slot object instance
 QMLCallback qmlCallback;
 
+void histTest(vector<ofImage> images){
+
+    for(int i = 0; i < images.size(); i++){
+        ofImage image = images[i];
+
+        cv::Mat cvImg = ofxCv::toCv(image);
+        cv::Mat hsvImage;
+
+        cvtColor(cvImg, hsvImage, CV_RGB2HSV);
+
+        // Quantize the hue to 50 levels
+        // and the saturation to 32 levels
+        int hbins = 180, sbins = 32;
+        int histSize[] = { hbins, sbins };
+        // hue varies from 0 to 179, see cvtColor
+        float hranges[] = { 0, 180 };
+        // saturation varies from 0 (black-gray-white) to
+        // 255 (pure spectrum color)
+        float sranges[] = { 0, 256 };
+        const float* ranges[] = { hranges, sranges };
+        cv::MatND hist;
+        // we compute the histogram from the 0-th and 1-st channels
+        int channels[] = { 0, 1 };
+
+        calcHist(&hsvImage, 1, channels, cv::Mat(), // do not use mask
+                 hist, 2, histSize, ranges,
+                 true, // the histogram is uniform
+                 false);
+        double maxVal = 0;
+        minMaxLoc(hist, 0, &maxVal, 0, 0);
+
+        int scale = 10;
+        cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);
+
+        ofstream outFile;
+        outFile.open(to_string(i) + ".txt");
+        for (int h = 0; h < hbins; h++) {
+            float sum = 0;
+            for (int s = 0; s < sbins; s++)
+            {
+                //cout << hist.at<float>(i) << endl;
+                sum += hist.at<float>(h, s);
+            }
+
+            string sSum = AuxFunc::split(to_string(sum), '.')[0];
+            outFile << sSum + "\n";
+
+
+        }
+        outFile.close();
+
+
+
+        ifstream f1, f2, f3, f4, f5, f6, f7, f8, f9;
+        string line1, line2, line3, line4, line5, line6, line7, line8, line9;
+        if(images.size() == 2){
+            f1.open("0.txt"), f2.open("1.txt");
+
+            ofstream finalFile;
+            finalFile.open(to_string(images.size()) + ".csv");
+
+            while(f1){
+                getline(f1, line1, '\n'); getline(f2, line2, '\n');
+                finalFile << line1 << ";;;;;;;;;;" << line2 << "\n";
+            }
+
+        }
+        else if(images.size() == 4){
+            f1.open("0.txt"), f2.open("1.txt"), f3.open("2.txt"), f4.open("3.txt");
+
+            ofstream finalFile;
+            finalFile.open(to_string(images.size()) + ".csv");
+
+            while(f1){
+                getline(f1, line1, '\n'); getline(f2, line2, '\n');
+                getline(f3, line3, '\n'); getline(f4, line4, '\n');
+                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
+                          << line4 << "\n";
+            }
+
+        }
+        if(images.size() == 6){
+            f1.open("0.txt"), f2.open("1.txt"), f3.open("2.txt"),
+                    f4.open("3.txt"), f5.open("4.txt"), f6.open("5.txt");
+
+            ofstream finalFile;
+            finalFile.open(to_string(images.size()) + ".csv");
+
+            while(f1){
+                getline(f1, line1, '\n'); getline(f2, line2, '\n');
+                getline(f3, line3, '\n'); getline(f4, line4, '\n');
+                getline(f5, line5, '\n'); getline(f6, line6, '\n');
+                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
+                          << line4 << ";;;;;;;;;;" << line5 << ";;;;;;;;;;" << line6 << "\n";
+            }
+
+        }
+        else if(images.size() == 9){
+            f1.open("0.txt");
+            f2.open("1.txt");
+            f3.open("2.txt");
+            f4.open("3.txt");
+            f5.open("4.txt");
+            f6.open("5.txt");
+            f7.open("6.txt");
+            f8.open("7.txt");
+            f9.open("8.txt");
+
+            ofstream finalFile;
+            finalFile.open(to_string(images.size()) + ".csv");
+
+            while(f1){
+                getline(f1, line1, '\n'); getline(f2, line2, '\n');
+                getline(f3, line3, '\n'); getline(f4, line4, '\n');
+                getline(f5, line5, '\n'); getline(f6, line6, '\n');
+                getline(f7, line7, '\n'); getline(f8, line8, '\n');
+                getline(f9, line9, '\n');
+                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
+                          << line4 << ";;;;;;;;;;" << line5 << ";;;;;;;;;;" << line6 << ";;;;;;;;;;"
+                          << line7 << ";;;;;;;;;;" << line8 << ";;;;;;;;;;" << line9 << "\n";
+            }
+
+        }
+
+
+    }
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 
@@ -18,9 +146,9 @@ void ofApp::setup(){
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
 
-    /*ofImage img;
+    ofImage img;
     img.load("ibra.jpg");
-    divideImage(img, 9);*/
+    histTest(divideImage(img, 9));
 }
 
 void ofApp::qmlSetup(){
@@ -100,7 +228,10 @@ void ofApp::update(){
     string updLabel = AuxFunc::formatSeconds(video.getPosition() * video.getDuration())
             + " / " + AuxFunc::formatSeconds(video.getDuration());
     videoPosLabel->setProperty("text", QVariant(updLabel.c_str()));
-    //qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));
+
+    /* if(video.isLoaded())
+        if(video.getCurrentFrame() % 5000)
+            qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));*/
 
     //TODO: change later
     /* if(video.isLoaded() && emotionDataPath.size() != 0){
@@ -227,7 +358,7 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
 }
 
 //code originally from http://docs.opencv.org/2.4/modules/imgproc/doc/histograms.html?highlight=calcHist
-pair<ofImage, cv::MatND> ofApp::calcDominantColor(ofImage image) {
+pair<ofImage, cv::MatND> ofApp::getHistogram(ofImage image) {
 
     cv::Mat cvImg = ofxCv::toCv(image);
     cv::Mat hsvImage;
@@ -258,17 +389,6 @@ pair<ofImage, cv::MatND> ofApp::calcDominantColor(ofImage image) {
     int scale = 10;
     cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);
 
-    /*for (int h = 0; h < hbins; h++)
-        for (int s = 0; s < sbins; s++)
-        {
-            float binVal = hist.at<float>(h, s);
-            int intensity = cvRound(binVal * 255 / maxVal);
-            rectangle(histImg, cv::Point(h*scale, s*scale),
-                cv::Point((h + 1)*scale - 1, (s + 1)*scale - 1),
-                cv::Scalar::all(intensity),
-                CV_FILLED);
-        }*/
-
     /*for (int h = 0; h < hbins; h++) {
             float sum = 0;
             for (int s = 0; s < sbins; s++)
@@ -276,8 +396,8 @@ pair<ofImage, cv::MatND> ofApp::calcDominantColor(ofImage image) {
                 //cout << hist.at<float>(i) << endl;
                 sum += hist.at<float>(h, s);
             }
-            string cmd = "echo " + to_string(sum) + " >> teste.txt";
-            system(cmd.c_str());
+            //string cmd = "echo " + to_string(sum) + " >> teste.txt";
+            //system(cmd.c_str());
         }*/
 
     ofxCv::toOf(histImg, image);
@@ -286,7 +406,7 @@ pair<ofImage, cv::MatND> ofApp::calcDominantColor(ofImage image) {
     return pair<ofImage, cv::MatND>(image, hist);
 }
 
-//TODO: rever valores
+//TODO: REFAZER
 int ofApp::checkShotType(cv::MatND hist) {
 
     int hbins = 180, sbins = 32;

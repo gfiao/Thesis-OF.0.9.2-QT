@@ -5,6 +5,7 @@
 #include "AuxFunc.h"
 #include "Audio.h"
 #include <vector>
+#include <fstream>
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -69,7 +70,7 @@ public:
 
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
-    pair<ofImage, cv::MatND> calcDominantColor(ofImage fileName);
+    pair<ofImage, cv::MatND> getHistogram(ofImage fileName);
     int checkShotType(cv::MatND hist);
 
     //movement
