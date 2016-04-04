@@ -173,7 +173,7 @@ ApplicationWindow {
 
     TabView{
         objectName: "tabView"
-        // enabled: false
+        enabled: false
         x: 10
         anchors.top: mediaPlayerButtons.bottom
         anchors.topMargin: 10

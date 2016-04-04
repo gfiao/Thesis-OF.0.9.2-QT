@@ -71,7 +71,7 @@ public:
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
     pair<ofImage, cv::MatND> getHistogram(ofImage fileName);
-    int checkShotType(cv::MatND hist);
+    int checkShotType(vector<cv::MatND> hists);
 
     //movement
     vector<cv::KeyPoint> extractKeypoints(int timestamp);

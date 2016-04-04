@@ -146,9 +146,9 @@ void ofApp::setup(){
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
 
-    ofImage img;
-    img.load("ibra.jpg");
-    histTest(divideImage(img, 9));
+    /*ofImage img;
+    img.load("verde2.jpg");
+    histTest(divideImage(img, 9));*/
 }
 
 void ofApp::qmlSetup(){
@@ -229,15 +229,14 @@ void ofApp::update(){
             + " / " + AuxFunc::formatSeconds(video.getDuration());
     videoPosLabel->setProperty("text", QVariant(updLabel.c_str()));
 
+    if(video.isLoaded() && emotionDataPath.size() != 0){
+        QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
+        tabView->setProperty("enabled", true);
+    }
+
     /* if(video.isLoaded())
         if(video.getCurrentFrame() % 5000)
             qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));*/
-
-    //TODO: change later
-    /* if(video.isLoaded() && emotionDataPath.size() != 0){
-        QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
-        tabView->setProperty("enabled", true);
-    }*/
 
 }
 
@@ -407,17 +406,20 @@ pair<ofImage, cv::MatND> ofApp::getHistogram(ofImage image) {
 }
 
 //TODO: REFAZER
-int ofApp::checkShotType(cv::MatND hist) {
+int ofApp::checkShotType(vector<cv::MatND> hists) {
 
     int hbins = 180, sbins = 32;
     vector<float> sums; //sum of all the intesities of given color
 
-    for (int h = 0; h < hbins; h++) {
-        float sum = 0;
-        for (int s = 0; s < sbins; s++) {
-            sum += hist.at<float>(h, s);
+    for(int i = 0; i < hists.size(); i++){
+        cv::MatND hist = hists.at(i);
+        for (int h = 0; h < hbins; h++) {
+            float sum = 0;
+            for (int s = 0; s < sbins; s++) {
+                sum += hist.at<float>(h, s);
+            }
+            sums.push_back(sum);
         }
-        sums.push_back(sum);
     }
 
     int validWindows = 0; //more than 1 validWindow means the shot is not a long shot
@@ -615,8 +617,10 @@ void ofApp::processCutsFile(){
 }
 
 void ofApp::selectRow(int row){
-    if(video.isLoaded())
+    if(video.isLoaded()){
         video.setPosition(ofToFloat(AuxFunc::split(cuts[row], '=')[1]) / video.getDuration());
+        qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));
+    }
 }
 
 
@@ -695,8 +699,8 @@ void ofApp::loadVideoFile(){
         audio = new Audio(audioFile.c_str());
 
         video.setVolume(qmVideoVolSlider->property("value").toFloat());
-        //video.play();
 
+        ofSystemAlertDialog("Video Loaded!");
 
 
         //calcMotionDirection(0, 0);
