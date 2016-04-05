@@ -228,6 +228,7 @@ ApplicationWindow {
             Button{
                 objectName: "runAlgorithm"
                 text: "Run Algorithm"
+                enabled: false
             }
         }
     }

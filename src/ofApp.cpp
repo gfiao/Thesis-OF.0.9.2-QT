@@ -232,6 +232,8 @@ void ofApp::update(){
     if(video.isLoaded() && emotionDataPath.size() != 0){
         QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
         tabView->setProperty("enabled", true);
+
+        qmlRunAlgorithm->setProperty("enabled", true);
     }
 
     /* if(video.isLoaded())
@@ -291,16 +293,18 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
     int w = img.getWidth();
     int h = img.getHeight();
 
-    if(nrOfImages == 2){
+    switch (nrOfImages) {
+    case 2:
         ofImage img1, img2;
         img1.cropFrom(img, 0, 0, w/2, h);
         img2.cropFrom(img, w/2, 0, w/2, h);
 
         subImages.push_back(img1);
         subImages.push_back(img2);
-    }
 
-    else if(nrOfImages == 4){
+        break;
+
+    case 4:
         ofImage img1, img2, img3, img4;
         img1.cropFrom(img, 0, 0, w/2, h/2);
         img2.cropFrom(img, w/2, 0, w/2, h/2);
@@ -311,9 +315,10 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         subImages.push_back(img2);
         subImages.push_back(img3);
         subImages.push_back(img4);
-    }
 
-    else if(nrOfImages == 6){
+        break;
+
+    case 6:
         ofImage img1, img2, img3, img4, img5, img6;
         img1.cropFrom(img, 0, 0, w/3, h/2);
         img2.cropFrom(img, w/3, 0, w/3, h/2);
@@ -328,9 +333,10 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         subImages.push_back(img4);
         subImages.push_back(img5);
         subImages.push_back(img6);
-    }
 
-    else if(nrOfImages == 9){
+        break;
+
+    case 9:
         ofImage img1, img2, img3, img4, img5, img6, img7, img8, img9;
         img1.cropFrom(img, 0, 0, w/3, h/3);
         img2.cropFrom(img, w/3, 0, w/3, h/3);
@@ -351,13 +357,15 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         subImages.push_back(img7);
         subImages.push_back(img8);
         subImages.push_back(img9);
+
+        break;
     }
 
     return subImages;
 }
 
 //code originally from http://docs.opencv.org/2.4/modules/imgproc/doc/histograms.html?highlight=calcHist
-pair<ofImage, cv::MatND> ofApp::getHistogram(ofImage image) {
+cv::MatND ofApp::getHistogram(ofImage image) {
 
     cv::Mat cvImg = ofxCv::toCv(image);
     cv::Mat hsvImage;
@@ -382,37 +390,27 @@ pair<ofImage, cv::MatND> ofApp::getHistogram(ofImage image) {
              hist, 2, histSize, ranges,
              true, // the histogram is uniform
              false);
-    double maxVal = 0;
+
+    /* double maxVal = 0;
     minMaxLoc(hist, 0, &maxVal, 0, 0);
 
     int scale = 10;
-    cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);
+    cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);*/
 
-    /*for (int h = 0; h < hbins; h++) {
-            float sum = 0;
-            for (int s = 0; s < sbins; s++)
-            {
-                //cout << hist.at<float>(i) << endl;
-                sum += hist.at<float>(h, s);
-            }
-            //string cmd = "echo " + to_string(sum) + " >> teste.txt";
-            //system(cmd.c_str());
-        }*/
+    // ofxCv::toOf(histImg, image);
+    // image.update(); //update changes done by openCV
 
-    ofxCv::toOf(histImg, image);
-    image.update(); //update changes done by openCV
-
-    return pair<ofImage, cv::MatND>(image, hist);
+    return hist;
 }
 
 //TODO: REFAZER
-int ofApp::checkShotType(vector<cv::MatND> hists) {
+int ofApp::checkShotType(vector<ofImage> images) {
 
     int hbins = 180, sbins = 32;
     vector<float> sums; //sum of all the intesities of given color
 
-    for(int i = 0; i < hists.size(); i++){
-        cv::MatND hist = hists.at(i);
+    for(int i = 0; i < images.size(); i++){
+        cv::MatND hist = getHistogram(images.at(i));
         for (int h = 0; h < hbins; h++) {
             float sum = 0;
             for (int s = 0; s < sbins; s++) {
@@ -633,7 +631,6 @@ void ofApp::loadDataFile(){
         ofLogVerbose("User selected a file");
         emotionDataPath = openFileResult.getPath();
 
-        ofSystemAlertDialog("Data file loaded!");
         cout << emotionDataPath << endl;
     }
 
