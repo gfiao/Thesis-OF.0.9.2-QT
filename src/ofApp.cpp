@@ -394,14 +394,13 @@ cv::MatND ofApp::getHistogram(ofImage image) {
     return hist;
 }
 
-//TODO: REFAZER
 int ofApp::checkShotType(vector<ofImage> images) {
 
     int hbins = 180, sbins = 32;
     vector<int> types = {0, 0, 0};
 
     for(int i = 0; i < images.size(); i++){
-        vector<float> sums; //sum of all the intesities of given color
+        vector<float> sums; //sum of all the pixels of given color
         cv::MatND hist = getHistogram(images.at(i));
         float totalSum = 0;
 
@@ -413,18 +412,6 @@ int ofApp::checkShotType(vector<ofImage> images) {
             }
             sums.push_back(sum);
         }
-
-
-        /* int validWindows = 0; //more than 1 validWindow means the shot is not a long shot
-    for (int i = 0; i < sums.size() - 10; i++) {
-       // int count = 0;
-        for (int j = 0; j < 10; j++) {
-            vector<float> sumInInterval;
-            sumInInterval.push_back(sums[j]);
-            //if (sums[j] > 20000) count++;
-        }
-        //if (count >= 5) validWindows++; //a color can be considered dominant
-    }*/
 
         int validInterval = 0;
         for(int i = 0; i < sums.size() - 10; i += 10){
@@ -440,7 +427,8 @@ int ofApp::checkShotType(vector<ofImage> images) {
             types.at(LONG_SHOT)++;
         else if (validInterval == 2 || validInterval == 3)
             types.at(CLOSEUP_SHOT)++;
-        types.at(OUT_OF_FIELD)++;
+        else
+            types.at(OUT_OF_FIELD)++;
 
     }
 
@@ -858,12 +846,13 @@ void ofApp::algorithm() {
         //found a peak
         if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
                 && numberOfEmotions >= minNumberOfEmotions) {
-            //	peaks.push_back(emotions.at(i).getTimestamp());
 
             //TODO: for test purposes
-            startTimestamp = emotions.at(i).getTimestamp() - 10;
-            endTimestamp = emotions.at(i).getTimestamp() + 5;
-
+            int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
+            if(clipDuration == 0) clipDuration = 15;
+            // two thirds of the duration before the peak, the rest after the peak
+            startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 2/3);
+            endTimestamp = emotions.at(i).getTimestamp() + (clipDuration / 3);
 
 
             pair<int, int> ts(startTimestamp, endTimestamp);

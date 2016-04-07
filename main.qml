@@ -185,6 +185,12 @@ ApplicationWindow {
         anchors.left: parent.left
 
         Tab{
+            title: "Summary"
+            active: true
+            VideoClipsTab{}
+        }
+
+        Tab{
             title: "Emotions"
             active: true
             EmotionsTab{}

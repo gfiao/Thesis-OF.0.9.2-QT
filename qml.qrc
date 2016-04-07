@@ -876,5 +876,6 @@
         <file>CutDetectionTab.qml</file>
         <file>EmotionsTab.qml</file>
         <file>MovementTab.qml</file>
+        <file>VideoClipsTab.qml</file>
     </qresource>
 </RCC>
