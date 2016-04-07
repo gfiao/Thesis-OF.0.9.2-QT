@@ -292,10 +292,10 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
     vector<ofImage> subImages;
     int w = img.getWidth();
     int h = img.getHeight();
+    ofImage img1, img2, img3, img4, img5, img6, img7, img8, img9;
 
     switch (nrOfImages) {
     case 2:
-        ofImage img1, img2;
         img1.cropFrom(img, 0, 0, w/2, h);
         img2.cropFrom(img, w/2, 0, w/2, h);
 
@@ -305,7 +305,6 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         break;
 
     case 4:
-        ofImage img1, img2, img3, img4;
         img1.cropFrom(img, 0, 0, w/2, h/2);
         img2.cropFrom(img, w/2, 0, w/2, h/2);
         img3.cropFrom(img, 0, h/2, w/2, h/2);
@@ -319,7 +318,6 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         break;
 
     case 6:
-        ofImage img1, img2, img3, img4, img5, img6;
         img1.cropFrom(img, 0, 0, w/3, h/2);
         img2.cropFrom(img, w/3, 0, w/3, h/2);
         img3.cropFrom(img, (w/3)*2, 0, w/3, h/2);
@@ -337,7 +335,6 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         break;
 
     case 9:
-        ofImage img1, img2, img3, img4, img5, img6, img7, img8, img9;
         img1.cropFrom(img, 0, 0, w/3, h/3);
         img2.cropFrom(img, w/3, 0, w/3, h/3);
         img3.cropFrom(img, (w/3)*2, 0, w/3, h/3);
@@ -372,7 +369,7 @@ cv::MatND ofApp::getHistogram(ofImage image) {
 
     cvtColor(cvImg, hsvImage, CV_RGB2HSV);
 
-    // Quantize the hue to 50 levels
+    // Quantize the hue to 180 levels
     // and the saturation to 32 levels
     int hbins = 180, sbins = 32;
     int histSize[] = { hbins, sbins };
@@ -391,12 +388,6 @@ cv::MatND ofApp::getHistogram(ofImage image) {
              true, // the histogram is uniform
              false);
 
-    /* double maxVal = 0;
-    minMaxLoc(hist, 0, &maxVal, 0, 0);
-
-    int scale = 10;
-    cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);*/
-
     // ofxCv::toOf(histImg, image);
     // image.update(); //update changes done by openCV
 
@@ -407,34 +398,58 @@ cv::MatND ofApp::getHistogram(ofImage image) {
 int ofApp::checkShotType(vector<ofImage> images) {
 
     int hbins = 180, sbins = 32;
-    vector<float> sums; //sum of all the intesities of given color
+    vector<int> types = {0, 0, 0};
 
     for(int i = 0; i < images.size(); i++){
+        vector<float> sums; //sum of all the intesities of given color
         cv::MatND hist = getHistogram(images.at(i));
+        float totalSum = 0;
+
         for (int h = 0; h < hbins; h++) {
             float sum = 0;
             for (int s = 0; s < sbins; s++) {
                 sum += hist.at<float>(h, s);
+                totalSum += hist.at<float>(h, s);
             }
             sums.push_back(sum);
         }
-    }
 
-    int validWindows = 0; //more than 1 validWindow means the shot is not a long shot
+
+        /* int validWindows = 0; //more than 1 validWindow means the shot is not a long shot
     for (int i = 0; i < sums.size() - 10; i++) {
-        int count = 0;
+       // int count = 0;
         for (int j = 0; j < 10; j++) {
-            if (sums[j] > 20000) count++;
+            vector<float> sumInInterval;
+            sumInInterval.push_back(sums[j]);
+            //if (sums[j] > 20000) count++;
         }
-        if (count >= 5) validWindows++; //a color can be considered dominant
+        //if (count >= 5) validWindows++; //a color can be considered dominant
+    }*/
+
+        int validInterval = 0;
+        for(int i = 0; i < sums.size() - 10; i += 10){
+            float sumInInterval;
+            for(int j = i; j < j + 10; j++){
+                sumInInterval += sums[j];
+            }
+            if(sumInInterval / totalSum >= 0.5)
+                validInterval++;
+        }
+
+        if (validInterval == 1)
+            types.at(LONG_SHOT)++;
+        else if (validInterval == 2 || validInterval == 3)
+            types.at(CLOSEUP_SHOT)++;
+        types.at(OUT_OF_FIELD)++;
+
     }
 
-    if (validWindows == 1)
-        return LONG_SHOT;
-    else if (validWindows == 2 || validWindows == 3)
-        return CLOSEUP_SHOT;
-    return OUT_OF_FIELD;
+    int returnValue = types[0];
+    for(int type : types)
+        if(type > returnValue)
+            returnValue = type;
 
+    return returnValue;
 }
 
 
