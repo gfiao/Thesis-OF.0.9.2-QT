@@ -833,8 +833,20 @@ void ofApp::algorithm() {
     //timestamps of the clips to be included in the final video
     vector<pair<int, int>> timestamps;
 
-    //peaks in the number of emotions
-    //vector<int> peaks;
+    //in case the user wants to use the cuts data, load the default cuts file
+    if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
+        cuts.clear();
+        ifstream file(DEAFULT_CUTS_FILE); //the default file has a 0.4 threshold
+        string line;
+        vector<string> splitLine;
+        while (file) {
+            getline(file, line, '\n');
+            //cout << line << endl;
+            splitLine = AuxFunc::split(line, '|');
+            if (splitLine.size() != 0) // last line is empty
+                cuts.push_back(splitLine[4]);
+        }
+    }
 
     vector<EmotionInterval> emotions = emotionData->getEmotionIntervals();
     int startTimestamp = emotions.at(0).getTimestamp();
@@ -853,6 +865,16 @@ void ofApp::algorithm() {
             // two thirds of the duration before the peak, the rest after the peak
             startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 2/3);
             endTimestamp = emotions.at(i).getTimestamp() + (clipDuration / 3);
+
+            if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
+                //check for a cut 5 seconds before the start timestamp
+                for(string cutTimestamp : cuts)
+                    if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5)
+                        startTimestamp = ofToInt(cutTimestamp);
+
+            }
+
+            cout << startTimestamp << " - " << endTimestamp << endl;
 
 
             pair<int, int> ts(startTimestamp, endTimestamp);

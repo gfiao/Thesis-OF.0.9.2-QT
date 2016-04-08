@@ -30,6 +30,7 @@ Item {
             RowLayout{
                 id: checkboxRow
                 objectName: "checkboxRow"
+                spacing: 15
 
                 CheckBox{
                     text: "Anger"
@@ -67,6 +68,11 @@ Item {
 
                     validator: IntValidator{bottom: 0; top: 1000}
                 }
+            }
+
+            CheckBox{
+                objectName: "useCuts"
+                text: "Use cuts? (Might extract better clips)"
             }
         }
     }

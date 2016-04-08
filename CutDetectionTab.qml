@@ -75,7 +75,6 @@ Item {
             }
 
             TableView {
-                //width: 180; height: 200
                 id: cutsList
                 objectName: "cutsList"
                 visible: false

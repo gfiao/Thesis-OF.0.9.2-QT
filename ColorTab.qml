@@ -77,6 +77,28 @@ Item {
 
             }
 
+            Label{
+                text: "What type of shots are you looking for?"
+                font.bold: true
+            }
+            RowLayout{
+                objectName: "shotCheckboxes"
+                spacing: 25
+
+                CheckBox{
+                    text: "Long Shot"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Closeup Shot"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Out of Field Shot"
+                    checked: true
+                }
+            }
+
         }
     }
 

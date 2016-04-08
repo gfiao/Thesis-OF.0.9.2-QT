@@ -47,8 +47,8 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
 
     //cout << "MaxValue: " << maxValue << endl;
     //cout << emotionIntervals.size() << endl;
-    //for (EmotionInterval e : emotionIntervals)
-    //cout << "Timestamp: " << e.getTimestamp() << "     NrEmocoes: " << e.getNumberOfEmotions() << endl;
+    for (EmotionInterval e : emotionIntervals)
+        cout << "Timestamp: " << e.getTimestamp() << "     NrEmocoes: " << e.getNumberOfEmotions() << endl;
 
     //for(string s: distinctEmotions)
     //cout << s << endl;
