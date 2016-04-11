@@ -146,9 +146,21 @@ void ofApp::setup(){
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
 
-    /*ofImage img;
+    // int time = ofGetElapsedTimeMillis();
+
+    ofImage img;
     img.load("verde2.jpg");
-    histTest(divideImage(img, 9));*/
+    vector<ofImage> images = divideImage(img, 9);
+    int res1 = checkShotType(images);
+    cout << "verde2:  " << res1 << endl;
+
+    ofImage img2;
+    img2.load("ibra.jpg");
+    vector<ofImage> images2 = divideImage(img2, 9);
+    int res2 = checkShotType(images2);
+    cout << "ibra:  " << res2 << endl;
+
+    //cout << time - ofGetElapsedTimef() << endl;
 }
 
 void ofApp::qmlSetup(){
@@ -397,7 +409,7 @@ cv::MatND ofApp::getHistogram(ofImage image) {
 int ofApp::checkShotType(vector<ofImage> images) {
 
     int hbins = 180, sbins = 32;
-    vector<int> types = {0, 0, 0};
+    vector<int> types = {0,0,0};
 
     for(int i = 0; i < images.size(); i++){
         vector<float> sums; //sum of all the pixels of given color
@@ -414,28 +426,40 @@ int ofApp::checkShotType(vector<ofImage> images) {
         }
 
         int validInterval = 0;
-        for(int i = 0; i < sums.size() - 10; i += 10){
-            float sumInInterval;
-            for(int j = i; j < j + 10; j++){
+        /* for(int i = 0; i < sums.size() - 10; i += 10){
+            float sumInInterval = 0;
+            for(int j = i; j < i + 10; j++){
                 sumInInterval += sums[j];
             }
             if(sumInInterval / totalSum >= 0.5)
                 validInterval++;
+        }*/
+
+        for(int i = 1; i < sums.size() - 1; i++){
+            float valueBefore = sums[i-1];
+            float valueAfter = sums[i+1];
+
+            if(valueBefore < sums[i] && valueAfter > sums[i] && sums[i] >= 1000){
+                validInterval++;
+            }
         }
 
         if (validInterval == 1)
-            types.at(LONG_SHOT)++;
+            types[LONG_SHOT]++;
         else if (validInterval == 2 || validInterval == 3)
-            types.at(CLOSEUP_SHOT)++;
+            types[CLOSEUP_SHOT]++;
         else
-            types.at(OUT_OF_FIELD)++;
+            types[OUT_OF_FIELD]++;
 
     }
 
-    int returnValue = types[0];
-    for(int type : types)
-        if(type > returnValue)
-            returnValue = type;
+    int returnValue = 0;
+    for(int i = 0; i < types.size(); i++){
+        cout << types[i] << endl;
+        if(types[i] > returnValue)
+            returnValue = i;
+        cout << "\n" ;
+    }
 
     return returnValue;
 }
