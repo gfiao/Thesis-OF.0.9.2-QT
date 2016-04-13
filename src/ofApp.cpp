@@ -426,21 +426,17 @@ int ofApp::checkShotType(vector<ofImage> images) {
         }
 
         int validInterval = 0;
-        /* for(int i = 0; i < sums.size() - 10; i += 10){
-            float sumInInterval = 0;
-            for(int j = i; j < i + 10; j++){
-                sumInInterval += sums[j];
-            }
-            if(sumInInterval / totalSum >= 0.5)
-                validInterval++;
-        }*/
-
         for(int i = 1; i < sums.size() - 1; i++){
             float valueBefore = sums[i-1];
             float valueAfter = sums[i+1];
 
+            float sumInInterval = 0;
             if(valueBefore < sums[i] && valueAfter > sums[i] && sums[i] >= 1000){
-                validInterval++;
+                for(int j = i - 5; j < i + 5; j++){
+                    sumInInterval += sums[j];
+                }
+                if(sumInInterval / totalSum >= 0.5)
+                    validInterval++;
             }
         }
 
