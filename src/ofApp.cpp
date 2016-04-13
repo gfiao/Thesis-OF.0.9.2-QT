@@ -160,6 +160,12 @@ void ofApp::setup(){
     int res2 = checkShotType(images2);
     cout << "ibra:  " << res2 << endl;
 
+    ofImage img3;
+    img3.load("ronaldo.jpg");
+    vector<ofImage> images3 = divideImage(img3, 9);
+    int res3 = checkShotType(images3);
+    cout << "ronaldo:  " << res3 << endl;
+
     //cout << time - ofGetElapsedTimef() << endl;
 }
 
@@ -424,21 +430,26 @@ int ofApp::checkShotType(vector<ofImage> images) {
             }
             sums.push_back(sum);
         }
-
+ int peaks = 0;
         int validInterval = 0;
         for(int i = 1; i < sums.size() - 1; i++){
             float valueBefore = sums[i-1];
             float valueAfter = sums[i+1];
 
             float sumInInterval = 0;
-            if(valueBefore < sums[i] && valueAfter > sums[i] && sums[i] >= 1000){
-                for(int j = i - 5; j < i + 5; j++){
+
+            if(valueBefore < sums[i] && valueAfter > sums[i] && sums[i] >= 1500){
+                peaks++;
+                for(int j = i - 2; j < i + 2; j++){
                     sumInInterval += sums[j];
+                   // cout << j << endl;
+
                 }
-                if(sumInInterval / totalSum >= 0.5)
+                if(sumInInterval / totalSum >= 0.3)
                     validInterval++;
             }
         }
+         cout << peaks << endl;
 
         if (validInterval == 1)
             types[LONG_SHOT]++;
@@ -452,9 +463,9 @@ int ofApp::checkShotType(vector<ofImage> images) {
     int returnValue = 0;
     for(int i = 0; i < types.size(); i++){
         cout << i  << " : "<< types[i] << endl;
-        if(types[i] >= types[returnValue])
+        if(types[i] > types[returnValue])
             returnValue = i;
-    }
+    }  
 
     return returnValue;
 }
