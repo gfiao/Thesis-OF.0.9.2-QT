@@ -148,7 +148,7 @@ void ofApp::setup(){
 
     // int time = ofGetElapsedTimeMillis();
 
-    ofImage img;
+    /* ofImage img;
     img.load("verde2.jpg");
     vector<ofImage> images = divideImage(img, 9);
     int res1 = checkShotType(images);
@@ -164,7 +164,7 @@ void ofApp::setup(){
     img3.load("ronaldo.jpg");
     vector<ofImage> images3 = divideImage(img3, 9);
     int res3 = checkShotType(images3);
-    cout << "ronaldo:  " << res3 << endl;
+    cout << "ronaldo:  " << res3 << endl;*/
 
     //cout << time - ofGetElapsedTimef() << endl;
 }
@@ -254,8 +254,8 @@ void ofApp::update(){
         qmlRunAlgorithm->setProperty("enabled", true);
     }
 
-    /* if(video.isLoaded())
-        if(video.getCurrentFrame() % 5000)
+    /*if(video.isLoaded())
+         if(video.getCurrentFrame() % 100 == 0)
             qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));*/
 
 }
@@ -430,7 +430,7 @@ int ofApp::checkShotType(vector<ofImage> images) {
             }
             sums.push_back(sum);
         }
- int peaks = 0;
+        int peaks = 0;
         int validInterval = 0;
         for(int i = 1; i < sums.size() - 1; i++){
             float valueBefore = sums[i-1];
@@ -442,18 +442,18 @@ int ofApp::checkShotType(vector<ofImage> images) {
                 peaks++;
                 for(int j = i - 2; j < i + 2; j++){
                     sumInInterval += sums[j];
-                   // cout << j << endl;
+                    // cout << j << endl;
 
                 }
                 if(sumInInterval / totalSum >= 0.3)
                     validInterval++;
             }
         }
-         cout << peaks << endl;
+        cout << peaks << endl;
 
         if (validInterval == 1)
             types[LONG_SHOT]++;
-        else if (validInterval == 2 || validInterval == 3)
+        else if (validInterval == 2 || validInterval == 3 || validInterval == 4)
             types[CLOSEUP_SHOT]++;
         else
             types[OUT_OF_FIELD]++;
@@ -465,7 +465,7 @@ int ofApp::checkShotType(vector<ofImage> images) {
         cout << i  << " : "<< types[i] << endl;
         if(types[i] > types[returnValue])
             returnValue = i;
-    }  
+    }
 
     return returnValue;
 }
@@ -799,36 +799,53 @@ void ofApp::cutVideo(vector<pair<int, int>> timestamps) {
         //system("ffmpeg -i data\\WeFeel.m4v -ss 00:01:00 -to 00:02:00 -c copy data\\cut.m4v"); //example
         std::system(command.c_str());
 
-        //create the command to apply the fade in/out effects
-        string fadeCommand = "ffmpeg -i " + tempFolder + "\\clip" + to_string(i) + "." + extension;
+        if(qmlWindow->findChild<QObject*>("fadeInOut")->property("checked") == true){
 
-        clip.loadMovie(tempFolder + "\\clip" + to_string(i) + "." + extension);
+            //create the command to apply the fade in/out effects
+            string fadeCommand = "ffmpeg -i " + tempFolder + "\\clip" + to_string(i) + "." + extension;
 
-        //fade in is not to be added to the first clip
-        if (i == 0) {
-            fadeCommand += " -vf \"fade=type=out:start_frame=" + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
+            clip.load(tempFolder + "\\clip" + to_string(i) + "." + extension);
+
+            //fade in is not to be added to the first clip
+            if (i == 0) {
+                fadeCommand += " -vf \"fade=type=out:start_frame=" + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
+            }
+            else {
+                fadeCommand += " -vf \"fade=type=in:start_frame=0:d=0.5, fade=type=out:start_frame="
+                        + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
+            }
+
+            fadeCommand += " -y " + newFolder + "\\clipFade" + to_string(i) + "." + extension;
+            cout << fadeCommand << endl;
+            std::system(fadeCommand.c_str());
+
+
+            //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+            if (i == 0) {
+                //first clip to be extracted, so the txt file also has to be created
+                string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
+                        "." + extension + "' > " + newFolder + "\\concat.txt";
+                std::system(newClip.c_str());
+            }
+            else {
+                string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
+                        "." + extension + "' >> " + newFolder + "\\concat.txt";
+                std::system(newClip.c_str());
+            }
         }
-        else {
-            fadeCommand += " -vf \"fade=type=in:start_frame=0:d=0.5, fade=type=out:start_frame="
-                    + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
-        }
-
-        fadeCommand += " -y " + newFolder + "\\clipFade" + to_string(i) + "." + extension;
-        cout << fadeCommand << endl;
-        std::system(fadeCommand.c_str());
-
-
-        //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
-        if (i == 0) {
-            //first clip to be extracted, so the txt file also has to be created
-            string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
-                    "." + extension + "' > " + newFolder + "\\concat.txt";
-            std::system(newClip.c_str());
-        }
-        else {
-            string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
-                    "." + extension + "' >> " + newFolder + "\\concat.txt";
-            std::system(newClip.c_str());
+        else{
+            //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+            if (i == 0) {
+                //first clip to be extracted, so the txt file also has to be created
+                string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
+                        "." + extension + "' > " + newFolder + "\\concat.txt";
+                std::system(newClip.c_str());
+            }
+            else {
+                string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
+                        "." + extension + "' >> " + newFolder + "\\concat.txt";
+                std::system(newClip.c_str());
+            }
         }
     }
 

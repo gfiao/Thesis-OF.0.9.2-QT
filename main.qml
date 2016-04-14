@@ -3,8 +3,6 @@ import QtQuick.Window 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
-import QtMultimedia 5.5
-import QtQuick.Extras 1.4
 
 ApplicationWindow {
     id: qmlWindow

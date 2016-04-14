@@ -41,6 +41,12 @@ Item {
                 validator: IntValidator{bottom: 0; top: 45}
             }
 
+            CheckBox{
+                objectName: "fadeInOut"
+                text: "Fade in/out between clips?"
+                checked: true
+            }
+
         }
     }
 
