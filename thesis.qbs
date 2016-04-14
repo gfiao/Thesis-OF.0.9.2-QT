@@ -16,6 +16,8 @@ Project{
             "src/Audio.h",
             "src/AuxFunc.cpp",
             "src/AuxFunc.h",
+            "src/ClipWithScore.cpp",
+            "src/ClipWithScore.h",
             "src/EmotionData.cpp",
             "src/EmotionData.h",
             "src/EmotionInterval.cpp",
