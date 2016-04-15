@@ -877,5 +877,6 @@
         <file>EmotionsTab.qml</file>
         <file>MovementTab.qml</file>
         <file>VideoClipsTab.qml</file>
+        <file>SetScoresWindow.qml</file>
     </qresource>
 </RCC>

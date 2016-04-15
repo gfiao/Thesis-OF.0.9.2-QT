@@ -6,14 +6,15 @@ using namespace std;
 ClipWithScore::ClipWithScore(pair<int, int> timestamps, float audioValues){
     this->timestamps = timestamps;
     this->audioValues = audioValues;
+    finalScore = 0;
 }
 
-int ClipWithScore::getFinalScore(){
+double ClipWithScore::getFinalScore(){
     return finalScore;
 }
 
 //TODO: fazer a conta para calcular a score, utilizar pesos aqui
-void ClipWithScore::setFinalScore(int finalScore){
+void ClipWithScore::calcFinalScore(double emotionWeight, double audioWeight){
 
 }
 

@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include <vector>
 #include <fstream>
+#include "ClipWithScore.h"
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>

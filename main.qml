@@ -224,9 +224,15 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
 
+        SetScoresWindow{
+            id: setScoresWindow
+        }
+
         RowLayout{
             Button{
                 text: "Set Scores"
+
+                onClicked: setScoresWindow.visible = true
             }
 
             Button{

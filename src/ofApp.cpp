@@ -906,7 +906,6 @@ void ofApp::algorithm() {
         if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
                 && numberOfEmotions >= minNumberOfEmotions) {
 
-            //TODO: for test purposes
             int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
             if(clipDuration == 0) clipDuration = 15;
             // two thirds of the duration before the peak, the rest after the peak
@@ -918,13 +917,23 @@ void ofApp::algorithm() {
                 for(string cutTimestamp : cuts)
                     if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5)
                         startTimestamp = ofToInt(cutTimestamp);
-
             }
-
             cout << startTimestamp << " - " << endTimestamp << endl;
 
 
             pair<int, int> ts(startTimestamp, endTimestamp);
+
+            //we need to get the audio values associated with the timestamps
+            float audioValues = 0;
+            for(int i = startTimestamp; i < endTimestamp; i++)
+                audioValues += audio->getSamples()[i];
+
+            ClipWithScore newClip(ts, audioValues);
+            double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
+            double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
+            newClip.calcFinalScore(emotionWeight, audioWeight);
+
+
             timestamps.push_back(ts);
         }
     }

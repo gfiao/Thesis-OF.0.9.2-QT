@@ -11,7 +11,7 @@ private:
     pair<int, int> timestamps;
 
     //score associated with this clip
-    int finalScore;
+    double finalScore;
 
     //audio values associated with this clip
     float audioValues;
@@ -20,8 +20,8 @@ public:
 
     ClipWithScore(pair<int, int> timestamps, float audioValues);
 
-    int getFinalScore();
-    void setFinalScore(int finalScore);
+    double getFinalScore();
+    void calcFinalScore(double emotionWeight, double audioWeight);
 
     float getAudioValues();
     void setAudioValues(float audioValues);
