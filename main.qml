@@ -131,6 +131,7 @@ ApplicationWindow {
             width: 242
             height: 20
             value: 0.0
+           // stepSize: 0.001
 
             signal videoSeekSignal(var pos)
             onValueChanged: videoSeekbar.videoSeekSignal(value)
@@ -171,7 +172,7 @@ ApplicationWindow {
 
     TabView{
         objectName: "tabView"
-        enabled: false
+        //enabled: false
         x: 10
         anchors.top: mediaPlayerButtons.bottom
         anchors.topMargin: 10

@@ -12,7 +12,7 @@ class EmotionData {
 private:
 
 	//emotions shared during a certain interval
-	vector<EmotionInterval> emotionIntervals;
+    vector<EmotionInterval> emotionIntervals;
 
 	int interval;
 

@@ -21,6 +21,26 @@ Item {
             Item { Layout.preferredHeight: 4 } // padding
 
 
+
+
+            Label{
+                text: "First half:"
+                font.bold: true
+            }
+            RowLayout{
+                id: firstDirectionRow
+                objectName: "firstDirectionRow"
+
+                CheckBox{
+                    text: "Left"
+                    checked: true
+                }
+                CheckBox{
+                    text: "Right"
+                    checked: true
+                }
+            }
+
             Label{
                 text: "Timeframe:"
                 font.bold: true
@@ -34,24 +54,15 @@ Item {
                     placeholderText: qsTr("Start Timestamp")
                     validator: IntValidator{bottom: 0; top: 10000}
                 }
-
-                Text {
-                    text: qsTr(" to ")
-                }
-
-                TextField {
-                    placeholderText: qsTr("End Timestamp")
-                    validator: IntValidator{bottom: 0; top: 10000}
-                }
             }
 
             Label{
-                text: "Direction:"
+                text: "Second half:"
                 font.bold: true
             }
             RowLayout{
-                id: directionRow
-                objectName: "directionRow"
+                id: secondDirectionRow
+                objectName: "secondDirectionRow"
 
                 CheckBox{
                     text: "Left"

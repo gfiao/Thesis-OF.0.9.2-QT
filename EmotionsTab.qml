@@ -60,12 +60,12 @@ Item {
 
             RowLayout{
                 Label{
-                    text: "Mininum number of emotions:"
+                    text: "Minimum number of emotions:"
                     font.bold: true
                 }
                 TextField{
                     objectName: "minNumberOfEmotions"
-
+                    placeholderText: "Minimum number of emotions"
                     validator: IntValidator{bottom: 0; top: 1000}
                 }
             }

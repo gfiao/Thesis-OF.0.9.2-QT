@@ -1,4 +1,5 @@
 #include "ofApp.h"
+#include "math.h"
 
 // global qml signal to slot object instance
 QMLCallback qmlCallback;
@@ -249,14 +250,18 @@ void ofApp::update(){
 
     if(video.isLoaded() && emotionDataPath.size() != 0){
         QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
-        tabView->setProperty("enabled", true);
+        // tabView->setProperty("enabled", true);
 
         qmlRunAlgorithm->setProperty("enabled", true);
     }
 
-    /*if(video.isLoaded())
-         if(video.getCurrentFrame() % 100 == 0)
-            qmlVideoSeekbar->setProperty("value", QVariant(video.getPosition()));*/
+    /*string formatedNumber = to_string(video.getPosition()).substr(0, 5);
+    //cout << ofToFloat(formatedNumber) << endl;
+    // double videoPos = (double)video.getPosition();
+    if(video.isLoaded())
+       // if(video.getCurrentFrame() % 100 == 0)
+            qmlVideoSeekbar->setProperty("value", QVariant(ofToFloat(formatedNumber)));*/
+
 
 }
 
@@ -863,6 +868,22 @@ void ofApp::cutVideo(vector<pair<int, int>> timestamps) {
 
 void ofApp::algorithm() {
 
+    //TODO: stupid solution, change later
+    ifstream file(emotionDataPath);
+    string line;
+    getline(file, line, '\n'); //skip first line
+    vector<int> emotionsSecond (1000); //vec[i] has the number of emotions at second i
+    getline(file, line, '\n');
+    while(file){
+        // emotionsSecond.emplace(ofToInt(AuxFunc::split(line, ';')[0])), 1);
+        int timestamp = ofToInt(AuxFunc::split(line, ';')[0]);
+        emotionsSecond.at(timestamp)++;
+        getline(file, line, '\n');
+    }
+
+
+
+    //===================================================
     int minNumberOfEmotions = qmlWindow->findChild<QObject*>("minNumberOfEmotions")->property("text").toInt();
 
     if(minNumberOfEmotions == 0){
@@ -923,12 +944,18 @@ void ofApp::algorithm() {
 
             pair<int, int> ts(startTimestamp, endTimestamp);
 
+            //we need to get the number of emotions associated with the timestamps
+            int emotionsInClip = 0;
+            for(int i = startTimestamp; i < endTimestamp; i++){
+                emotionsInClip += emotionsSecond[i];
+            }
+
             //we need to get the audio values associated with the timestamps
             float audioValues = 0;
             for(int i = startTimestamp; i < endTimestamp; i++)
                 audioValues += audio->getSamples()[i];
 
-            ClipWithScore newClip(ts, audioValues);
+            ClipWithScore newClip(ts, emotionsInClip, audioValues);
             double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
             double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
             newClip.calcFinalScore(emotionWeight, audioWeight);

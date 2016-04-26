@@ -23,7 +23,7 @@ Item {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
 
-            CheckBox{
+           /* CheckBox{
                 id: timeframeCheckbox
                 objectName: "timeframeCheckbox"
                 text: "Specify a timeframe?"
@@ -64,18 +64,20 @@ Item {
                         true
                     else false
                 }
-            }
+            }*/
 
             Label{
                 font.bold: true
-                text: "How many subimages will be processed?:"
+                text: "How precise do you want the color processing to be?:"
             }
 
             ComboBox{
                 objectName: "subimmageCB"
-                model: [ "None", "2", "4", "6", "9" ]
+                model: [ "1 (Fast)", "2", "3", "4", "5 (Slow)" ]
 
             }
+
+            Item { Layout.preferredHeight: 5 } //extra spacing
 
             Label{
                 text: "What type of shots are you looking for?"
