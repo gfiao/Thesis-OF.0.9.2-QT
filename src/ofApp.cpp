@@ -250,7 +250,7 @@ void ofApp::update(){
 
     if(video.isLoaded() && emotionDataPath.size() != 0){
         QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
-        // tabView->setProperty("enabled", true);
+        tabView->setProperty("enabled", true);
 
         qmlRunAlgorithm->setProperty("enabled", true);
     }
@@ -517,7 +517,7 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
 
     cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << endl;
 
-    //TODO: resolver o problema (se é que é um problema)
+    //TODO: resolver o problema, usar codigo de CM
     if (startKeypoints.size() == 0 || endKeypoints.size() == 0) {
         ofSystemAlertDialog("extractKeypoints returns 0");
         return pair<int, int>(0, 0);
@@ -747,6 +747,10 @@ void ofApp::clearSelection(){
     video.close();
     emotionData = nullptr;
     emotionDataPath = "";
+
+    QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
+    tabView->setProperty("enabled", false);
+    qmlRunAlgorithm->setProperty("enabled", false);
 }
 
 //--------------------------------------------------------------
@@ -936,10 +940,12 @@ void ofApp::algorithm() {
             if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
                 //check for a cut 5 seconds before the start timestamp
                 for(string cutTimestamp : cuts)
-                    if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5)
+                    if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5){
                         startTimestamp = ofToInt(cutTimestamp);
+                        cout << "Cut detected" << endl;
+                    }
             }
-            cout << startTimestamp << " - " << endTimestamp << endl;
+            // cout << startTimestamp << " - " << endTimestamp << endl;
 
 
             pair<int, int> ts(startTimestamp, endTimestamp);
@@ -950,21 +956,23 @@ void ofApp::algorithm() {
                 emotionsInClip += emotionsSecond[i];
             }
 
-            //we need to get the audio values associated with the timestamps
+             //we need to get the audio values associated with the timestamps
             float audioValues = 0;
-            for(int i = startTimestamp; i < endTimestamp; i++)
-                audioValues += audio->getSamples()[i];
+            if(qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked") == true){
+                for(int i = startTimestamp; i < endTimestamp; i++)
+                    audioValues += audio->getSamples()[i];
+            }
 
             ClipWithScore newClip(ts, emotionsInClip, audioValues);
             double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
             double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
             newClip.calcFinalScore(emotionWeight, audioWeight);
 
-
+            cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
             timestamps.push_back(ts);
         }
     }
 
-    cutVideo(timestamps);
+    // cutVideo(timestamps);
 
 }

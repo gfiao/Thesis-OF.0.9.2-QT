@@ -42,6 +42,12 @@ Item {
             }
 
             CheckBox{
+                objectName: "soundCheckbox"
+                text: "Use the sound values in the algorithm?"
+                checked: true
+            }
+
+            CheckBox{
                 objectName: "fadeInOut"
                 text: "Fade in/out between clips?"
                 checked: true

@@ -23,6 +23,7 @@ Window{
     Slider{
         objectName: "emotionSlider"
         id: emotionSlider
+        value: 0.6
         x: 39
         y: 62
         onValueChanged:{
@@ -38,6 +39,7 @@ Window{
     Slider{
         objectName: "audioSlider"
         id: audioSlider
+        value: 0.4
         x: 45
         y: 165
         onValueChanged:{

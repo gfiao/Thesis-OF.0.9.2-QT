@@ -58,7 +58,7 @@ Window {
                         objectName: "interval_textfield"
                         id: interval_textfield
                         inputMask: qsTr("")
-                        placeholderText: qsTr("Value")
+                        placeholderText: qsTr("Default is 5")
                         validator: IntValidator{bottom: 0; top: 100}
                     }
                 }
