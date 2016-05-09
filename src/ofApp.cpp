@@ -417,6 +417,7 @@ cv::MatND ofApp::getHistogram(ofImage image) {
     return hist;
 }
 
+//TODO: MUDAR
 int ofApp::checkShotType(vector<ofImage> images) {
 
     int hbins = 180, sbins = 32;
@@ -708,7 +709,6 @@ void ofApp::loadDataParameters(){
     ofSystemAlertDialog("Data loaded successfully!");
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
-
 }
 
 void ofApp::loadVideoFile(){

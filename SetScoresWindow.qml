@@ -25,6 +25,9 @@ Window{
         id: emotionSlider
         x: 39
         y: 62
+        onValueChanged:{
+            audioSlider.value = 1 - emotionSlider.value
+        }
     }
 
     Label{
@@ -37,6 +40,9 @@ Window{
         id: audioSlider
         x: 45
         y: 165
+        onValueChanged:{
+            emotionSlider.value = 1 - audioSlider.value
+        }
     }
 
 }
