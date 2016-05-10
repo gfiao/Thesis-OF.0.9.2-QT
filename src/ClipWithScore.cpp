@@ -10,6 +10,10 @@ ClipWithScore::ClipWithScore(pair<int, int> timestamps, int numberOfEmotions, fl
     finalScore = 0;
 }
 
+pair<int, int> ClipWithScore::getTimestamps(){
+    return timestamps;
+}
+
 double ClipWithScore::getFinalScore(){
     return finalScore;
 }

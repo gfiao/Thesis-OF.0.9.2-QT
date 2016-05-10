@@ -135,6 +135,8 @@ void histTest(vector<ofImage> images){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    cout << "OpenCV version: " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << endl;
+
     emotionData = nullptr;
     audio = nullptr;
 
@@ -591,7 +593,6 @@ void ofApp::detectCuts() {
 
     //now we need to parse the data given by ffprobe
     //the only information we are looking for is the timestamps of the cuts
-    //  vector<string> cuts;
     cuts.clear();
     ifstream file(fileName);
     string line;
@@ -747,10 +748,13 @@ void ofApp::clearSelection(){
     video.close();
     emotionData = nullptr;
     emotionDataPath = "";
+    QObject* label = qmlWindow->findChild<QObject*>("loadFileLabel");
+    label->setProperty("visible", false);
 
     QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
     tabView->setProperty("enabled", false);
     qmlRunAlgorithm->setProperty("enabled", false);
+
 }
 
 //--------------------------------------------------------------
@@ -904,6 +908,7 @@ void ofApp::algorithm() {
 
     //timestamps of the clips to be included in the final video
     vector<pair<int, int>> timestamps;
+    vector<ClipWithScore> clips;
 
     //in case the user wants to use the cuts data, load the default cuts file
     if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
@@ -916,7 +921,7 @@ void ofApp::algorithm() {
             //cout << line << endl;
             splitLine = AuxFunc::split(line, '|');
             if (splitLine.size() != 0) // last line is empty
-                cuts.push_back(splitLine[4]);
+                cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
         }
     }
 
@@ -947,32 +952,36 @@ void ofApp::algorithm() {
             }
             // cout << startTimestamp << " - " << endTimestamp << endl;
 
-
-            pair<int, int> ts(startTimestamp, endTimestamp);
-
             //we need to get the number of emotions associated with the timestamps
             int emotionsInClip = 0;
             for(int i = startTimestamp; i < endTimestamp; i++){
                 emotionsInClip += emotionsSecond[i];
             }
 
-             //we need to get the audio values associated with the timestamps
+            //we need to get the audio values associated with the timestamps
             float audioValues = 0;
             if(qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked") == true){
                 for(int i = startTimestamp; i < endTimestamp; i++)
                     audioValues += audio->getSamples()[i];
             }
-
+            pair<int, int> ts(startTimestamp, endTimestamp);
             ClipWithScore newClip(ts, emotionsInClip, audioValues);
             double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
             double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
             newClip.calcFinalScore(emotionWeight, audioWeight);
+            clips.push_back(newClip);
 
             cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
-            timestamps.push_back(ts);
+
         }
     }
+    for(int i = 0; i < clips.size(); i++){
+        int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
 
-    // cutVideo(timestamps);
+
+        timestamps.push_back(clips[i].getTimestamps());
+    }
+
+    cutVideo(timestamps);
 
 }

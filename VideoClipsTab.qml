@@ -28,7 +28,7 @@ Item {
             }
             TextField{
                 objectName: "summaryDuration"
-                placeholderText: qsTr("Use HH:MM:SS format")
+                placeholderText: qsTr("Minutes (default is 3m)")
             }
 
             Label{
