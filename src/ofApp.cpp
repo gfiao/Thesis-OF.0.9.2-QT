@@ -4,6 +4,16 @@
 // global qml signal to slot object instance
 QMLCallback qmlCallback;
 
+bool sortClips(ClipWithScore clip1, ClipWithScore clip2){
+    return (clip1.getTimestamps().first < clip2.getTimestamps().first);
+}
+bool sortByScore(ClipWithScore clip1, ClipWithScore clip2){
+    return (clip1.getFinalScore() > clip2.getFinalScore());
+}
+bool sortTimestamps(pair<int, int> ts1, pair<int, int> ts2){
+    return (ts1.first < ts2.first);
+}
+
 void histTest(vector<ofImage> images){
 
     for(int i = 0; i < images.size(); i++){
@@ -975,13 +985,26 @@ void ofApp::algorithm() {
 
         }
     }
-    for(int i = 0; i < clips.size(); i++){
-        int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
 
+    int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
+    summaryDuration == 0 ? summaryDuration = 3 : summaryDuration;
+    ofSort(clips, sortByScore);
 
+    int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
+    clipDuration == 0 ? clipDuration = 15 : clipDuration;
+
+    int totalDuration = 0, i = 0;
+    while(totalDuration < summaryDuration * 60 && i < clips.size()){
         timestamps.push_back(clips[i].getTimestamps());
+        totalDuration += clipDuration;
+        i++;
     }
 
-    cutVideo(timestamps);
+    cout << "TotalDuration: " << totalDuration << " === " << "SummaryDur: " << summaryDuration * 60 << endl;
+
+    ofSort(timestamps, sortTimestamps);
+    for(pair<int, int> ts : timestamps)
+        cout << ts.first << " - " << ts.second << endl;
+    //cutVideo(timestamps);
 
 }
