@@ -748,7 +748,6 @@ void ofApp::loadVideoFile(){
 
         ofSystemAlertDialog("Video Loaded!");
 
-
         //calcMotionDirection(0, 0);
     }
 
@@ -902,19 +901,12 @@ void ofApp::algorithm() {
 
 
     //===================================================
+
     int minNumberOfEmotions = qmlWindow->findChild<QObject*>("minNumberOfEmotions")->property("text").toInt();
-
-    if(minNumberOfEmotions == 0){
-        ofSystemAlertDialog("Please choose a minimum number of emotions!");
-        return;
-    }
-
     //min number of emotions a clip must have to be included in the summary
     cout << "minNumberOfEmotions: " << minNumberOfEmotions << endl;
 
     int numberOfEmotions;
-
-    int endTimestamp;
 
     //timestamps of the clips to be included in the final video
     vector<pair<int, int>> timestamps;
@@ -935,63 +927,128 @@ void ofApp::algorithm() {
         }
     }
 
-    vector<EmotionInterval> emotions = emotionData->getEmotionIntervals();
-    int startTimestamp = emotions.at(0).getTimestamp();
-    for (int i = 1; i < emotions.size() - 1; i++) {
-        numberOfEmotions = emotions.at(i).getNumberOfEmotions();
-        int valueBefore = emotions.at(i - 1).getNumberOfEmotions();
-        int valueAfter = emotions.at(i + 1).getNumberOfEmotions();
+    bool useEmotions = qmlWindow->findChild<QObject*>("useEmotions")->property("checked").toBool();
+    bool useAudio = qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked").toBool();
 
-        //found a peak
-        if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
-                && numberOfEmotions >= minNumberOfEmotions) {
-
-            int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
-            if(clipDuration == 0) clipDuration = 15;
-            // two thirds of the duration before the peak, the rest after the peak
-            startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 2/3);
-            endTimestamp = emotions.at(i).getTimestamp() + (clipDuration / 3);
-
-            if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
-                //check for a cut 5 seconds before the start timestamp
-                for(string cutTimestamp : cuts)
-                    if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5){
-                        startTimestamp = ofToInt(cutTimestamp);
-                        cout << "Cut detected" << endl;
-                    }
-            }
-            // cout << startTimestamp << " - " << endTimestamp << endl;
-
-            //we need to get the number of emotions associated with the timestamps
-            int emotionsInClip = 0;
-            for(int i = startTimestamp; i < endTimestamp; i++){
-                emotionsInClip += emotionsSecond[i];
-            }
-
-            //we need to get the audio values associated with the timestamps
-            float audioValues = 0;
-            if(qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked") == true){
-                for(int i = startTimestamp; i < endTimestamp; i++)
-                    audioValues += audio->getSamples()[i];
-            }
-            pair<int, int> ts(startTimestamp, endTimestamp);
-            ClipWithScore newClip(ts, emotionsInClip, audioValues);
-            double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
-            double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
-            newClip.calcFinalScore(emotionWeight, audioWeight);
-            clips.push_back(newClip);
-
-            cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
-
-        }
+    if(!useEmotions && !useAudio){
+        ofSystemAlertDialog("You need to use emotions data and/or audio data!");
+        return;
     }
 
-    int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
-    summaryDuration == 0 ? summaryDuration = 3 : summaryDuration;
-    ofSort(clips, sortByScore);
-
+    vector<EmotionInterval> emotions = emotionData->getEmotionIntervals();
+    int startTimestamp = emotions.at(0).getTimestamp();
+    int endTimestamp;
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
-    clipDuration == 0 ? clipDuration = 15 : clipDuration;
+    if(clipDuration == 0) clipDuration = 15;
+
+    if(useEmotions){
+
+        if(minNumberOfEmotions == 0){
+            ofSystemAlertDialog("Please choose a minimum number of emotions!");
+            return;
+        }
+
+        for (int i = 1; i < emotions.size() - 1; i++) {
+            numberOfEmotions = emotions.at(i).getNumberOfEmotions();
+            int valueBefore = emotions.at(i - 1).getNumberOfEmotions();
+            int valueAfter = emotions.at(i + 1).getNumberOfEmotions();
+
+            //found a peak
+            if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
+                    && numberOfEmotions >= minNumberOfEmotions) {
+
+                // two thirds of the duration before the peak, the rest after the peak
+                startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 2/3);
+                endTimestamp = emotions.at(i).getTimestamp() + (clipDuration / 3);
+
+                if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
+                    //check for a cut 5 seconds before the start timestamp
+                    for(string cutTimestamp : cuts)
+                        if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5){
+                            startTimestamp = ofToInt(cutTimestamp);
+                            // cout << "Cut detected" << endl;
+                        }
+                }
+                // cout << startTimestamp << " - " << endTimestamp << endl;
+
+                //we need to get the number of emotions associated with the timestamps
+                int emotionsInClip = 0;
+                for(int i = startTimestamp; i < endTimestamp; i++){
+                    emotionsInClip += emotionsSecond[i];
+                }
+
+                //we need to get the audio values associated with the timestamps
+                float audioValues = 0;
+                if(useAudio){
+                    for(int i = startTimestamp; i < endTimestamp; i++)
+                        audioValues += audio->getSamples()[i];
+                }
+                pair<int, int> ts(startTimestamp, endTimestamp);
+                ClipWithScore newClip(ts, emotionsInClip, audioValues);
+                double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
+                double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
+                newClip.calcFinalScore(emotionWeight, audioWeight);
+                clips.push_back(newClip);
+
+                cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
+
+            }
+        }
+
+    }else{//use only audio
+        vector<float> audioSamples = audio->getSamples();
+
+        float audioThreshold = 0;
+        for(float f : audioSamples)
+            audioThreshold += f;
+        audioThreshold = audioThreshold / audioSamples.size();
+
+        for(int i = 1; audioSamples.size(); i++){
+
+            float sample = audioSamples[i];
+            int valueBefore = audioSamples[i - 1];
+            int valueAfter = audioSamples[i + 1];
+
+            //found a peak
+            if (sample > valueBefore && sample >= valueAfter
+                    && sample >= audioThreshold) {
+
+                // two thirds of the duration before the peak, the rest after the peak
+                startTimestamp = i - (clipDuration * 2/3);
+                endTimestamp = i + (clipDuration / 3);
+
+                if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
+                    //check for a cut 5 seconds before the start timestamp
+                    for(string cutTimestamp : cuts)
+                        if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5){
+                            startTimestamp = ofToInt(cutTimestamp);
+                           // cout << "Cut detected" << endl;
+                        }
+                }
+
+                //we need to get the audio values associated with the timestamps
+                float audioValues = 0;
+                for(int i = startTimestamp; i < endTimestamp; i++)
+                    audioValues += audio->getSamples()[i];
+
+                pair<int, int> ts(startTimestamp, endTimestamp);
+                ClipWithScore newClip(ts, 0, audioValues);
+                double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
+                double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
+                newClip.calcFinalScore(emotionWeight, audioWeight);
+                clips.push_back(newClip);
+
+                cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
+
+            }
+        }
+
+    }
+
+
+    int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
+    if(summaryDuration == 0) summaryDuration = 3;
+    ofSort(clips, sortByScore);
 
     int totalDuration = 0, i = 0;
     while(totalDuration < summaryDuration * 60 && i < clips.size()){
@@ -1003,8 +1060,10 @@ void ofApp::algorithm() {
     cout << "TotalDuration: " << totalDuration << " === " << "SummaryDur: " << summaryDuration * 60 << endl;
 
     ofSort(timestamps, sortTimestamps);
+
     for(pair<int, int> ts : timestamps)
         cout << ts.first << " - " << ts.second << endl;
-    //cutVideo(timestamps);
+
+    cutVideo(timestamps);
 
 }

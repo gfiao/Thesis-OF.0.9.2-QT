@@ -22,7 +22,28 @@ Item {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
 
+            CheckBox{
+                id: useEmotions
+                objectName: "useEmotions"
+                text: "Use the emotions data in the algorithm?"
+                checked: true
+
+                onCheckedChanged: {
+                    if(useEmotions.checked == false){
+                        checkboxRow.enabled = false
+                        minNrEmotionsRow.enabled = false
+                        emotionsLabel.enabled = false
+                    }
+                    else{
+                        checkboxRow.enabled = true
+                        minNrEmotionsRow.enabled = true
+                        emotionsLabel.enabled = true
+                    }
+                }
+            }
+
             Label {
+                id: emotionsLabel
                 font.bold: true
                 text: "What emotions will be used?:"
             }
@@ -59,6 +80,7 @@ Item {
             }
 
             RowLayout{
+                id: minNrEmotionsRow
                 Label{
                     text: "Minimum number of emotions:"
                     font.bold: true
@@ -68,12 +90,7 @@ Item {
                     placeholderText: "Minimum number of emotions"
                     validator: IntValidator{bottom: 0; top: 1000}
                 }
-            }
-
-            CheckBox{
-                objectName: "useCuts"
-                text: "Use cuts? (Might extract better clips)"
-            }
+            }            
         }
     }
 }

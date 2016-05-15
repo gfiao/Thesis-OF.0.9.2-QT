@@ -27,6 +27,7 @@ Audio::Audio(const char* fileName) {
         }
         //multiply by 1000 so we can have readable values
         float normalizedValue = float(sum / sfinfo.samplerate) * 1000;
+        if(normalizedValue < 0) normalizedValue -= (normalizedValue*2);
         samples.push_back(normalizedValue);
 
         if (normalizedValue > maxValue)
@@ -40,9 +41,8 @@ Audio::Audio(const char* fileName) {
 
     cout << "  Samples Size:   " << samples.size() << endl;
 
-    //for (int i = 0; i < samples.size(); i++)
-        //cout << samples[i] << "  ===========  " << convertToDb(samples[i]) << endl;
-    //cout << samples[i] << endl;
+    /* for (int i = 0; i < samples.size(); i++)
+        cout << samples[i] << endl;*/
 
     cout << "Audio Loaded\n" << endl;
 

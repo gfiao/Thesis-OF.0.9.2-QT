@@ -48,6 +48,12 @@ Item {
             }
 
             CheckBox{
+                id: useCuts
+                objectName: "useCuts"
+                text: "Use cuts? (Might extract better clips)"
+            }
+
+            CheckBox{
                 objectName: "fadeInOut"
                 text: "Fade in/out between clips?"
                 checked: true
