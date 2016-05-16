@@ -84,7 +84,7 @@ public:
     void detectCuts();
     void processCutsFile();
 
-    void cutVideo(vector<pair<int, int>> timestamps);
+    void cutVideo(vector<ClipWithScore> clips);
     void algorithm();
 
     // qml

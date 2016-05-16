@@ -21,12 +21,12 @@ Window{
         id: emotionLabel
         x: 116
         y: 32
-        text: "Emotions - 0.6"
+        text: "Emotions - 0.9"
     }
     Slider{
         objectName: "emotionSlider"
         id: emotionSlider
-        value: 0.6
+        value: 0.9
         stepSize: 0.01
         x: 51
         y: 68
@@ -40,12 +40,12 @@ Window{
         id: audioLabel
         x: 124
         y: 128
-        text: "Audio - 0.4"
+        text: "Audio - 0.1"
     }
     Slider{
         objectName: "audioSlider"
         id: audioSlider
-        value: 0.4
+        value: 0.1
         stepSize: 0.01
         x: 50
         y: 166

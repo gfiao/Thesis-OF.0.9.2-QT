@@ -37,7 +37,7 @@ Item {
             }
             TextField{
                 objectName: "clipDuration"
-                placeholderText: qsTr("Seconds (default is 15s)")
+                placeholderText: qsTr("Seconds (default is 20s)")
                 validator: IntValidator{bottom: 0; top: 45}
             }
 

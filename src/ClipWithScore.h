@@ -24,6 +24,7 @@ public:
     ClipWithScore(pair<int, int> timestamps, int numberOfEmotions, float audioValues);
 
     pair<int, int> getTimestamps();
+    void setTimestamps(int start, int end);
 
     double getFinalScore();
     void calcFinalScore(double emotionWeight, double audioWeight);
