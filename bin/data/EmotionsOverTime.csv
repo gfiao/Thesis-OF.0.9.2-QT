@@ -100,6 +100,7 @@
 347;worry
 353;elation
 354;elation
+357:score
 361;elation
 363;connectedness
 363;elation
@@ -145,6 +146,7 @@
 441;elation
 447;elation
 452;worry
+465:score
 472;anger
 473;worry
 474;unhappiness
@@ -172,6 +174,7 @@
 551;elation
 558;elation
 560;anger
+561:score
 565;surprise
 567;worry
 568;elation
@@ -188,6 +191,7 @@
 619;worry
 620;worry
 621;worry
+623:score
 632;connectedness
 635;elation
 635;elation
@@ -212,6 +216,7 @@
 691;elation
 697;connectedness
 700;worry
+702:score
 708;elation
 708;elation
 711;elation

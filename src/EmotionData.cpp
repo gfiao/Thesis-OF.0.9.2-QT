@@ -18,24 +18,31 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
     getline(file, line, '\n'); // read a string until next newline
     int timestamp;
     timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
+    bool event = false;
     while (file) {
 
+        //cout <<line << "==============" << AuxFunc::split(line, ':').size() << endl;
+        if(AuxFunc::split(line, ':').size() == 2){
+            cout << "aqui" << endl;
+            event = true;
+        }
+
         while (timestamp < interval && file/*wtf*/) {
+            if(AuxFunc::split(line, ':').size() == 1){
+                timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
 
-            timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
+                if (timestamp >= interval)
+                    continue;
 
-            if (timestamp >= interval)
-                continue;
+                emotions.push_back(AuxFunc::split(line, ';').at(1));
 
-            emotions.push_back(AuxFunc::split(line, ';').at(1));
-
-            distinctEmotions.insert(AuxFunc::split(line, ';').at(1));
-
+                distinctEmotions.insert(AuxFunc::split(line, ';').at(1));
+            }
             getline(file, line, '\n');
 
         }
-        if (emotions.size() >= minNumEmotions) {
-            emotionIntervals.push_back(EmotionInterval(interval, emotions));
+        if (emotions.size() >= minNumEmotions) {//dynamic interval
+            emotionIntervals.push_back(EmotionInterval(interval, emotions, event));
 
             if (emotions.size() > maxValue)
                 maxValue = emotions.size();
@@ -48,7 +55,8 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
     //cout << "MaxValue: " << maxValue << endl;
     //cout << emotionIntervals.size() << endl;
     for (EmotionInterval e : emotionIntervals)
-        cout << "Timestamp: " << e.getTimestamp() << "     NrEmocoes: " << e.getNumberOfEmotions() << endl;
+        cout << "Timestamp: " << e.getTimestamp() << "  NrEmocoes: " << e.getNumberOfEmotions()
+            << "   Event: " << event << endl;
 
     //for(string s: distinctEmotions)
     //cout << s << endl;

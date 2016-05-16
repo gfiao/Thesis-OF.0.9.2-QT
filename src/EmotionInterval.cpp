@@ -19,10 +19,10 @@ std::string most_occurred(const std::vector<std::string> &vec) {
 	return std::max_element(str_map.cbegin(), str_map.cend(), comp)->first;
 }
 
-EmotionInterval::EmotionInterval(int timestamp, vector<string> emotions) {
+EmotionInterval::EmotionInterval(int timestamp, vector<string> emotions, bool event) {
 	this->timestamp = timestamp;
 	this->emotions = emotions;
-
+    this->event = event;
 	//if there is only 2 emotions, the second one will be the dominant one
 	dominantEmotion = most_occurred(this->emotions);
 }
@@ -41,4 +41,8 @@ int EmotionInterval::getNumberOfEmotions() {
 
 vector<string> EmotionInterval::getEmotions() {
 	return emotions;
+}
+
+bool EmotionInterval::getEvent(){
+    return event;
 }
