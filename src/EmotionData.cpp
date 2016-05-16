@@ -18,16 +18,16 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
     getline(file, line, '\n'); // read a string until next newline
     int timestamp;
     timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-    bool event = false;
+    bool event;
     while (file) {
-
-        //cout <<line << "==============" << AuxFunc::split(line, ':').size() << endl;
-        if(AuxFunc::split(line, ':').size() == 2){
-            cout << "aqui" << endl;
-            event = true;
-        }
-
+        event = false;
         while (timestamp < interval && file/*wtf*/) {
+
+            if(AuxFunc::split(line, ':').size() == 2){
+                //cout << "aqui" << endl;
+                event = true;
+            }
+
             if(AuxFunc::split(line, ':').size() == 1){
                 timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
 
@@ -42,7 +42,10 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
 
         }
         if (emotions.size() >= minNumEmotions) {//dynamic interval
-            emotionIntervals.push_back(EmotionInterval(interval, emotions, event));
+
+            EmotionInterval ei(interval, emotions, event);
+           // cout << ei.getTimestamp() << "--" << ei.getEvent() << endl;
+            emotionIntervals.push_back(ei);
 
             if (emotions.size() > maxValue)
                 maxValue = emotions.size();
@@ -54,13 +57,12 @@ EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
 
     //cout << "MaxValue: " << maxValue << endl;
     //cout << emotionIntervals.size() << endl;
-    for (EmotionInterval e : emotionIntervals)
+     for (EmotionInterval e : emotionIntervals)
         cout << "Timestamp: " << e.getTimestamp() << "  NrEmocoes: " << e.getNumberOfEmotions()
-            << "   Event: " << event << endl;
+             << "   Event: " << e.getEvent() << endl;
 
     //for(string s: distinctEmotions)
     //cout << s << endl;
-
     file.close();
 }
 
