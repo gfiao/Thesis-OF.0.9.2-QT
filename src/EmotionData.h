@@ -6,29 +6,36 @@ using namespace std;
 #include <sstream>
 #include "AuxFunc.h"
 #include "EmotionInterval.h"
+#include "ofxJSON.h"
 
 class EmotionData {
 
 private:
 
-	//emotions shared during a certain interval
+    //emotions shared during a certain interval
     vector<EmotionInterval> emotionIntervals;
 
-	int interval;
+    /*ofxJSONElement jsonFile;
+    vector<pair<int, vector<string>>> emotionsInSecond;
+    vector<bool> eventInSecond;*/
 
-	//highest number of emotions shared, used in the creation of the emotions chart
-	int maxValue;
+    int interval;
+
+    //highest number of emotions shared, used in the creation of the emotions chart
+    int maxValue;
+
+    int minValue;
 
     //the emotions present in the data, used to create a combobox in the UI
     set<string> distinctEmotions;
 
 public:
 
-	EmotionData(string filePath, int interval = 5, int minNumEmotion = 0);
+    EmotionData(string filePath, int interval = 5, int minNumEmotion = 0);
 
-	//returns vector with all the intervals
-	vector<EmotionInterval> getEmotionIntervals();
-	int getInterval();
+    //returns vector with all the intervals
+    vector<EmotionInterval> getEmotionIntervals();
+    int getInterval();
     int getMaxValue();
 
     set<string> getDistinctEmotions();

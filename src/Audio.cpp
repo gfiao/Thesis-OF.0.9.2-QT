@@ -26,20 +26,20 @@ Audio::Audio(const char* fileName) {
             sum += frames[j];
         }
         //multiply by 1000 so we can have readable values
-        float normalizedValue = float(sum / sfinfo.samplerate) * 1000;
-        if(normalizedValue < 0) normalizedValue -= (normalizedValue*2);
-        samples.push_back(normalizedValue);
+        float readableValue = float(sum / sfinfo.samplerate) * 1000;
+        if(readableValue < 0) readableValue -= (readableValue*2);
+        samples.push_back(readableValue);
 
-        if (normalizedValue > maxValue)
-            maxValue = normalizedValue;
-        if (normalizedValue < minValue)
-            minValue = normalizedValue;
+        if (readableValue > maxValue)
+            maxValue = readableValue;
+        if (readableValue < minValue)
+            minValue = readableValue;
     }
 
-    //cout << "MaxValue:  " << maxValue << endl;
-    //cout << "MinValue:  " << minValue << endl;
+    cout << "   MaxValue:  " << maxValue << endl;
+    cout << "   MinValue:  " << minValue << endl;
 
-    cout << "  Samples Size:   " << samples.size() << endl;
+    cout << "   Samples Size:   " << samples.size() << endl;
 
     /* for (int i = 0; i < samples.size(); i++)
         cout << samples[i] << endl;*/

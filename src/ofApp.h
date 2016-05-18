@@ -1,6 +1,8 @@
 #pragma once
+#include <string>
 #include "ofMain.h"
 #include "ofxCv.h"
+#include "ofxJSON.h"
 #include "EmotionData.h"
 #include "AuxFunc.h"
 #include "Audio.h"

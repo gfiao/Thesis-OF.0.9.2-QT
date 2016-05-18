@@ -142,6 +142,53 @@ void histTest(vector<ofImage> images){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+
+    /*string filePath = "EmotionsOverTime.json";
+    ifstream file(filePath); //read JSON file
+    std::string content( (std::istreambuf_iterator<char>(file) ),
+                         (std::istreambuf_iterator<char>()    ) );
+
+
+    ofxJSONElement jsonFile;
+    bool parsingSuccessful = jsonFile.open(filePath);
+    cout << jsonFile.size() << endl;
+
+    file.close();
+
+    vector<int> nrEmotionsInSecond;
+    vector<vector<string>> emotionsInSecond;
+    vector<bool> eventInSecond;
+
+    nrEmotionsInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
+    emotionsInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
+    eventInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
+
+    for (Json::ArrayIndex i = 0; i < jsonFile.size(); i++){
+        //cout << jsonFile[i]["timestamp"].asInt() << "=====" << jsonFile[i]["event"].asBool() << endl;
+        int timestamp = jsonFile[i]["timestamp"].asInt();
+        cout << timestamp << endl;
+
+        if(!jsonFile[i]["emotion"].isNull()){
+            nrEmotionsInSecond[timestamp] +=  1;
+            //   emotionsInSecond[timestamp].second.push_back(jsonFile[i]["emotion"].asString());
+        }
+
+        if(!jsonFile[i]["event"].isNull())
+            eventInSecond[timestamp] = true;
+    }
+
+
+    for(int i = 1; i < nrEmotionsInSecond.size(); i++){
+
+        cout << "Timestamp: " << i << "  NrEmotions: " << emotionsInSecond[i].size() << endl;
+
+    }*/
+
+
+
+
+
+
     cout << "OpenCV version: " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << endl;
 
     emotionData = nullptr;
@@ -872,11 +919,13 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     string concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -r 25 " + newFolder + "\\output." + extension;
     std::system(concatCmd.c_str());
 
+    ofSystemAlertDialog("The videos has been created!");
+
     //this command is faster, but loses frames after the second clip
     /*string concatCmd = "ffmpeg -f concat -i data\\" + to_string(folderName) + "\\concat.txt -codec copy -r 25 data\\" +
-    to_string(folderName) + "\\output.m4v";
-    system(concatCmd.c_str());
-    system("ffmpeg -f concat -i concat.txt -codec copy data\\output.m4v");*/
+                        to_string(folderName) + "\\output.m4v";
+                        system(concatCmd.c_str());
+                        system("ffmpeg -f concat -i concat.txt -codec copy data\\output.m4v");*/
 
 }
 
@@ -886,22 +935,29 @@ void ofApp::algorithm() {
     ifstream file(emotionDataPath);
     string line;
     getline(file, line, '\n'); //skip first line
-    vector<int> emotionsSecond (1000); //vec[i] has the number of emotions at second i
+    vector<pair<int, bool>> emotionsSecond (841); //vec[i] has the number of emotions at second i
     getline(file, line, '\n');
     while(file){
-        // emotionsSecond.emplace(ofToInt(AuxFunc::split(line, ';')[0])), 1);
-        int timestamp = ofToInt(AuxFunc::split(line, ';')[0]);
-        emotionsSecond.at(timestamp)++;
-        getline(file, line, '\n');
+        if(AuxFunc::split(line, ':').size() == 2){
+            int timestamp = ofToInt(AuxFunc::split(line, ':')[0]);
+            emotionsSecond[timestamp].second = true;
+            getline(file, line, '\n');
+        }else{
+            int timestamp = ofToInt(AuxFunc::split(line, ';')[0]);
+            emotionsSecond.at(timestamp).first++;
+            getline(file, line, '\n');
+        }
     }
 
+    // for(int i = 0; i < emotionsSecond.size(); i++)
+    //   cout << "Timestamp: " << i << " NR: " << emotionsSecond[i].first << " Event:  " << emotionsSecond[i].second << endl;
 
 
     //===================================================
 
     /*int minNumberOfEmotions = qmlWindow->findChild<QObject*>("minNumberOfEmotions")->property("text").toInt();
-    //min number of emotions a clip must have to be included in the summary
-    cout << "minNumberOfEmotions: " << minNumberOfEmotions << endl;*/
+                    //min number of emotions a clip must have to be included in the summary
+                    cout << "minNumberOfEmotions: " << minNumberOfEmotions << endl;*/
 
     int numberOfEmotions;
 
@@ -933,26 +989,42 @@ void ofApp::algorithm() {
     }
 
     vector<EmotionInterval> emotions = emotionData->getEmotionIntervals();
+    vector<pair<int, int>> eventTimestamps;
     int startTimestamp = emotions.at(0).getTimestamp();
     int endTimestamp;
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
     if(clipDuration == 0) clipDuration = 20;
 
+    //weights
+    double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
+    double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
+
     if(useEmotions){
 
-        /* if(minNumberOfEmotions == 0){
-            ofSystemAlertDialog("Please choose a minimum number of emotions!");
-            return;
-        }*/
+        //add the events first
+        for(int i = 0; i < emotionsSecond.size(); i++){
+            if(emotionsSecond[i].second){
+                int start = i - (clipDuration / 2);
+                int end = i + (clipDuration / 2);
+                pair<int, int> ts(start, end);
+                eventTimestamps.push_back(ts);
+            }
+        }
+
+        for(pair<int, int> event : eventTimestamps){
+            ClipWithScore newClip(event, 0, 0);
+            clipsInSummary.push_back(newClip);
+        }
+
 
         for (int i = 1; i < emotions.size() - 1; i++) {
             numberOfEmotions = emotions[i].getNumberOfEmotions();
             int valueBefore = emotions[i - 1].getNumberOfEmotions();
             int valueAfter = emotions[i + 1].getNumberOfEmotions();
 
+
             //found a peak
-            if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
-                    /*&& numberOfEmotions >= minNumberOfEmotions*/) {
+            if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter) {
 
                 // two thirds of the duration before the peak, the rest after the peak
                 startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 3/4);
@@ -971,7 +1043,7 @@ void ofApp::algorithm() {
                 //we need to get the number of emotions associated with the timestamps
                 int emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
-                    emotionsInClip += emotionsSecond[i];
+                    emotionsInClip += emotionsSecond[i].first;
                 }
 
                 //we need to get the audio values associated with the timestamps
@@ -980,15 +1052,14 @@ void ofApp::algorithm() {
                     for(int i = startTimestamp; i < endTimestamp; i++)
                         audioValues += audio->getSamples()[i];
                 }
+                float normalizedAudio = audioValues / audio->getMaxValue();
 
                 pair<int, int> ts(startTimestamp, endTimestamp);
-                ClipWithScore newClip(ts, emotionsInClip, audioValues);
-                double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
-                double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
+                ClipWithScore newClip(ts, emotionsInClip, normalizedAudio);
                 newClip.calcFinalScore(emotionWeight, audioWeight);
                 clips.push_back(newClip);
 
-                cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
+                //cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;
 
             }
         }
@@ -1046,30 +1117,69 @@ void ofApp::algorithm() {
     }
 
 
-    for(int i = 0; i < clips.size() - 1; i++){
-        pair<int, int> ts = clips[i].getTimestamps();
-        if(clips[i].getTimestamps().second >= clips[i+1].getTimestamps().first){
-            clips.erase(clips.begin()+i);
-            clips[i].setTimestamps(ts.first, ts.second + 5);
+    ofSort(clips, sortClips);
+    for(int n = 0; n < 2; n++) //merge extracted clips
+        for(int i = 0; i < clips.size() - 1; i++){
+            pair<int, int> ts = clips[i].getTimestamps();
+            if(clips[i].getTimestamps().second > clips[i+1].getTimestamps().first){
+                //cout << "merge" << endl;
+                clips.erase(clips.begin()+i);
+                clips[i].setTimestamps(ts.first, ts.second + 5);
+            }
         }
-    }
 
+    //for(ClipWithScore c : clips)
+    //  cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
+    //cout << "===========================" <<endl;
+
+    ofSort(clips, sortClips);
+    for(int n = 0; n < 2; n++) //merge event clips with other clips
+        for(int i = 0; i < eventTimestamps.size(); i++){
+            int eventEnd = eventTimestamps[i].second;
+            for(int j = 0; j < clips.size(); j++){
+                if(eventEnd > clips[j].getTimestamps().first){
+                    clips.erase(clips.begin()+j);
+                    break;
+                }
+
+            }
+        }
+
+    for(ClipWithScore c : clips)
+        cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
 
     int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
     if(summaryDuration == 0) summaryDuration = 3;
     ofSort(clips, sortByScore);
+    //  for(ClipWithScore c : clips)
+    //    cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
 
-    int totalDuration = 0, i = 0;
+    int totalDuration = clipsInSummary.size() * clipDuration;
+    int i = 0;
     while(totalDuration < summaryDuration * 60 && i < clips.size()){
         clipsInSummary.push_back(clips[i]);
         totalDuration += clipDuration;
         i++;
     }
 
+    ofSort(clipsInSummary, sortClips);
+    //merge clips in the final summary
+    for(int i = 0; i < clipsInSummary.size()-1; i++){
+        pair<int, int> ts = clipsInSummary[i].getTimestamps();
+        pair<int, int> nextTs = clipsInSummary[i+1].getTimestamps();
+        if(clipsInSummary[i].getTimestamps().second > nextTs.first){
+            //cout << ts.first << " " << ts.second << endl;
+            //cout << nextTs.first << " " << nextTs.second << endl << endl;
+            clipsInSummary.erase(clipsInSummary.begin()+(i+1));
+            clipsInSummary[i].setTimestamps(ts.first, nextTs.second);
+            //cout << "merge " << ts.first << " to " << nextTs.second << endl;
+        }
+    }
+
+    totalDuration = clipsInSummary.size() * clipDuration;
     cout << "TotalDuration: " << totalDuration << " === " << "SummaryDur: " << summaryDuration * 60 << endl;
     cout << "Clips in summary: " << clipsInSummary.size() << endl;
 
-    ofSort(clipsInSummary, sortClips);
 
     for(ClipWithScore c : clipsInSummary)
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;

@@ -28,6 +28,7 @@ public:
 
     double getFinalScore();
     void calcFinalScore(double emotionWeight, double audioWeight);
+    void setFinalScore(double score);
 
     float getAudioValues();
     void setAudioValues(float audioValues);
