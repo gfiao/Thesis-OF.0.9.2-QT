@@ -948,6 +948,13 @@ void ofApp::algorithm() {
             getline(file, line, '\n');
         }
     }
+    file.close();
+
+    int maxValue = 0;
+    for(int i = 0; i < emotionsSecond.size(); i++)
+        if(emotionsSecond[i].first > maxValue)
+            maxValue = emotionsSecond[i].first;
+
 
     // for(int i = 0; i < emotionsSecond.size(); i++)
     //   cout << "Timestamp: " << i << " NR: " << emotionsSecond[i].first << " Event:  " << emotionsSecond[i].second << endl;
@@ -1043,19 +1050,21 @@ void ofApp::algorithm() {
                 //we need to get the number of emotions associated with the timestamps
                 int emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
-                    emotionsInClip += emotionsSecond[i].first;
+                    int normalizedEmotions = emotionsSecond[i].first / maxValue;
+                    emotionsInClip += normalizedEmotions;
                 }
 
                 //we need to get the audio values associated with the timestamps
                 float audioValues = 0;
                 if(useAudio){
-                    for(int i = startTimestamp; i < endTimestamp; i++)
-                        audioValues += audio->getSamples()[i];
+                    for(int i = startTimestamp; i < endTimestamp; i++){
+                        float normalizedAudio = audio->getSamples()[i] / audio->getMaxValue();
+                        audioValues += normalizedAudio;
+                    }
                 }
-                float normalizedAudio = audioValues / audio->getMaxValue();
 
                 pair<int, int> ts(startTimestamp, endTimestamp);
-                ClipWithScore newClip(ts, emotionsInClip, normalizedAudio);
+                ClipWithScore newClip(ts, emotionsInClip, audioValues);
                 newClip.calcFinalScore(emotionWeight, audioWeight);
                 clips.push_back(newClip);
 
