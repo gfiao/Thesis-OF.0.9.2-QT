@@ -6,7 +6,6 @@ using namespace std;
 #include <sstream>
 #include "AuxFunc.h"
 #include "EmotionInterval.h"
-#include "ofxJSON.h"
 
 class EmotionData {
 

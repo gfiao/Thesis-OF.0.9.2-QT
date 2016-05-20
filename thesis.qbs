@@ -28,7 +28,7 @@ Project{
         ]
 
         of.addons: [
-            'ofxOpenCv','ofxXmlSettings','ofxCv','ofxJSON'
+            'ofxOpenCv','ofxXmlSettings','ofxCv'
         ]
 
         // additional flags for the project. the of module sets some

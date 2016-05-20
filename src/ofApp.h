@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include "ofMain.h"
+#include "ofxOpenCv.h"
+#include <opencv2/opencv.hpp>
 #include "ofxCv.h"
-#include "ofxJSON.h"
 #include "EmotionData.h"
 #include "AuxFunc.h"
 #include "Audio.h"
@@ -79,8 +80,8 @@ public:
     int checkShotType(vector<ofImage> images);
 
     //movement
-    vector<cv::KeyPoint> extractKeypoints(int timestamp);
-    pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
+    vector<cv::KeyPoint> extractKeypoints(float timestamp);
+    pair<int, int> calcMotionDirection(float startTimestamp, float endTimestamp);
 
     //cut detetion
     void detectCuts();

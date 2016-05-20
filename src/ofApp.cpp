@@ -141,7 +141,48 @@ void histTest(vector<ofImage> images){
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    /*video.load("WeFeel_1.mp4");
+    //=======================
+    video.play();
+    video.setPaused(true);
+    //=======================
 
+    video.setPosition(0.5);//half of the video
+    //video.update();
+    ofImage dummy;
+    dummy.setFromPixels(video.getPixels());
+    dummy.save("dummy.jpg");
+
+    video.setPosition(30 / video.getDuration());//30 seconds into the video
+    //video.update();
+    ofImage img1;
+    img1.setFromPixels(video.getPixels());
+    img1.save("img1.jpg");
+
+    video.setPosition(60 /video.getDuration());//60 seconds into the video
+   // video.update();
+    ofImage img2(video.getPixels());
+    img2.save("img2.jpg");
+*/
+
+
+    /* video.update();
+    float startTimestamp = 200;
+    float endTimestamp = 220;
+
+    float startPos = startTimestamp / video.getDuration();
+    cout << startPos << endl;
+    video.setPosition(startPos);
+    video.update();
+    ofImage img1(video.getPixels());
+    img1.save("lol1.jpg");
+
+    float endPos = endTimestamp / video.getDuration();
+    cout << endPos << endl;
+    video.setPosition(endPos);
+    video.update();
+    ofImage img2(video.getPixels());
+    img2.save("lol2.jpg");*/
 
     /*string filePath = "EmotionsOverTime.json";
     ifstream file(filePath); //read JSON file
@@ -533,12 +574,12 @@ int ofApp::checkShotType(vector<ofImage> images) {
 }
 
 
-vector<cv::KeyPoint> ofApp::extractKeypoints(int timestamp) {
+vector<cv::KeyPoint> ofApp::extractKeypoints(float timestamp) {
 
     //=======================
     //so we can extract the keypoints, we need to start the video first
-    video.play();
-    video.setPaused(true);
+    // video.play();
+    // video.setPaused(true);
     //=======================
 
     cv::Mat grey;
@@ -547,7 +588,15 @@ vector<cv::KeyPoint> ofApp::extractKeypoints(int timestamp) {
     vector<cv::KeyPoint> keypoints;
     video.setPosition(timestamp / video.getDuration());
     video.update();
+
     ofxCv::copyGray(video, grey);
+
+    ofImage img(video.getPixels());
+    img.save(ofToString(timestamp) + ".jpg");
+
+    //cv::Ptr<cv::BRISK> ptrBrisk = cv::BRISK::create();
+    //ptrBrisk->detect(grey, keypoints);
+
     cv::FAST(grey, keypoints, 2);
     cv::KeyPointsFilter::retainBest(keypoints, 30);
 
@@ -556,22 +605,64 @@ vector<cv::KeyPoint> ofApp::extractKeypoints(int timestamp) {
 }
 
 //TODO: for now use only the first and last frame
-pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
+pair<int, int> ofApp::calcMotionDirection(float startTimestamp, float endTimestamp) {
+
+    //=======================
+    //so we can extract the keypoints, we need to start the video first
+    //for some reason, we need to first extract a dummy frame, so the other
+    //two are extracted in the expected manner
+    video.play();
+    video.setPaused(true);
+    video.setPosition(0.1);
+    ofImage dummy(video.getPixels());
+    // dummy.save("dummy.jpg");
+    video.update();
+    //=======================
+
 
     startTimestamp = 200;
     endTimestamp = 220;
-
+    vector<float> timestamps;
+    timestamps.push_back(startTimestamp);
+    timestamps.push_back(endTimestamp);
+    vector<cv::KeyPoint> startKeypoints;
+    vector<cv::KeyPoint> endKeypoints;
+    //======================================
     auto start = ofGetElapsedTimeMillis();
 
+    for(int i = 0; i < timestamps.size(); i++){
+        video.setPosition(timestamps[i] / video.getDuration());
+        video.update();
+        cv::Mat grey;
+        ofxCv::copyGray(video, grey);
+
+        //
+        // ofImage img(video.getPixels());
+        //img.save(ofToString(timestamps[i]) + ".jpg");
+        //
+
+        if(i == 0){
+            cv::FAST(grey, startKeypoints, 2);
+            cv::KeyPointsFilter::retainBest(startKeypoints, 30);
+        }else{
+            cv::FAST(grey, endKeypoints, 2);
+            cv::KeyPointsFilter::retainBest(endKeypoints, 30);
+        }
+    }
+
+
+
     //extract the start keypoints
-    vector<cv::KeyPoint> startKeypoints = extractKeypoints(startTimestamp);
+    //vector<cv::KeyPoint> startKeypoints;
+    //= extractKeypoints(startTimestamp);
     cout << "startKeypoints: " << startKeypoints.size() << endl;
 
     //extract the end keypoints
-    vector<cv::KeyPoint> endKeypoints = extractKeypoints(endTimestamp);
+    //vector<cv::KeyPoint> endKeypoints;
+    //= extractKeypoints(endTimestamp);
     cout << "endKeypoints: " << endKeypoints.size() << endl;
 
-    cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << endl;
+    cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << "ms" << endl;
 
     //TODO: resolver o problema, usar codigo de CM
     if (startKeypoints.size() == 0 || endKeypoints.size() == 0) {
@@ -1167,7 +1258,8 @@ void ofApp::algorithm() {
     int i = 0;
     while(totalDuration < summaryDuration * 60 && i < clips.size()){
         clipsInSummary.push_back(clips[i]);
-        totalDuration += clipDuration;
+        pair<int, int> ts = clips[i].getTimestamps();
+        totalDuration += (ts.second - ts.first);
         i++;
     }
 
@@ -1180,7 +1272,7 @@ void ofApp::algorithm() {
             //cout << ts.first << " " << ts.second << endl;
             //cout << nextTs.first << " " << nextTs.second << endl << endl;
             clipsInSummary.erase(clipsInSummary.begin()+(i+1));
-            clipsInSummary[i].setTimestamps(ts.first, nextTs.second);
+            clipsInSummary[i].setTimestamps(ts.first, ts.second + 3);
             //cout << "merge " << ts.first << " to " << nextTs.second << endl;
         }
     }
