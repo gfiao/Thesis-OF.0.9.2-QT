@@ -146,46 +146,23 @@ void ofApp::setup(){
     video.play();
     video.setPaused(true);
     //=======================
-
-    video.setPosition(0.5);//half of the video
-    ofSleepMillis(100);
-    //video.update();
-    ofImage dummy;
-    dummy.setFromPixels(video.getPixels());
-    dummy.save("dummy.jpg");
-
-    video.setPosition(30 / video.getDuration());//30 seconds into the video
+    int start = 30, end = 60;
+    video.setPosition(start / video.getDuration());//30 seconds into the video
     ofSleepMillis(100);
     //video.update();
     ofImage img1;
     img1.setFromPixels(video.getPixels());
     img1.save("img1.jpg");
 
-    video.setPosition(60 /video.getDuration());//60 seconds into the video
+    video.setPosition(end /video.getDuration());//60 seconds into the video
     ofSleepMillis(100);
-   // video.update();
+    // video.update();
     ofImage img2(video.getPixels());
     img2.save("img2.jpg");*/
 
 
 
-    /* video.update();
-    float startTimestamp = 200;
-    float endTimestamp = 220;
 
-    float startPos = startTimestamp / video.getDuration();
-    cout << startPos << endl;
-    video.setPosition(startPos);
-    video.update();
-    ofImage img1(video.getPixels());
-    img1.save("lol1.jpg");
-
-    float endPos = endTimestamp / video.getDuration();
-    cout << endPos << endl;
-    video.setPosition(endPos);
-    video.update();
-    ofImage img2(video.getPixels());
-    img2.save("lol2.jpg");*/
 
     /*string filePath = "EmotionsOverTime.json";
     ifstream file(filePath); //read JSON file
@@ -241,6 +218,19 @@ void ofApp::setup(){
     ofBackground(ofColor::white);
 
     qmlSetup();
+
+    //load the default cuts file
+    cuts.clear();
+    ifstream file(DEAFULT_CUTS_FILE); //the default file has a 0.4 threshold
+    string line;
+    vector<string> splitLine;
+    while (file) {
+        getline(file, line, '\n');
+        //cout << line << endl;
+        splitLine = AuxFunc::split(line, '|');
+        if (splitLine.size() != 0) // last line is empty
+            cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
+    }
 
     //TODO: code to get the text from the checkboxes, use later
     /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
@@ -577,7 +567,7 @@ int ofApp::checkShotType(vector<ofImage> images) {
 }
 
 
-vector<cv::KeyPoint> ofApp::extractKeypoints(float timestamp) {
+vector<cv::KeyPoint> ofApp::detectKeypoints(int timestamp) {
 
     cv::Mat grey;
 
@@ -602,7 +592,7 @@ vector<cv::KeyPoint> ofApp::extractKeypoints(float timestamp) {
 }
 
 //TODO: for now use only the first and last frame
-pair<int, int> ofApp::calcMotionDirection(float startTimestamp, float endTimestamp) {
+pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
 
     //=======================
     //so we can extract the keypoints, we need to start the video first
@@ -610,27 +600,18 @@ pair<int, int> ofApp::calcMotionDirection(float startTimestamp, float endTimesta
     video.setPaused(true);
     //=======================
 
-
-    startTimestamp = 200;
-    endTimestamp = 220;
-
     auto start = ofGetElapsedTimeMillis();
 
     //extract the start keypoints
-    vector<cv::KeyPoint> startKeypoints = extractKeypoints(startTimestamp);
+    vector<cv::KeyPoint> startKeypoints = detectKeypoints(startTimestamp);
     cout << "startKeypoints: " << startKeypoints.size() << endl;
 
     //extract the end keypoints
-    vector<cv::KeyPoint> endKeypoints = extractKeypoints(endTimestamp);
+    vector<cv::KeyPoint> endKeypoints = detectKeypoints(endTimestamp);
     cout << "endKeypoints: " << endKeypoints.size() << endl;
 
     cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << "ms" << endl;
 
-    //TODO: resolver o problema, usar codigo de CM
-    if (startKeypoints.size() == 0 || endKeypoints.size() == 0) {
-        ofSystemAlertDialog("extractKeypoints returns 0");
-        return pair<int, int>(0, 0);
-    }
 
     /* Compare each of the keypoints with it's counterpart (best approach?) */
     int rightCounter = 0, leftCounter = 0;
@@ -1024,21 +1005,6 @@ void ofApp::algorithm() {
     //timestamps of the clips to be included in the final video
     vector<ClipWithScore> clipsInSummary;
     vector<ClipWithScore> clips;
-
-    //in case the user wants to use the cuts data, load the default cuts file
-    if(qmlWindow->findChild<QObject*>("useCuts")->property("checked") == true){
-        cuts.clear();
-        ifstream file(DEAFULT_CUTS_FILE); //the default file has a 0.4 threshold
-        string line;
-        vector<string> splitLine;
-        while (file) {
-            getline(file, line, '\n');
-            //cout << line << endl;
-            splitLine = AuxFunc::split(line, '|');
-            if (splitLine.size() != 0) // last line is empty
-                cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
-        }
-    }
 
     bool useEmotions = qmlWindow->findChild<QObject*>("useEmotions")->property("checked").toBool();
     bool useAudio = qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked").toBool();

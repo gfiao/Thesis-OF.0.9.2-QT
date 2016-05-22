@@ -80,8 +80,8 @@ public:
     int checkShotType(vector<ofImage> images);
 
     //movement
-    vector<cv::KeyPoint> extractKeypoints(float timestamp);
-    pair<int, int> calcMotionDirection(float startTimestamp, float endTimestamp);
+    vector<cv::KeyPoint> detectKeypoints(int timestamp);
+    pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
 
     //cut detetion
     void detectCuts();
