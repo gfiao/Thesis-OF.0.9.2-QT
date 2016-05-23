@@ -23,7 +23,7 @@ Item {
             CheckBox{
                 id: useMov
                 objectName: "useMov"
-                checked: true
+                checked: false
                 text: "Use movement in the algorithm?"
 
                 onCheckedChanged: {

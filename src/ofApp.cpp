@@ -232,7 +232,6 @@ void ofApp::setup(){
             cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
     }
 
-
     /*QObjectList checkboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
     for(int i = 0; i < checkboxes.size()-1; i++)
         cout << checkboxes[i]->property("checked").toBool() << endl;*/
@@ -758,6 +757,19 @@ void ofApp::processCutsFile(){
 
 }
 
+//detects sudden cuts between two timestamps
+vector<timestamps> ofApp::detectCutsIn(int start, int end){
+    vector<timestamps> ret;
+    for(string cut : cuts){
+        if(ofToInt(cut) > start && ofToInt(cut) < end){
+            timestamps ts(start, ofToInt(cut));
+            ret.push_back(ts);
+            start = ofToInt(cut);
+        }
+    }
+    return ret;
+}
+
 void ofApp::selectRow(int row){
     if(video.isLoaded()){
         video.setPosition(ofToFloat(AuxFunc::split(cuts[row], '=')[1]) / video.getDuration());
@@ -1004,7 +1016,7 @@ void ofApp::algorithm() {
     file.close();
 
     //for(int i = 0; i < emotionsSecond.size(); i++)
-      //  cout << emotionsSecond[i].first << endl;
+    //  cout << emotionsSecond[i].first << endl;
 
     double maxValue = 0;
     for(int i = 0; i < emotionsSecond.size(); i++)
@@ -1048,11 +1060,14 @@ void ofApp::algorithm() {
     double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
 
     //movement
-    string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
-    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
-    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
-    // for(int i = 0; i < checkboxes.size()-1; i++)
-    //   cout << checkboxes[i]->property("checked").toBool() << endl;
+    bool useMov = qmlWindow->findChild<QObject*>("useMov")->property("checked").toBool();
+    if(useMov){
+        string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
+        QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
+        QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
+        // for(int i = 0; i < checkboxes.size()-1; i++)
+        //   cout << checkboxes[i]->property("checked").toBool() << endl;
+    }
 
     if(useEmotions){
 
@@ -1067,7 +1082,14 @@ void ofApp::algorithm() {
         }
 
         for(pair<int, int> event : eventTimestamps){
-            ClipWithScore newClip(event, 0, 0);
+            vector<timestamps> ts = detectCutsIn(event.first, event.second);
+            int motion = -1;
+            for(timestamps t : ts){
+                motion = calcMotionDirection(event.first, event.second);
+            }
+
+            ClipWithScore newClip(event, 0, 0, motion);
+
             clipsInSummary.push_back(newClip);
         }
 
@@ -1104,7 +1126,7 @@ void ofApp::algorithm() {
                     emotionsInClip += normalizedEmotions;
                 }
                 //cout << "MaxValue: " << maxValue << endl;
-               // cout << emotionsInClip << endl;
+                // cout << emotionsInClip << endl;
 
                 //we need to get the audio values associated with the timestamps
                 float audioValues = 0;
@@ -1115,8 +1137,9 @@ void ofApp::algorithm() {
                     }
                 }
 
+                int motion = calcMotionDirection(startTimestamp, endTimestamp);
                 pair<int, int> ts(startTimestamp, endTimestamp);
-                ClipWithScore newClip(ts, emotionsInClip, audioValues);
+                ClipWithScore newClip(ts, emotionsInClip, audioValues, motion);
                 newClip.calcFinalScore(emotionWeight, audioWeight);
                 clips.push_back(newClip);
 
@@ -1197,13 +1220,11 @@ void ofApp::algorithm() {
     for(int n = 0; n < 2; n++) //merge event clips with other clips
         for(int i = 0; i < eventTimestamps.size(); i++){
             int eventEnd = eventTimestamps[i].second;
-            for(int j = 0; j < clips.size(); j++){
+            for(int j = 0; j < clips.size(); j++)
                 if(eventEnd > clips[j].getTimestamps().first){
                     clips.erase(clips.begin()+j);
                     break;
                 }
-
-            }
         }
 
     for(ClipWithScore c : clips)
