@@ -20,10 +20,35 @@ Item {
             spacing: 10
             Item { Layout.preferredHeight: 4 } // padding
 
+            CheckBox{
+                id: useMov
+                objectName: "useMov"
+                checked: true
+                text: "Use movement in the algorithm?"
 
+                onCheckedChanged: {
+                    if(useMov.checked == false){
+                        firstDirectionRow.enabled = false
+                        timeframeRow.enabled = false
+                        secondDirectionRow.enabled = false
+                        firstHalf.enabled = false
+                        timeframe.enabled = false
+                        secondHalf.enabled = false
+                    }
+                    else{
+                        firstDirectionRow.enabled = true
+                        timeframeRow.enabled = true
+                        secondDirectionRow.enabled = true
+                        firstHalf.enabled = true
+                        timeframe.enabled = true
+                        secondHalf.enabled = true
+                    }
+                }
+            }
 
 
             Label{
+                id: firstHalf
                 text: "First half:"
                 font.bold: true
             }
@@ -42,6 +67,7 @@ Item {
             }
 
             Label{
+                id: timeframe
                 text: "Timeframe:"
                 font.bold: true
             }
@@ -49,14 +75,15 @@ Item {
                 id: timeframeRow
                 objectName: "timeframeRow"
 
-                //more validation will be done on the C++ side
                 TextField {
+                    objectName: "halfTime"
                     placeholderText: qsTr("Start Timestamp")
                     validator: IntValidator{bottom: 0; top: 10000}
                 }
             }
 
             Label{
+                id: secondHalf
                 text: "Second half:"
                 font.bold: true
             }

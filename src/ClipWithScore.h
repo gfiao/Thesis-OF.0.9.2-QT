@@ -3,6 +3,10 @@ using namespace std;
 #include <utility>
 #include <iostream>
 
+static const int LEFT = 0;
+static const int RIGHT = 1;
+static const int UNDEFINED = -1;
+
 class ClipWithScore{
 
 private:
@@ -14,14 +18,19 @@ private:
     double finalScore;
 
     //number of emotions shared during the clip
-    int nrOfEmotions;
+    double nrOfEmotions;
 
     //audio values associated with this clip
     float audioValues;
 
+    //left - 0
+    //right - 1
+    //undifined - (-1)
+    int movement;
+
 public:
 
-    ClipWithScore(pair<int, int> timestamps, int numberOfEmotions, float audioValues);
+    ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues, int mov = -1);
 
     pair<int, int> getTimestamps();
     void setTimestamps(int start, int end);
@@ -34,4 +43,7 @@ public:
     void setAudioValues(float audioValues);
 
     int getNrOfEmotions();
+
+    int setMovement(int mov);
+    int getMovement();
 };

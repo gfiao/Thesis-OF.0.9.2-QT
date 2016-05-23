@@ -28,7 +28,6 @@ static const int OUT_OF_FIELD = 2;
 static const string NOT_NUMBER = "Not a number!";
 static const string WRONG_NUMBER = "The value must be between 0 and 1!";
 
-
 class ofApp : public ofBaseApp {
 private:
     //oF
@@ -81,7 +80,7 @@ public:
 
     //movement
     vector<cv::KeyPoint> detectKeypoints(int timestamp);
-    pair<int, int> calcMotionDirection(int startTimestamp, int endTimestamp);
+    int calcMotionDirection(int startTimestamp, int endTimestamp);
 
     //cut detetion
     void detectCuts();

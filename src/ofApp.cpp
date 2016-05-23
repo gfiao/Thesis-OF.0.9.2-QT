@@ -232,6 +232,18 @@ void ofApp::setup(){
             cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
     }
 
+
+    /*QObjectList checkboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
+    for(int i = 0; i < checkboxes.size()-1; i++)
+        cout << checkboxes[i]->property("checked").toBool() << endl;*/
+
+    /*QObjectList checkboxes1 = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
+    for(QObject* obj : checkboxes1)
+        cout << obj->property("checked").toBool() << endl;*/
+
+
+
+
     //TODO: code to get the text from the checkboxes, use later
     /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
     for(QObject* obj : checkboxes)
@@ -592,7 +604,7 @@ vector<cv::KeyPoint> ofApp::detectKeypoints(int timestamp) {
 }
 
 //TODO: for now use only the first and last frame
-pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
+int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
 
     //=======================
     //so we can extract the keypoints, we need to start the video first
@@ -604,11 +616,11 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
 
     //extract the start keypoints
     vector<cv::KeyPoint> startKeypoints = detectKeypoints(startTimestamp);
-    cout << "startKeypoints: " << startKeypoints.size() << endl;
+    //cout << "startKeypoints: " << startKeypoints.size() << endl;
 
     //extract the end keypoints
     vector<cv::KeyPoint> endKeypoints = detectKeypoints(endTimestamp);
-    cout << "endKeypoints: " << endKeypoints.size() << endl;
+    // cout << "endKeypoints: " << endKeypoints.size() << endl;
 
     cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << "ms" << endl;
 
@@ -632,7 +644,11 @@ pair<int, int> ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) 
 
     cout << "leftCounter: " << leftCounter << " ===== " << "rightCounter: " << rightCounter << endl;
 
-    return pair<int, int>(leftCounter, rightCounter);
+    if(leftCounter > rightCounter)
+        return LEFT;
+    else if(leftCounter < rightCounter)
+        return RIGHT;
+    return UNDEFINED;
 }
 
 //uses ffprobe to detect cuts in the video
@@ -819,14 +835,14 @@ void ofApp::loadVideoFile(){
         }
 
         string audioFile = "data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
-        audio = nullptr;
+        delete audio;
         audio = new Audio(audioFile.c_str());
 
         video.setVolume(qmVideoVolSlider->property("value").toFloat());
 
         ofSystemAlertDialog("Video Loaded!");
 
-        calcMotionDirection(0, 0);
+        //calcMotionDirection(0, 0);
     }
 
 }
@@ -834,6 +850,9 @@ void ofApp::loadVideoFile(){
 void ofApp::clearSelection(){
     video.close();
     emotionData = nullptr;
+    delete emotionData;
+    audio = nullptr;
+    delete audio;
     emotionDataPath = "";
     QObject* label = qmlWindow->findChild<QObject*>("loadFileLabel");
     label->setProperty("visible", false);
@@ -969,7 +988,7 @@ void ofApp::algorithm() {
     ifstream file(emotionDataPath);
     string line;
     getline(file, line, '\n'); //skip first line
-    vector<pair<int, bool>> emotionsSecond (841); //vec[i] has the number of emotions at second i
+    vector<pair<double, bool>> emotionsSecond (841); //vec[i] has the number of emotions at second i
     getline(file, line, '\n');
     while(file){
         if(AuxFunc::split(line, ':').size() == 2){
@@ -984,7 +1003,10 @@ void ofApp::algorithm() {
     }
     file.close();
 
-    int maxValue = 0;
+    //for(int i = 0; i < emotionsSecond.size(); i++)
+      //  cout << emotionsSecond[i].first << endl;
+
+    double maxValue = 0;
     for(int i = 0; i < emotionsSecond.size(); i++)
         if(emotionsSecond[i].first > maxValue)
             maxValue = emotionsSecond[i].first;
@@ -1025,6 +1047,13 @@ void ofApp::algorithm() {
     double emotionWeight = qmlWindow->findChild<QObject*>("emotionSlider")->property("value").toDouble();
     double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
 
+    //movement
+    string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
+    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
+    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
+    // for(int i = 0; i < checkboxes.size()-1; i++)
+    //   cout << checkboxes[i]->property("checked").toBool() << endl;
+
     if(useEmotions){
 
         //add the events first
@@ -1050,7 +1079,8 @@ void ofApp::algorithm() {
 
 
             //found a peak
-            if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter) {
+            if (numberOfEmotions > valueBefore && numberOfEmotions >= valueAfter
+                    /*&& numberOfEmotions >= minNumberOfEmotions*/) {
 
                 // two thirds of the duration before the peak, the rest after the peak
                 startTimestamp = emotions.at(i).getTimestamp() - (clipDuration * 3/4);
@@ -1064,14 +1094,17 @@ void ofApp::algorithm() {
                             // cout << "Cut detected" << endl;
                         }
                 }
-                // cout << startTimestamp << " - " << endTimestamp << endl;
+                //cout << startTimestamp << " - " << endTimestamp << endl;
 
                 //we need to get the number of emotions associated with the timestamps
-                int emotionsInClip = 0;
+                double emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
-                    int normalizedEmotions = emotionsSecond[i].first / maxValue;
+                    double normalizedEmotions = emotionsSecond[i].first / maxValue;
+                    //cout << emotionsSecond[i].first << "/" << maxValue << endl;
                     emotionsInClip += normalizedEmotions;
                 }
+                //cout << "MaxValue: " << maxValue << endl;
+               // cout << emotionsInClip << endl;
 
                 //we need to get the audio values associated with the timestamps
                 float audioValues = 0;
@@ -1213,6 +1246,6 @@ void ofApp::algorithm() {
     for(ClipWithScore c : clipsInSummary)
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
 
-    cutVideo(clipsInSummary);
+    //cutVideo(clipsInSummary);
 
 }
