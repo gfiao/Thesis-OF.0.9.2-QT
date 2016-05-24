@@ -1082,13 +1082,20 @@ void ofApp::algorithm() {
         }
 
         for(pair<int, int> event : eventTimestamps){
-            vector<timestamps> ts = detectCutsIn(event.first, event.second);
-            int motion = -1;
-            for(timestamps t : ts){
-                motion = calcMotionDirection(event.first, event.second);
-            }
 
-            ClipWithScore newClip(event, 0, 0, motion);
+
+            ClipWithScore newClip(event, 0, 0);
+
+            if(useMov){
+                vector<timestamps> ts = detectCutsIn(event.first, event.second);
+                int motion = 0;
+                vector<int> movRes = {0, 0, 0};
+                for(int i = 0; i < ts.size(); i++){
+                    movRes[calcMotionDirection(ts[i].first, ts[i].second)]++;
+                }
+                motion = AuxFunc::getMax(movRes);
+                newClip.setMovement(motion);
+            }
 
             clipsInSummary.push_back(newClip);
         }
@@ -1137,10 +1144,21 @@ void ofApp::algorithm() {
                     }
                 }
 
-                int motion = calcMotionDirection(startTimestamp, endTimestamp);
                 pair<int, int> ts(startTimestamp, endTimestamp);
-                ClipWithScore newClip(ts, emotionsInClip, audioValues, motion);
+                ClipWithScore newClip(ts, emotionsInClip, audioValues);
                 newClip.calcFinalScore(emotionWeight, audioWeight);
+
+                if(useMov){
+                    vector<timestamps> ts = detectCutsIn(startTimestamp, endTimestamp);
+                    int motion = 0;
+                    vector<int> movRes = {0, 0, 0};
+                    for(timestamps t : ts){
+                        movRes[calcMotionDirection(t.first, t.second)]++;
+                    }
+                    motion = AuxFunc::getMax(movRes);
+                    newClip.setMovement(motion);
+                }
+
                 clips.push_back(newClip);
 
                 //cout << startTimestamp << " - " << endTimestamp << " == " << newClip.getFinalScore() << endl;

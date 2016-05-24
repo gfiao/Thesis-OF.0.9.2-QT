@@ -3,9 +3,9 @@ using namespace std;
 #include <utility>
 #include <iostream>
 
-static const int LEFT = 0;
-static const int RIGHT = 1;
-static const int UNDEFINED = -1;
+static const int UNDEFINED = 0;
+static const int LEFT = 1;
+static const int RIGHT = 2;
 
 class ClipWithScore{
 
