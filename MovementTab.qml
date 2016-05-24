@@ -51,10 +51,12 @@ Item {
                 id: firstHalf
                 text: "First half:"
                 font.bold: true
+                enabled: false
             }
             RowLayout{
                 id: firstDirectionRow
                 objectName: "firstDirectionRow"
+                enabled: false
 
                 CheckBox{
                     text: "Left"
@@ -70,10 +72,12 @@ Item {
                 id: timeframe
                 text: "Timeframe:"
                 font.bold: true
+                enabled: false
             }
             RowLayout{
                 id: timeframeRow
                 objectName: "timeframeRow"
+                enabled: false
 
                 TextField {
                     objectName: "halfTime"
@@ -86,10 +90,12 @@ Item {
                 id: secondHalf
                 text: "Second half:"
                 font.bold: true
+                enabled: false
             }
             RowLayout{
                 id: secondDirectionRow
                 objectName: "secondDirectionRow"
+                enabled: false
 
                 CheckBox{
                     text: "Left"

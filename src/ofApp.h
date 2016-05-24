@@ -2,6 +2,7 @@
 #include <string>
 #include "ofMain.h"
 #include "ofxOpenCv.h"
+#include "ofxXmlSettings.h"
 #include <opencv2/opencv.hpp>
 #include "ofxCv.h"
 #include "EmotionData.h"

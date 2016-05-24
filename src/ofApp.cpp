@@ -163,49 +163,19 @@ void ofApp::setup(){
 
 
 
-
-    /*string filePath = "EmotionsOverTime.json";
-    ifstream file(filePath); //read JSON file
-    std::string content( (std::istreambuf_iterator<char>(file) ),
-                         (std::istreambuf_iterator<char>()    ) );
-
-
-    ofxJSONElement jsonFile;
-    bool parsingSuccessful = jsonFile.open(filePath);
-    cout << jsonFile.size() << endl;
-
-    file.close();
-
-    vector<int> nrEmotionsInSecond;
-    vector<vector<string>> emotionsInSecond;
-    vector<bool> eventInSecond;
-
-    nrEmotionsInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
-    emotionsInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
-    eventInSecond.resize(jsonFile[jsonFile.size()-1]["timestamp"].asInt());
-
-    for (Json::ArrayIndex i = 0; i < jsonFile.size(); i++){
-        //cout << jsonFile[i]["timestamp"].asInt() << "=====" << jsonFile[i]["event"].asBool() << endl;
-        int timestamp = jsonFile[i]["timestamp"].asInt();
-        cout << timestamp << endl;
-
-        if(!jsonFile[i]["emotion"].isNull()){
-            nrEmotionsInSecond[timestamp] +=  1;
-            //   emotionsInSecond[timestamp].second.push_back(jsonFile[i]["emotion"].asString());
-        }
-
-        if(!jsonFile[i]["event"].isNull())
-            eventInSecond[timestamp] = true;
+    ofxXmlSettings xmlFile;
+    if( xmlFile.loadFile("EmotionsOverTime.xml") ){
+        cout << "xml file loaded" << endl;
+    }else{
+        cout << "xml error" << endl;
     }
 
+    xmlFile.pushTag("emotionData", 0);
+    cout << xmlFile.getNumTags("data") << endl;
 
-    for(int i = 1; i < nrEmotionsInSecond.size(); i++){
-
-        cout << "Timestamp: " << i << "  NrEmotions: " << emotionsInSecond[i].size() << endl;
-
-    }*/
-
-
+    for(int i = 0; i < xmlFile.getNumTags("data"); i++){
+        cout << "Timestamp: " << xmlFile.getValue("timestamp", 0, i) << endl;
+    }
 
 
 
@@ -231,14 +201,6 @@ void ofApp::setup(){
         if (splitLine.size() != 0) // last line is empty
             cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
     }
-
-    /*QObjectList checkboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
-    for(int i = 0; i < checkboxes.size()-1; i++)
-        cout << checkboxes[i]->property("checked").toBool() << endl;*/
-
-    /*QObjectList checkboxes1 = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
-    for(QObject* obj : checkboxes1)
-        cout << obj->property("checked").toBool() << endl;*/
 
 
 
@@ -621,7 +583,7 @@ int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
     vector<cv::KeyPoint> endKeypoints = detectKeypoints(endTimestamp);
     // cout << "endKeypoints: " << endKeypoints.size() << endl;
 
-    cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << "ms" << endl;
+    //cout << "Time to extract keypoints: " << ofGetElapsedTimeMillis() - start << "ms" << endl;
 
 
     /* Compare each of the keypoints with it's counterpart (best approach?) */
@@ -1089,11 +1051,15 @@ void ofApp::algorithm() {
             if(useMov){
                 vector<timestamps> ts = detectCutsIn(event.first, event.second);
                 int motion = 0;
-                vector<int> movRes = {0, 0, 0};
-                for(int i = 0; i < ts.size(); i++){
-                    movRes[calcMotionDirection(ts[i].first, ts[i].second)]++;
+                if(!ts.empty()){
+                    vector<int> movRes = {0, 0, 0};
+                    for(int i = 0; i < ts.size(); i++){
+                        movRes[calcMotionDirection(ts[i].first, ts[i].second)]++;
+                    }
+                    motion = AuxFunc::getMax(movRes);
                 }
-                motion = AuxFunc::getMax(movRes);
+                else
+                    motion = calcMotionDirection(event.first, event.second);
                 newClip.setMovement(motion);
             }
 
@@ -1151,11 +1117,15 @@ void ofApp::algorithm() {
                 if(useMov){
                     vector<timestamps> ts = detectCutsIn(startTimestamp, endTimestamp);
                     int motion = 0;
-                    vector<int> movRes = {0, 0, 0};
-                    for(timestamps t : ts){
-                        movRes[calcMotionDirection(t.first, t.second)]++;
+                    if(!ts.empty()){
+                        vector<int> movRes = {0, 0, 0};
+                        for(timestamps t : ts){
+                            movRes[calcMotionDirection(t.first, t.second)]++;
+                        }
+                        motion = AuxFunc::getMax(movRes);
                     }
-                    motion = AuxFunc::getMax(movRes);
+                    else
+                        motion = calcMotionDirection(startTimestamp, endTimestamp);
                     newClip.setMovement(motion);
                 }
 
@@ -1283,7 +1253,8 @@ void ofApp::algorithm() {
 
 
     for(ClipWithScore c : clipsInSummary)
-        cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
+        cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
+             << "  -  " << c.getMovement() << endl;
 
     //cutVideo(clipsInSummary);
 
