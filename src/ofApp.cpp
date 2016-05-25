@@ -163,7 +163,7 @@ void ofApp::setup(){
 
 
 
-    ofxXmlSettings xmlFile;
+    /* ofxXmlSettings xmlFile;
     if( xmlFile.loadFile("EmotionsOverTime.xml") ){
         cout << "xml file loaded" << endl;
     }else{
@@ -171,11 +171,24 @@ void ofApp::setup(){
     }
 
     xmlFile.pushTag("emotionData", 0);
-    cout << xmlFile.getNumTags("data") << endl;
+    int numOfData = xmlFile.getNumTags("data");
+    xmlFile.pushTag("data", numOfData-1);
+    cout << xmlFile.getValue("timestamp", 0) << endl;
 
-    for(int i = 0; i < xmlFile.getNumTags("data"); i++){
-        cout << "Timestamp: " << xmlFile.getValue("timestamp", 0, i) << endl;
-    }
+    cout << numOfData << endl;
+
+     for(int i = 0; i < numOfData; i++){
+        xmlFile.pushTag("data", i);
+
+        if(xmlFile.tagExists("event"))
+            cout << "Timestamp: " << xmlFile.getValue("timestamp", 0) << endl;
+
+
+        //cout << "Timestamp: " << xmlFile.getValue("timestamp", 0) << " Emotion: " <<
+        //      xmlFile.getValue("emotion", "kek") << endl;
+
+        xmlFile.popTag();
+    }*/
 
 
 
@@ -759,28 +772,26 @@ void ofApp::loadDataFile(){
 }
 
 void ofApp::loadDataParameters(){
-
+    cout << "aqui1" << endl;
     QObject *interval_textfield = qmlWindow->findChild<QObject*>("interval_textfield");
     QString intervalValue = interval_textfield->property("text").toString();
     cout << intervalValue.toStdString() << endl;
 
     QObject *dynInter_textfield = qmlWindow->findChild<QObject*>("dynInter_textfield");
     QString dynIntValue = dynInter_textfield->property("text").toString();
-    cout << dynIntValue.toStdString() << endl;
 
     cout << intervalValue.size() << endl;
-    cout << dynIntValue.size() << endl;
 
     if (intervalValue.size() > 0 && dynIntValue.size() == 0){
         emotionData = new EmotionData(emotionDataPath, ofToInt(intervalValue.toStdString()));
     }
-    else if (intervalValue.size() > 0 && dynIntValue.size() > 0){
+   /* else if (intervalValue.size() > 0 && dynIntValue.size() > 0){
         emotionData = new EmotionData(emotionDataPath, ofToInt(intervalValue.toStdString()),
                                       ofToInt(dynIntValue.toStdString()));
     }
     else if (dynIntValue.size() > 0){
         emotionData = new EmotionData(emotionDataPath, 5, ofToInt(dynIntValue.toStdString()));
-    }
+    }*/
     else{
         emotionData = new EmotionData(emotionDataPath); //5 second intervals
     }
@@ -788,6 +799,8 @@ void ofApp::loadDataParameters(){
     ofSystemAlertDialog("Data loaded successfully!");
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
+
+    cout << "aqui2" << endl;
 }
 
 void ofApp::loadVideoFile(){

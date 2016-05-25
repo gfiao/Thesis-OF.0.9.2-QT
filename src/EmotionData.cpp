@@ -3,173 +3,129 @@
 #include <iostream>
 #include <algorithm>
 
-EmotionData::EmotionData(string filePath, int interval, int minNumEmotions) {
+EmotionData::EmotionData(string filePath, int interval) {
 
-    /* ifstream file(filePath); //read JSON file
-    std::string content( (std::istreambuf_iterator<char>(file) ),
-                         (std::istreambuf_iterator<char>()    ) );
+    this->interval = interval; //default is 5
 
-
-    bool parsingSuccessful = jsonFile.open(filePath);
-    cout << jsonFile.size() << endl;
-
-    file.close();
-
-    emotionsInSecond.resize(jsonFile[jsonFile.size()+1]["timestamp"].asInt());
-    eventInSecond.resize(jsonFile[jsonFile.size()+1]["timestamp"].asInt());
-
-    for (Json::ArrayIndex i = 0; i < jsonFile.size(); i++){
-        //cout << jsonFile[i]["timestamp"].asInt() << "=====" << jsonFile[i]["event"].asBool() << endl;
-        int timestamp = jsonFile[i]["timestamp"].asInt();
-
-        if(!jsonFile[i]["emotion"].isNull()){
-            emotionsInSecond[timestamp].first++;
-            emotionsInSecond[timestamp].second.push_back(jsonFile[i]["emotion"].asString());
-        }
-
-        if(!jsonFile[i]["event"].isNull())
-            eventInSecond[timestamp] = true;
+    ofxXmlSettings xmlFile;
+    if( xmlFile.loadFile(filePath) ){
+        cout << "xml file loaded" << endl;
+    }else{
+        cout << "xml error" << endl;
     }
 
+    xmlFile.pushTag("emotionData", 0);
+    int numOfData = xmlFile.getNumTags("data");
+    xmlFile.pushTag("data", numOfData-1);
+    int maxTimestamp = xmlFile.getValue("timestamp", 0);
+    xmlFile.popTag();
+
+    emotionsInSecond.resize(maxTimestamp+1);
+    eventInSecond.resize(maxTimestamp+1);
+
+    //cout << numOfData << endl;
+
+    for(int i = 0; i < numOfData; i++){
+        xmlFile.pushTag("data", i);
+        int timestamp = xmlFile.getValue("timestamp", 0);
+
+        if(xmlFile.tagExists("emotion")){
+            emotionsInSecond[timestamp].first++;
+            emotionsInSecond[timestamp].second.push_back(xmlFile.getValue("timestamp", ""));
+        }
+
+        if(xmlFile.tagExists("event"))
+            eventInSecond[timestamp] = true;
+
+        xmlFile.popTag();
+    }
+
+    maxValue = 0;
+    for(int i = 0; i < emotionsInSecond.size(); i++){
+        if(emotionsInSecond[i].first > maxValue)
+            maxValue = emotionsInSecond[i].first;
+    }
+
+    /*for(int i = 0; i < eventInSecond.size(); i++){
+        if(eventInSecond[i])
+            cout << "Timestamp: " << i << endl;
+    }
 
     for(int i = 0; i < emotionsInSecond.size(); i++){
-
-        cout << "Timestamp: " << i << "  NrEmotions: " << emotionsInSecond[i].second.size() << endl;
-
+        cout << "Timestamp: " << i << " Emotions: " << emotionsInSecond[i].first << endl;
     }*/
 
 
-    /*int c = 0;
-    for(int i : eventInSecond)
-        if(i != 0) c++;
-    cout << c << endl;*/
 
 
+    //    this->interval = interval;
+    //    maxValue = 0;
+    //    int i = interval;
 
+    //    cout << "Interval: " << interval << endl;
 
+    //    ifstream file(filePath);
+    //    string line;
+    //    getline(file, line, '\n'); //skip first line
+    //    vector<string> emotions;
 
-    //count the number of lines in the file to allocate in the vectors
-    /* ifstream file(filePath);
-    string line;
-    getline(file, line, '\n'); //skip first line
-    int maxTimestamp = 0;
-    while(file){
+    //    getline(file, line, '\n'); // read a string until next newline
+    //    int timestamp;
+    //    timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
+    //    bool event;
+    //    while (file) {
+    //        event = false;
+    //        while (timestamp < interval && file/*wtf*/) {
 
-        if(AuxFunc::split(line, ':').size() == 2){
-            if(maxTimestamp < atoi(AuxFunc::split(line, ':').at(0).c_str()))
-                maxTimestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-        }
+    //            if(AuxFunc::split(line, ':').size() == 2){
+    //                //cout << "aqui" << endl;
+    //                event = true;
+    //            }
 
-        else if(maxTimestamp < atoi(AuxFunc::split(line, ';').at(0).c_str())){
-            maxTimestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-        }
+    //            if(AuxFunc::split(line, ':').size() == 1){
+    //                timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
 
-        getline(file, line, '\n');
-    }
-    cout << maxTimestamp << endl;
-    emotionsInSecond.resize(maxTimestamp);
-    eventInSecond.resize(maxTimestamp);
+    //                if (timestamp >= interval)
+    //                    continue;
 
-    file.close();
+    //                emotions.push_back(AuxFunc::split(line, ';').at(1));
 
-    //===========================================
+    //                distinctEmotions.insert(AuxFunc::split(line, ';').at(1));
+    //            }
+    //            getline(file, line, '\n');
 
-    file.open(filePath);
-    getline(file, line, '\n'); //skip first line
+    //        }
+    //        if (emotions.size() >= minNumEmotions) {//dynamic interval
 
-    getline(file, line, '\n'); //get first line
-    int timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-    while(file){
-        //cout << line << endl;
-        if(AuxFunc::split(line, ':').size() == 2){
-            eventInSecond[timestamp] = 1;
-            getline(file, line, '\n');
-            timestamp = atoi(AuxFunc::split(line, ':').at(0).c_str());
-            continue;
-        }
+    //            EmotionInterval ei(interval, emotions, event);
+    //            // cout << ei.getTimestamp() << "--" << ei.getEvent() << endl;
+    //            emotionIntervals.push_back(ei);
 
-        string emotion = AuxFunc::split(line, ';')[1];
-        emotionsInSecond[timestamp].first++;
-        emotionsInSecond[timestamp].second.push_back(emotion);
+    //            if (emotions.size() > maxValue)
+    //                maxValue = emotions.size();
 
-        getline(file, line, '\n');
-        timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-    }
+    //            emotions.clear();
+    //        }
+    //        interval += i;
+    //    }
 
-    file.close();
+    //    cout << "MaxValue: " << maxValue << endl;
+    //    //cout << emotionIntervals.size() << endl;
+    //    // for (EmotionInterval e : emotionIntervals)
+    //    //   cout << "Timestamp: " << e.getTimestamp() << "  NrEmocoes: " << e.getNumberOfEmotions()
+    //    //      << "   Event: " << e.getEvent() << endl;
 
-    for(int i = 0; i < emotionsInSecond.size(); i++){
+    //    //for(string s: distinctEmotions)
+    //    //cout << s << endl;
+    //    file.close();
+}
 
-        cout << "Timestamp: " << i << "  NrEmotions: " << emotionsInSecond[i].second.size() << endl;
+vector<pair<int, vector<string> > > EmotionData::getEmotionsInSecond(){
+    return emotionsInSecond;
+}
 
-    }
-
-    int c = 0;
-    for(int i : eventInSecond)
-        if(i != 0) c++;
-    cout << c << endl;
-*/
-
-    this->interval = interval;
-    maxValue = 0;
-    int i = interval;
-
-    cout << "Interval: " << interval << endl;
-
-    ifstream file(filePath);
-    string line;
-    getline(file, line, '\n'); //skip first line
-    vector<string> emotions;
-
-    getline(file, line, '\n'); // read a string until next newline
-    int timestamp;
-    timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-    bool event;
-    while (file) {
-        event = false;
-        while (timestamp < interval && file/*wtf*/) {
-
-            if(AuxFunc::split(line, ':').size() == 2){
-                //cout << "aqui" << endl;
-                event = true;
-            }
-
-            if(AuxFunc::split(line, ':').size() == 1){
-                timestamp = atoi(AuxFunc::split(line, ';').at(0).c_str());
-
-                if (timestamp >= interval)
-                    continue;
-
-                emotions.push_back(AuxFunc::split(line, ';').at(1));
-
-                distinctEmotions.insert(AuxFunc::split(line, ';').at(1));
-            }
-            getline(file, line, '\n');
-
-        }
-        if (emotions.size() >= minNumEmotions) {//dynamic interval
-
-            EmotionInterval ei(interval, emotions, event);
-            // cout << ei.getTimestamp() << "--" << ei.getEvent() << endl;
-            emotionIntervals.push_back(ei);
-
-            if (emotions.size() > maxValue)
-                maxValue = emotions.size();
-
-            emotions.clear();
-        }
-        interval += i;
-    }
-
-    cout << "MaxValue: " << maxValue << endl;
-    //cout << emotionIntervals.size() << endl;
-   // for (EmotionInterval e : emotionIntervals)
-     //   cout << "Timestamp: " << e.getTimestamp() << "  NrEmocoes: " << e.getNumberOfEmotions()
-       //      << "   Event: " << e.getEvent() << endl;
-
-    //for(string s: distinctEmotions)
-    //cout << s << endl;
-    file.close();
+vector<bool> EmotionData::getEventInSecond(){
+    return eventInSecond;
 }
 
 vector<EmotionInterval> EmotionData::getEmotionIntervals() {
@@ -180,10 +136,10 @@ int EmotionData::getInterval() {
     return interval;
 }
 
-int EmotionData::getMaxValue() {
-    return maxValue;
+int EmotionData::setInterval(int interval){
+    this->interval = interval;
 }
 
-set<string> EmotionData::getDistinctEmotions(){
-    return distinctEmotions;
+int EmotionData::getMaxValue() {
+    return maxValue;
 }
