@@ -46,7 +46,7 @@ EmotionData::EmotionData(string filePath, int interval) {
             maxValue = emotionsInSecond[i].first;
     }
 
-   /* vector<int> inter = setInterval(5);
+    /* vector<int> inter = setInterval(5);
     for(int i = 0; i < inter.size(); i++){
         cout << "Timestamp: " << i << " Emotions: " << inter[i] << endl;
     }*/
@@ -141,17 +141,21 @@ int EmotionData::getInterval() {
     return interval;
 }
 
-vector<int> EmotionData::setInterval(int interval){
+vector<pair<int, vector<string>>> EmotionData::setInterval(int interval){
     this->interval = interval;
 
-    vector<int> ret;
+    vector<pair<int, vector<string>>> ret;
     for(int i = 0; i < emotionsInSecond.size(); i+=interval){
 
         int countEmotions = 0;
+        vector<string> emotions;
         for(int j = i; j < i+interval && j < emotionsInSecond.size(); j++){
             countEmotions += emotionsInSecond[j].first;
+            for(string e : emotionsInSecond[j].second)
+                emotions.push_back(e);
         }
-        ret.push_back(countEmotions);
+        pair<int, vector<string>> retEle(countEmotions, emotions);
+        ret.push_back(retEle);
     }
     return ret;
 }

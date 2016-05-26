@@ -35,7 +35,7 @@ public:
     vector<EmotionInterval> getEmotionIntervals();
 
     int getInterval();
-    vector<int> setInterval(int interval);
+    vector<pair<int, vector<string>>> setInterval(int interval);
 
     int getMaxValue();
 

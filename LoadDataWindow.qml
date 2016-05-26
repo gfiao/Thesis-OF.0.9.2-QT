@@ -36,7 +36,7 @@ Window {
                     Button {
                         objectName: "loadDataFile"
                         id: loadDataFile
-                        text: qsTr("Load CSV File")
+                        text: qsTr("Load XML File")
                     }
 
                     Label{

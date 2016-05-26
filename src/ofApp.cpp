@@ -760,6 +760,10 @@ void ofApp::loadDataFile(){
 
     if (openFileResult.bSuccess) {
         ofLogVerbose("User selected a file");
+        if(ofFile(openFileResult.getPath()).getExtension() != "xml"){
+            ofSystemAlertDialog("That's not a XML file!");
+            return;
+        }
         emotionDataPath = openFileResult.getPath();
 
         cout << emotionDataPath << endl;
