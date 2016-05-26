@@ -772,7 +772,7 @@ void ofApp::loadDataFile(){
 }
 
 void ofApp::loadDataParameters(){
-    cout << "aqui1" << endl;
+
     QObject *interval_textfield = qmlWindow->findChild<QObject*>("interval_textfield");
     QString intervalValue = interval_textfield->property("text").toString();
     cout << intervalValue.toStdString() << endl;
@@ -800,7 +800,6 @@ void ofApp::loadDataParameters(){
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
 
-    cout << "aqui2" << endl;
 }
 
 void ofApp::loadVideoFile(){
