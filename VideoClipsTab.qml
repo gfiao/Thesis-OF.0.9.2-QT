@@ -56,7 +56,7 @@ Item {
             CheckBox{
                 objectName: "fadeInOut"
                 text: "Fade in/out between clips?"
-                checked: true
+                checked: false
             }
 
         }

@@ -29,8 +29,6 @@ static const int OUT_OF_FIELD = 2;
 static const string NOT_NUMBER = "Not a number!";
 static const string WRONG_NUMBER = "The value must be between 0 and 1!";
 
-typedef pair<int, int> timestamps;
-
 class ofApp : public ofBaseApp {
 private:
     //oF
@@ -88,7 +86,8 @@ public:
     //cut detetion
     void detectCuts();
     void processCutsFile();
-    vector<timestamps> detectCutsIn(int start, int end);
+    vector<pair<int, int>> detectCutsIn(int start, int end);
+    void motionHelper(int start, ClipWithScore newClip, int end);
 
     void cutVideo(vector<ClipWithScore> clips);
     void algorithm();
@@ -106,7 +105,6 @@ public:
     void videoSeekbarChanged(float pos);
 
     void selectRow(int row);
-
 };
 
 // qml signal to slot object

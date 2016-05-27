@@ -25,7 +25,7 @@ private:
 
     //left - 0
     //right - 1
-    //undifined - (-1)
+    //undefined - (-1)
     int movement;
 
 public:

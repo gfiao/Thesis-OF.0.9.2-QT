@@ -6,6 +6,7 @@
 EmotionData::EmotionData(string filePath, int interval) {
 
     this->interval = interval; //default is 5
+    maxValueInterval = 0;
 
     ofxXmlSettings xmlFile;
     if( xmlFile.loadFile(filePath) ){
@@ -45,6 +46,8 @@ EmotionData::EmotionData(string filePath, int interval) {
         if(emotionsInSecond[i].first > maxValue)
             maxValue = emotionsInSecond[i].first;
     }
+
+
 
     /* vector<int> inter = setInterval(5);
     for(int i = 0; i < inter.size(); i++){
@@ -133,28 +136,30 @@ vector<bool> EmotionData::getEventInSecond(){
     return eventInSecond;
 }
 
-vector<EmotionInterval> EmotionData::getEmotionIntervals() {
-    return emotionIntervals;
-}
+//vector<EmotionInterval> EmotionData::getEmotionIntervals() {
+//    return emotionIntervals;
+//}
 
 int EmotionData::getInterval() {
     return interval;
 }
 
-vector<pair<int, vector<string>>> EmotionData::setInterval(int interval){
+vector<EmotionInterval> EmotionData::setInterval(int interval){
     this->interval = interval;
 
-    vector<pair<int, vector<string>>> ret;
+    vector<EmotionInterval> ret;
     for(int i = 0; i < emotionsInSecond.size(); i+=interval){
 
-        int countEmotions = 0;
         vector<string> emotions;
         for(int j = i; j < i+interval && j < emotionsInSecond.size(); j++){
-            countEmotions += emotionsInSecond[j].first;
             for(string e : emotionsInSecond[j].second)
                 emotions.push_back(e);
         }
-        pair<int, vector<string>> retEle(countEmotions, emotions);
+
+        if(maxValueInterval < emotions.size())
+            maxValueInterval = emotions.size();
+
+        EmotionInterval retEle(i, emotions);
         ret.push_back(retEle);
     }
     return ret;
@@ -162,4 +167,8 @@ vector<pair<int, vector<string>>> EmotionData::setInterval(int interval){
 
 int EmotionData::getMaxValue() {
     return maxValue;
+}
+
+int EmotionData::getMaxValueInterval(){
+    return maxValueInterval;
 }

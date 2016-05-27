@@ -14,11 +14,10 @@ private:
 	int timestamp;
 	string dominantEmotion;
 	vector<string> emotions;
-    bool event;
 
 public:
 
-    EmotionInterval(int timestamp, vector<string> emotions, bool event);
+    EmotionInterval(int timestamp, vector<string> emotions);
 
 	int getTimestamp();
 
@@ -27,7 +26,5 @@ public:
 	int getNumberOfEmotions();
 
 	vector<string> getEmotions();
-
-    bool getEvent();
 
 };

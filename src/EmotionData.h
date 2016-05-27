@@ -12,16 +12,15 @@ class EmotionData {
 
 private:
 
-    //emotions shared during a certain interval
-    vector<EmotionInterval> emotionIntervals;
-
     vector<pair<int, vector<string>>> emotionsInSecond;
     vector<bool> eventInSecond;
 
     int interval;
 
-    //highest number of emotions shared, used in the creation of the emotions chart
+    //highest number of emotions shared
     int maxValue;
+
+    int maxValueInterval;
 
 
 public:
@@ -31,12 +30,10 @@ public:
     vector<pair<int, vector<string>>> getEmotionsInSecond();
     vector<bool> getEventInSecond();
 
-    //returns vector with all the intervals
-    vector<EmotionInterval> getEmotionIntervals();
-
     int getInterval();
-    vector<pair<int, vector<string>>> setInterval(int interval);
+    vector<EmotionInterval> setInterval(int interval);
 
     int getMaxValue();
+    int getMaxValueInterval();
 
 };

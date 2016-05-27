@@ -79,7 +79,7 @@ Item {
                 }
             }
 
-            RowLayout{
+            /* RowLayout{
                 id: minNrEmotionsRow
                 Label{
                     text: "Minimum number of emotions:"
@@ -90,7 +90,29 @@ Item {
                     placeholderText: "Minimum number of emotions"
                     validator: IntValidator{bottom: 0; top: 1000}
                 }
-            }            
+            }*/
+
+            RowLayout{
+                id: intervalRow
+                Label{
+                    text: "Interval:"
+                    font.bold: true
+                }
+                TextField{
+                    id: emotionInterval
+                    objectName: "emotionInterval"
+                    placeholderText: "Default is 5"
+                    validator: IntValidator{bottom: 1; top: 100}
+                }
+                Label{
+                    text: {
+                        if(emotionInterval.text != "")
+                            "Interval is set at " + emotionInterval.text + " seconds"
+                        else
+                            "Interval is set at 5 seconds"
+                    }
+                }
+            }
         }
     }
 }
