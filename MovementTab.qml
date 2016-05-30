@@ -70,7 +70,7 @@ Item {
 
             Label{
                 id: timeframe
-                text: "Timeframe:"
+                text: "Half-time:"
                 font.bold: true
                 enabled: false
             }
@@ -81,7 +81,7 @@ Item {
 
                 TextField {
                     objectName: "halfTime"
-                    placeholderText: qsTr("Start Timestamp")
+                    placeholderText: qsTr("When is half-time?(minutes)")
                     validator: IntValidator{bottom: 0; top: 10000}
                 }
             }

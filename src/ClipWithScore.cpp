@@ -48,7 +48,7 @@ int ClipWithScore::getNrOfEmotions(){
     return nrOfEmotions;
 }
 
-int ClipWithScore::setMovement(int mov){
+void ClipWithScore::setMovement(int mov){
     movement = mov;
 }
 

@@ -23,14 +23,14 @@ private:
     //audio values associated with this clip
     float audioValues;
 
-    //left - 0
-    //right - 1
-    //undefined - (-1)
+    //undefined - 0
+    //left - 1
+    //right - 2
     int movement;
 
 public:
 
-    ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues, int mov = -1);
+    ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues, int mov = 0);
 
     pair<int, int> getTimestamps();
     void setTimestamps(int start, int end);
@@ -44,6 +44,6 @@ public:
 
     int getNrOfEmotions();
 
-    int setMovement(int mov);
+    void setMovement(int mov);
     int getMovement();
 };

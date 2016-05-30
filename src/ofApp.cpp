@@ -616,7 +616,7 @@ int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
             else leftCounter++;
         }
 
-    cout << "leftCounter: " << leftCounter << " ===== " << "rightCounter: " << rightCounter << endl;
+    //cout << "leftCounter: " << leftCounter << " ===== " << "rightCounter: " << rightCounter << endl;
 
     if(leftCounter > rightCounter)
         return LEFT;
@@ -638,9 +638,10 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
     return ret;
 }
 
-void ofApp::motionHelper(int start, ClipWithScore newClip, int end){
-    vector<pair<int, int>> ts = detectCutsIn(start, end);
+void ofApp::motionHelper(int start, int end, ClipWithScore newClip){
     int motion = 0;
+    /* vector<pair<int, int>> ts = detectCutsIn(start, end);
+    cout << "detectCutsIn size: " << ts.size() << endl;
     if(!ts.empty()){
         vector<int> movRes = {0, 0, 0};
         for(int i = 0; i < ts.size(); i++){
@@ -648,9 +649,11 @@ void ofApp::motionHelper(int start, ClipWithScore newClip, int end){
         }
         motion = AuxFunc::getMax(movRes);
     }
-    else
-        motion = calcMotionDirection(start, end);
+    else*/
+    //cout << "ktime: " << start << "-" << end << endl;
+    motion = calcMotionDirection(start, end);
     newClip.setMovement(motion);
+    //cout << newClip.getMovement() << endl;
 }
 
 //uses ffprobe to detect cuts in the video
@@ -1018,12 +1021,14 @@ void ofApp::algorithm() {
             int end = i + (clipDuration / 2);
             pair<int, int> timestamps(start, end);
 
-            ClipWithScore newClip(timestamps, 0, 0);
+            ClipWithScore newClip(timestamps, 100, 100);
 
             if(useMov){
-                motionHelper(start, newClip, end);
+                // motionHelper(start, end, newClip);
+                newClip.setMovement(calcMotionDirection(start, end));
             }
-            clipsInSummary.push_back(newClip);
+            newClip.calcFinalScore(0.9, 0.1);
+            clips.push_back(newClip);
         }
     }
 
@@ -1084,7 +1089,8 @@ void ofApp::algorithm() {
                 newClip.calcFinalScore(emotionWeight, audioWeight);
 
                 if(useMov){
-                    motionHelper(startTimestamp, newClip, endTimestamp);
+                    // motionHelper(startTimestamp, endTimestamp, newClip);
+                    newClip.setMovement(calcMotionDirection(startTimestamp, endTimestamp));
                 }
 
                 clips.push_back(newClip);
@@ -1098,14 +1104,8 @@ void ofApp::algorithm() {
     }
 
     //Choose what clips to be included in the final summary
-    string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
-    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
-    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
-    // for(int i = 0; i < checkboxes.size()-1; i++)
-    //   cout << checkboxes[i]->property("checked").toBool() << endl;
-
-
     //merge the extracted clips
+    ofSort(clips, sortClips);
     for(int n = 0; n < 2; n++)
         for(int i = 0; i < clips.size() - 1; i++){
             ClipWithScore currClip = clips[i];
@@ -1124,8 +1124,16 @@ void ofApp::algorithm() {
 
     cout << endl;
     for(ClipWithScore c : clips)
-        cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore() << endl;
+        cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
+             << " - " << c.getMovement() << endl;
 
+    //movement parameters
+    string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
+    int halfTimeSecond = ofToInt(halfTime) * 60;
+    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
+    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
+    // for(int i = 0; i < checkboxes.size()-1; i++)
+    //   cout << checkboxes[i]->property("checked").toBool() << endl;
 
     int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
     if(summaryDuration == 0) summaryDuration = 3;
@@ -1134,9 +1142,37 @@ void ofApp::algorithm() {
     int totalDuration = clipsInSummary.size() * clipDuration;
     int i = 0;
     while(totalDuration < summaryDuration * 60 && i < clips.size()){
-        clipsInSummary.push_back(clips[i]);
-        pair<int, int> ts = clips[i].getTimestamps();
-        totalDuration += (ts.second - ts.first);
+        //TODO: falta halfTime
+        if(useMov){
+            bool leftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
+            bool rightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
+            if(leftCheckbox){
+                if(clips[i].getMovement() == LEFT){
+                    clipsInSummary.push_back(clips[i]);
+                    pair<int, int> ts = clips[i].getTimestamps();
+                    totalDuration += (ts.second - ts.first);
+                }
+            }
+            else if(rightCheckbox){
+                if(clips[i].getMovement() == RIGHT){
+                    clipsInSummary.push_back(clips[i]);
+                    pair<int, int> ts = clips[i].getTimestamps();
+                    totalDuration += (ts.second - ts.first);
+                }
+            }
+            else{//any direction
+                clipsInSummary.push_back(clips[i]);
+                pair<int, int> ts = clips[i].getTimestamps();
+                totalDuration += (ts.second - ts.first);
+            }
+
+        }
+        else{
+            clipsInSummary.push_back(clips[i]);
+            pair<int, int> ts = clips[i].getTimestamps();
+            totalDuration += (ts.second - ts.first);
+        }
+
         i++;
     }
     ofSort(clipsInSummary, sortClips);
