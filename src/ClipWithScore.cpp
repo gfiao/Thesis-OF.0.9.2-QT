@@ -16,8 +16,7 @@ pair<int, int> ClipWithScore::getTimestamps(){
 }
 
 void ClipWithScore::setTimestamps(int start, int end){
-    pair<int, int> ts(start, end);
-    timestamps = ts;
+    timestamps = pair<int, int>(start, end);;
 }
 
 double ClipWithScore::getFinalScore(){
