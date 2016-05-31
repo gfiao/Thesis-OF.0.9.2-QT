@@ -571,7 +571,7 @@ vector<cv::KeyPoint> ofApp::detectKeypoints(int timestamp) {
     //ptrBrisk->detect(grey, keypoints);
 
     cv::FAST(grey, keypoints, 2);
-    cv::KeyPointsFilter::retainBest(keypoints, 30);
+    cv::KeyPointsFilter::retainBest(keypoints, 60);
 
     return keypoints;
 
@@ -1185,6 +1185,6 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  " << c.getMovement() << endl;
 
-    //cutVideo(clipsInSummary);
+    cutVideo(clipsInSummary);
 
 }
