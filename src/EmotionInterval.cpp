@@ -24,6 +24,7 @@ EmotionInterval::EmotionInterval(int timestamp, vector<string> emotions) {
     this->emotions = emotions;
     //if there is only 2 emotions, the second one will be the dominant one
     dominantEmotion = most_occurred(this->emotions);
+    audioValues = 0;
 }
 
 int EmotionInterval::getTimestamp() {
@@ -40,4 +41,12 @@ int EmotionInterval::getNumberOfEmotions() {
 
 vector<string> EmotionInterval::getEmotions() {
     return emotions;
+}
+
+void EmotionInterval::setAudioValues(float newValue){
+    audioValues = newValue;
+}
+
+float EmotionInterval::getAudioValues(){
+    return audioValues;
 }

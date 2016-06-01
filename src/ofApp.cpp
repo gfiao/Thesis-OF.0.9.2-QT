@@ -636,24 +636,23 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
             cutsIn.push_back(ofToInt(cut));
 
 
-    for(int i = 0; i < cutsIn.size()+1; i++){
+    for(int i = 0; i < cutsIn.size(); i++){
         if(cutsIn[i] > start && cutsIn[i] < end){
             pair<int, int> ts(start, cutsIn[i]);
             ret.push_back(ts);
             start = cutsIn[i];
         }
-        else {
-            pair<int, int> ts(start, end);
-            ret.push_back(ts);
-        }
     }
+    pair<int, int> ts(start, end);
+    ret.push_back(ts);
+
     return ret;
 }
 
 void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
     int motion = 0;
     vector<pair<int, int>> ts = detectCutsIn(start, end);
-    cout << "detectCutsIn size: " << ts.size() << endl;
+    //cout << "detectCutsIn size: " << ts.size() << endl;
     if(!ts.empty()){
         vector<int> movRes = {0, 0, 0};
         for(int i = 0; i < ts.size(); i++){
@@ -1036,10 +1035,8 @@ void ofApp::algorithm() {
 
             ClipWithScore newClip(timestamps, 100, 100);
 
-            if(useMov){
-                motionHelper(start, end, newClip);
-                //newClip.setMovement(calcMotionDirection(start, end));
-            }
+            if(useMov) motionHelper(start, end, newClip);
+
             newClip.calcFinalScore(0.9, 0.1);
             clips.push_back(newClip);
         }
@@ -1081,12 +1078,12 @@ void ofApp::algorithm() {
                 //we need to get the number of emotions associated with the timestamps
                 double emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
-                    double normalizedEmotions = emotionsInSecond[i].first / emotionData->getMaxValue();
-                    //cout << emotionsSecond[i].first << "/" << maxValue << endl;
+                    double normalizedEmotions = emotionsInSecond[i].first / (float)emotionData->getMaxValue();
+                    //cout << emotionsInSecond[i].first /(float) emotionData->getMaxValue() << endl;
                     emotionsInClip += normalizedEmotions;
                 }
                 //cout << "MaxValue: " << maxValue << endl;
-                // cout << emotionsInClip << endl;
+                //cout << emotionsInClip << endl;
 
                 //we need to get the audio values associated with the timestamps
                 float audioValues = 0;
@@ -1099,12 +1096,12 @@ void ofApp::algorithm() {
 
                 pair<int, int> ts(startTimestamp, endTimestamp);
                 ClipWithScore newClip(ts, emotionsInClip, audioValues);
-                newClip.calcFinalScore(emotionWeight, audioWeight);
+                if(useAudio)
+                    newClip.calcFinalScore(emotionWeight, audioWeight);
+                else
+                    newClip.calcFinalScore(1, 0);
 
-                if(useMov){
-                    motionHelper(startTimestamp, endTimestamp, newClip);
-                    //newClip.setMovement(calcMotionDirection(startTimestamp, endTimestamp));
-                }
+                if(useMov) motionHelper(startTimestamp, endTimestamp, newClip);
 
                 clips.push_back(newClip);
 
@@ -1113,8 +1110,79 @@ void ofApp::algorithm() {
             }
 
         }
-    }else{//TODO: AUDIO ONLY
     }
+    else if(useAudio && !useEmotions){//use only audio
+        cout << "Using only audio!" << endl;
+
+        vector<EmotionInterval> audioInterval = emotionsInterval;
+        float maxAudioValue;
+        for(EmotionInterval &ei : audioInterval){
+            int startTimestamp = ei.getTimestamp();
+            int endTimestamp = ei.getTimestamp() + interval;
+            float audioValues = 0;
+            for(int i = startTimestamp; i < endTimestamp; i++){
+                // cout << audioValues << endl;
+                audioValues += audio->getSamples()[i];
+            }
+            if(audioValues > maxAudioValue)
+                maxAudioValue = audioValues;
+            //cout << audioValues << endl;
+            ei.setAudioValues(audioValues);
+            //cout << ei.getAudioValues() << endl;
+            // cout << "timestamp: " << ei.getTimestamp() << " audio: " << ei.getAudioValues() << endl;
+        }
+
+        for(EmotionInterval e : audioInterval)
+          cout << "timestamp: " << e.getTimestamp() << " audio: " << e.getAudioValues() << endl;
+
+
+        float audioThreshold = maxAudioValue / 2;
+        cout << "AudioThreshold: " << audioThreshold << endl;
+        for(int i = 1; i < audioInterval.size(); i++){
+
+            float currentValue = audioInterval[i].getAudioValues();
+            float valueBefore = audioInterval[i - 1].getAudioValues();
+            float valueAfter = audioInterval[i + 1].getAudioValues();
+
+            if(currentValue < audioThreshold)
+                continue;
+
+            if(currentValue > valueBefore && currentValue >= valueAfter){
+                cout << "audio peak" << endl;
+
+                // two thirds of the duration before the peak, the rest after the peak
+                int startTimestamp = audioInterval[i].getTimestamp() - (clipDuration * 3/4);
+                int endTimestamp = audioInterval[i].getTimestamp() + (clipDuration / 4);
+
+                if(useCuts)//check for a cut 5 seconds before the start timestamp
+                    for(string cutTimestamp : cuts)
+                        if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5)
+                            startTimestamp = ofToInt(cutTimestamp);
+
+                //we need to get the audio values associated with the timestamps
+                float audioValues = 0;
+                for(int i = startTimestamp; i < endTimestamp; i++){
+                    float normalizedAudio = audio->getSamples()[i] / audio->getMaxValue();
+                    audioValues += normalizedAudio;
+                }
+
+                pair<int, int> ts(startTimestamp, endTimestamp);
+                ClipWithScore newClip(ts, 0, audioValues);
+                newClip.calcFinalScore(0, 1);
+
+                if(useMov) motionHelper(startTimestamp, endTimestamp, newClip);
+
+
+                clips.push_back(newClip);
+
+                cout << startTimestamp << " - " << endTimestamp << " == score: " << newClip.getFinalScore()
+                     << " audio: " << currentValue << endl;
+            }
+
+        }
+    }
+
+
 
     //Choose what clips to be included in the final summary
     //merge the extracted clips

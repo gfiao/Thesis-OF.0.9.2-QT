@@ -14,6 +14,7 @@ private:
 	int timestamp;
 	string dominantEmotion;
 	vector<string> emotions;
+    float audioValues;
 
 public:
 
@@ -26,5 +27,8 @@ public:
 	int getNumberOfEmotions();
 
 	vector<string> getEmotions();
+
+    void setAudioValues(float newValue);
+    float getAudioValues();
 
 };

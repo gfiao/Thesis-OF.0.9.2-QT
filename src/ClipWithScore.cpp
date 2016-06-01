@@ -26,9 +26,10 @@ double ClipWithScore::getFinalScore(){
 //TODO: fazer a conta para calcular a score, utilizar pesos aqui
 void ClipWithScore::calcFinalScore(double emotionWeight, double audioWeight){
 
-    //cout << nrOfEmotions << " * " << emotionWeight << " + " << audioValues << " * " << audioWeight << endl;
-
     finalScore = nrOfEmotions * emotionWeight + audioValues * audioWeight;
+    cout << finalScore << " = " << nrOfEmotions << " * " << emotionWeight << " + "
+         << audioValues << " * " << audioWeight << endl;
+
 
 }
 

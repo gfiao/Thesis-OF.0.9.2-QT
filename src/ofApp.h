@@ -6,6 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include "ofxCv.h"
 #include "EmotionData.h"
+#include "EmotionInterval.h"
 #include "AuxFunc.h"
 #include "Audio.h"
 #include <vector>
