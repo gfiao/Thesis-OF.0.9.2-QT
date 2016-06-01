@@ -638,7 +638,7 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
     return ret;
 }
 
-void ofApp::motionHelper(int start, int end, ClipWithScore newClip){
+void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
     int motion = 0;
     /* vector<pair<int, int>> ts = detectCutsIn(start, end);
     cout << "detectCutsIn size: " << ts.size() << endl;
@@ -1024,8 +1024,8 @@ void ofApp::algorithm() {
             ClipWithScore newClip(timestamps, 100, 100);
 
             if(useMov){
-                // motionHelper(start, end, newClip);
-                newClip.setMovement(calcMotionDirection(start, end));
+                motionHelper(start, end, newClip);
+                //newClip.setMovement(calcMotionDirection(start, end));
             }
             newClip.calcFinalScore(0.9, 0.1);
             clips.push_back(newClip);
@@ -1089,8 +1089,8 @@ void ofApp::algorithm() {
                 newClip.calcFinalScore(emotionWeight, audioWeight);
 
                 if(useMov){
-                    // motionHelper(startTimestamp, endTimestamp, newClip);
-                    newClip.setMovement(calcMotionDirection(startTimestamp, endTimestamp));
+                    motionHelper(startTimestamp, endTimestamp, newClip);
+                    //newClip.setMovement(calcMotionDirection(startTimestamp, endTimestamp));
                 }
 
                 clips.push_back(newClip);
@@ -1146,14 +1146,14 @@ void ofApp::algorithm() {
         if(useMov){
             bool leftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
             bool rightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
-            if(leftCheckbox){
+            if(leftCheckbox && !rightCheckbox){
                 if(clips[i].getMovement() == LEFT){
                     clipsInSummary.push_back(clips[i]);
                     pair<int, int> ts = clips[i].getTimestamps();
                     totalDuration += (ts.second - ts.first);
                 }
             }
-            else if(rightCheckbox){
+            else if(rightCheckbox && !leftCheckbox){
                 if(clips[i].getMovement() == RIGHT){
                     clipsInSummary.push_back(clips[i]);
                     pair<int, int> ts = clips[i].getTimestamps();
@@ -1185,6 +1185,6 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  " << c.getMovement() << endl;
 
-    cutVideo(clipsInSummary);
+    //cutVideo(clipsInSummary);
 
 }

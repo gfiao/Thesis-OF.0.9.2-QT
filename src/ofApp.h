@@ -87,7 +87,7 @@ public:
     void detectCuts();
     void processCutsFile();
     vector<pair<int, int>> detectCutsIn(int start, int end);
-    void motionHelper(int start, int end, ClipWithScore newClip);
+    void motionHelper(int start, int end, ClipWithScore& newClip);
 
     void cutVideo(vector<ClipWithScore> clips);
     void algorithm();
