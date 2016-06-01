@@ -141,6 +141,7 @@ void histTest(vector<ofImage> images){
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
     /*video.load("WeFeel_1.mp4");
     //=======================
     video.play();
@@ -628,11 +629,22 @@ int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
 //detects sudden cuts between two timestamps
 vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
     vector<pair<int, int>> ret;
-    for(string cut : cuts){
-        if(ofToInt(cut) > start && ofToInt(cut) < end){
-            pair<int, int> ts(start, ofToInt(cut));
+    vector<int> cutsIn;
+
+    for(string cut : cuts)
+        if(ofToInt(cut) > start && ofToInt(cut) < end)
+            cutsIn.push_back(ofToInt(cut));
+
+
+    for(int i = 0; i < cutsIn.size()+1; i++){
+        if(cutsIn[i] > start && cutsIn[i] < end){
+            pair<int, int> ts(start, cutsIn[i]);
             ret.push_back(ts);
-            start = ofToInt(cut);
+            start = cutsIn[i];
+        }
+        else {
+            pair<int, int> ts(start, end);
+            ret.push_back(ts);
         }
     }
     return ret;
@@ -640,7 +652,7 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
 
 void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
     int motion = 0;
-    /* vector<pair<int, int>> ts = detectCutsIn(start, end);
+    vector<pair<int, int>> ts = detectCutsIn(start, end);
     cout << "detectCutsIn size: " << ts.size() << endl;
     if(!ts.empty()){
         vector<int> movRes = {0, 0, 0};
@@ -649,9 +661,10 @@ void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
         }
         motion = AuxFunc::getMax(movRes);
     }
-    else*/
-    //cout << "ktime: " << start << "-" << end << endl;
-    motion = calcMotionDirection(start, end);
+    else{
+        //cout << "ktime: " << start << "-" << end << endl;
+        motion = calcMotionDirection(start, end);
+    }
     newClip.setMovement(motion);
     //cout << newClip.getMovement() << endl;
 }
