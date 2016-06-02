@@ -30,8 +30,8 @@ bool AuxFunc::is_number(const string& s) {
 string AuxFunc::formatSeconds(int seconds) {
 
     //code based on http://stackoverflow.com/a/25697134
-    int minutes = seconds / 60;
-    int hours = minutes / 60;
+    int hours = seconds / 3600;
+    int minutes = (seconds % 3600) / 60;
     seconds = seconds % 60;
 
     string stringHours = to_string(hours);

@@ -922,7 +922,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     ofFile file;
     file.open(video.getMoviePath());
     string extension = file.getExtension();
-
+    vector<string> clipNames;
     ofVideoPlayer clip;
     //extract each clip and apply the fade in/out effect
     for (int i = 0; i < clips.size(); i++) {
@@ -931,7 +931,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
         //create the ffmpeg command to extract the clip
         string command = "ffmpeg -i " + video.getMoviePath() + " -ss ";
         command += AuxFunc::formatSeconds(timestamp.first) + " -to " + AuxFunc::formatSeconds(timestamp.second);
-        command += " -y " + tempFolder + "\\clip" + to_string(i) + "." + extension;
+        command += " -qscale 6 -c copy " + tempFolder + "\\clip" + to_string(i) + "." + extension;
         //command += " -c:v ffv1 data\\" + to_string(folderName) + "\\temp\\clip" + to_string(i) + "." + extension;
         cout << command << endl;
 
@@ -945,7 +945,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
             clip.load(tempFolder + "\\clip" + to_string(i) + "." + extension);
 
-            //fade in is not to be added to the first clip
+            //fadein is not to be added to the first clip
             if (i == 0) {
                 fadeCommand += " -vf \"fade=type=out:start_frame=" + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
             }
@@ -954,42 +954,60 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
                         + to_string(clip.getTotalNumFrames() - 12) + ":d=0.5\"";
             }
 
-            fadeCommand += " -y " + newFolder + "\\clipFade" + to_string(i) + "." + extension;
+            fadeCommand += " -qscale 6 " + newFolder + "\\clipFade" + to_string(i) + "." + extension;
             cout << fadeCommand << endl;
             std::system(fadeCommand.c_str());
 
 
             //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+            string clipPath;
             if (i == 0) {
                 //first clip to be extracted, so the txt file also has to be created
                 string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
                         "." + extension + "' > " + newFolder + "\\concat.txt";
                 std::system(newClip.c_str());
+                clipPath = newFolder + "\\clipFade" + to_string(i) + "." + extension;
             }
             else {
                 string newClip = "echo file '" + newFolder + "\\clipFade" + to_string(i) +
                         "." + extension + "' >> " + newFolder + "\\concat.txt";
                 std::system(newClip.c_str());
+                clipPath = newFolder + "\\clipFade" + to_string(i) + "." + extension;
             }
+            clipNames.push_back(clipPath);
         }
         else{
             //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+            string clipPath;
             if (i == 0) {
                 //first clip to be extracted, so the txt file also has to be created
                 string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
                         "." + extension + "' > " + newFolder + "\\concat.txt";
                 std::system(newClip.c_str());
+                clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
             }
             else {
                 string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
                         "." + extension + "' >> " + newFolder + "\\concat.txt";
                 std::system(newClip.c_str());
+                clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
             }
+            clipNames.push_back(clipPath);
         }
     }
 
     //concatenate the clips
-    string concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -r 25 " + newFolder + "\\output." + extension;
+    string concatCmd = "";
+    if(extension == "mpeg"){
+        string files;
+        for(string s : clipNames){
+            files += s + "|";
+        }
+        files.pop_back();
+        concatCmd = "ffmpeg -i \"concat:" + files + "\" -c copy " + newFolder + "\\output." + extension;
+    }
+    else
+        concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -qscale 6 -c copy " + newFolder + "\\output." + extension;
     std::system(concatCmd.c_str());
 
     ofSystemAlertDialog("The videos has been created!");
@@ -1181,18 +1199,21 @@ void ofApp::algorithm() {
 
         }
     }
+    else if(!useEmotions && useMov){//extract clips based only on movement
+
+    }
 
 
 
     //Choose what clips to be included in the final summary
     //merge the extracted clips
     ofSort(clips, sortClips);
-    for(int n = 0; n < 5; n++){
+    for(int n = 0; n < 2; n++){
         for(int i = 0; i < clips.size() - 1; i++){
             ClipWithScore currClip = clips[i];
             ClipWithScore nextClip = clips[i+1];
 
-            if(currClip.getTimestamps().first == nextClip.getTimestamps().first){
+            /*  if(currClip.getTimestamps().first == nextClip.getTimestamps().first){
                 int currClipDur = currClip.getTimestamps().second - currClip.getTimestamps().first;
                 int nextClipDur = nextClip.getTimestamps().second - nextClip.getTimestamps().first;
 
@@ -1201,8 +1222,8 @@ void ofApp::algorithm() {
                 }
                 else
                     clips.erase(clips.begin()+i);
-            }
-            else if(currClip.getTimestamps().second > nextClip.getTimestamps().first){
+            }*/
+            if(currClip.getTimestamps().second > nextClip.getTimestamps().first){
                 if(currClip.getFinalScore() > nextClip.getFinalScore()){
                     clips.erase(clips.begin()+(i+1));
                     clips[i].setTimestamps(currClip.getTimestamps().first, currClip.getTimestamps().second+3);
