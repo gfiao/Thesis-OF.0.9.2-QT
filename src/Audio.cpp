@@ -16,15 +16,19 @@ Audio::Audio(const char* fileName) {
     printf("    Channels    : %d\n", sfinfo.channels);
     printf("    Frames     : %d\n", int(sfinfo.frames));
 
-    //read all of the frames to a array of floats
-    float* frames = new float[sfinfo.channels * sfinfo.frames];
-    sf_readf_float(infile, frames, sfinfo.channels * sfinfo.frames);
 
-    for (int i = 0; i < sfinfo.frames; i += sfinfo.samplerate) {
+    int BLOCK_SIZE = sfinfo.samplerate;
+    float* buf = new float[BLOCK_SIZE * sfinfo.channels];
+    int readcount = 0;
+
+    while((readcount = sf_readf_float(infile, buf, BLOCK_SIZE)) > 0){
+        //cout << readcount << endl;
+
         float sum = 0;
-        for (int j = i; j < i + sfinfo.samplerate; j++) {
-            sum += frames[j];
+        for(int i = 0; i < BLOCK_SIZE; i++){
+            sum += buf[i];
         }
+
         //multiply by 1000 so we can have readable values
         float readableValue = float(sum / sfinfo.samplerate) * 1000;
         if(readableValue < 0) readableValue -= (readableValue*2);
@@ -34,15 +38,17 @@ Audio::Audio(const char* fileName) {
             maxValue = readableValue;
         if (readableValue < minValue)
             minValue = readableValue;
+
+        //buf = new float[BLOCK_SIZE * sfinfo.channels];
     }
 
-    cout << "   MaxValue:  " << maxValue << endl;
-    cout << "   MinValue:  " << minValue << endl;
+    cout << "    MaxValue:  " << maxValue << endl;
+    cout << "    MinValue:  " << minValue << endl;
 
-    cout << "   Samples Size:   " << samples.size() << endl;
+    cout << "    Samples Size:   " << samples.size() << endl;
 
-    /* for (int i = 0; i < samples.size(); i++)
-        cout << samples[i] << endl;*/
+     //for (int i = 0; i < samples.size(); i++)
+       // cout << samples[i] << endl;
 
     cout << "Audio Loaded\n" << endl;
 

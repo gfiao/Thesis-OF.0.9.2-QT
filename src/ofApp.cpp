@@ -1133,7 +1133,7 @@ void ofApp::algorithm() {
         }
 
         for(EmotionInterval e : audioInterval)
-          cout << "timestamp: " << e.getTimestamp() << " audio: " << e.getAudioValues() << endl;
+            cout << "timestamp: " << e.getTimestamp() << " audio: " << e.getAudioValues() << endl;
 
 
         float audioThreshold = maxAudioValue / 2;
@@ -1187,11 +1187,22 @@ void ofApp::algorithm() {
     //Choose what clips to be included in the final summary
     //merge the extracted clips
     ofSort(clips, sortClips);
-    for(int n = 0; n < 2; n++)
+    for(int n = 0; n < 5; n++){
         for(int i = 0; i < clips.size() - 1; i++){
             ClipWithScore currClip = clips[i];
             ClipWithScore nextClip = clips[i+1];
-            if(currClip.getTimestamps().second > nextClip.getTimestamps().first){
+
+            if(currClip.getTimestamps().first == nextClip.getTimestamps().first){
+                int currClipDur = currClip.getTimestamps().second - currClip.getTimestamps().first;
+                int nextClipDur = nextClip.getTimestamps().second - nextClip.getTimestamps().first;
+
+                if(currClipDur > nextClipDur){
+                    clips.erase(clips.begin()+(i+1));
+                }
+                else
+                    clips.erase(clips.begin()+i);
+            }
+            else if(currClip.getTimestamps().second > nextClip.getTimestamps().first){
                 if(currClip.getFinalScore() > nextClip.getFinalScore()){
                     clips.erase(clips.begin()+(i+1));
                     clips[i].setTimestamps(currClip.getTimestamps().first, currClip.getTimestamps().second+3);
@@ -1202,6 +1213,7 @@ void ofApp::algorithm() {
                 }
             }
         }
+    }
 
     cout << endl;
     for(ClipWithScore c : clips)
@@ -1266,6 +1278,6 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  " << c.getMovement() << endl;
 
-    //cutVideo(clipsInSummary);
+    cutVideo(clipsInSummary);
 
 }
