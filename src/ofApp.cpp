@@ -652,7 +652,7 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
 void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
     int motion = 0;
     vector<pair<int, int>> ts = detectCutsIn(start, end);
-    //cout << "detectCutsIn size: " << ts.size() << endl;
+    cout << "detectCutsIn size: " << ts.size() << endl;
     if(!ts.empty()){
         vector<int> movRes = {0, 0, 0};
         for(int i = 0; i < ts.size(); i++){

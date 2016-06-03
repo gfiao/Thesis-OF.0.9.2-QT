@@ -21,7 +21,7 @@ static const int VIDEO_OFFSET_WIDTH = 10;
 static const int VIDEO_OFFSET_HEIGHT = 10;
 static const int DEFAULT_INTERVAL_VAL = 5;
 
-static const string DEAFULT_CUTS_FILE = "data\\0.40-WeFeel_1_cuts.txt";
+static const string DEAFULT_CUTS_FILE = "data\\0.30-WeFeel_1_cuts.txt";
 
 static const int LONG_SHOT = 0;
 static const int CLOSEUP_SHOT = 1;
