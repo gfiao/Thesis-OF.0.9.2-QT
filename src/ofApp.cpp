@@ -924,20 +924,23 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     string extension = file.getExtension();
     vector<string> clipNames;
     ofVideoPlayer clip;
+
+    string extractCmd = "ffmpeg -i " + video.getMoviePath();
     //extract each clip and apply the fade in/out effect
     for (int i = 0; i < clips.size(); i++) {
         pair<int, int> timestamp = clips[i].getTimestamps();
 
         //create the ffmpeg command to extract the clip
-        string command = "ffmpeg -i " + video.getMoviePath() + " -ss ";
-        command += AuxFunc::formatSeconds(timestamp.first) + " -to " + AuxFunc::formatSeconds(timestamp.second);
-        command += " -qscale 6 -c copy " + tempFolder + "\\clip" + to_string(i) + "." + extension;
+        extractCmd += " -ss " + AuxFunc::formatSeconds(timestamp.first) + " -to " + AuxFunc::formatSeconds(timestamp.second);
+        extractCmd += " -qscale 6 -c copy " + tempFolder + "\\clip" + to_string(i) + "." + extension;
         //command += " -c:v ffv1 data\\" + to_string(folderName) + "\\temp\\clip" + to_string(i) + "." + extension;
-        cout << command << endl;
+
 
         //system("ffmpeg -i data\\WeFeel.m4v -ss 00:01:00 -to 00:02:00 -c copy data\\cut.m4v"); //example
-        std::system(command.c_str());
+        //std::system(command.c_str());
 
+        /*
+        //add fade in/out effect
         if(qmlWindow->findChild<QObject*>("fadeInOut")->property("checked") == true){
 
             //create the command to apply the fade in/out effects
@@ -975,26 +978,29 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
                 clipPath = newFolder + "\\clipFade" + to_string(i) + "." + extension;
             }
             clipNames.push_back(clipPath);
+        }*/
+
+        // else{//dont add fade in/out effect
+        //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
+        string clipPath;
+        if (i == 0) {
+            //first clip to be extracted, so the txt file also has to be created
+            string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
+                    "." + extension + "' > " + newFolder + "\\concat.txt";
+            std::system(newClip.c_str());
+            clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
         }
-        else{
-            //add each clip filename to a txt file that will then be used by ffmpeg to concatenate the clips
-            string clipPath;
-            if (i == 0) {
-                //first clip to be extracted, so the txt file also has to be created
-                string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
-                        "." + extension + "' > " + newFolder + "\\concat.txt";
-                std::system(newClip.c_str());
-                clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
-            }
-            else {
-                string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
-                        "." + extension + "' >> " + newFolder + "\\concat.txt";
-                std::system(newClip.c_str());
-                clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
-            }
-            clipNames.push_back(clipPath);
+        else {
+            string newClip = "echo file '" + newFolder + "\\temp\\clip" + to_string(i) +
+                    "." + extension + "' >> " + newFolder + "\\concat.txt";
+            std::system(newClip.c_str());
+            clipPath = newFolder + "\\temp\\clip" + to_string(i) + "." + extension;
         }
+        clipNames.push_back(clipPath);
+        //}
     }
+    cout << extractCmd << endl;
+    system(extractCmd.c_str());
 
     //concatenate the clips
     string concatCmd = "";
@@ -1008,7 +1014,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     }
     else
         concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -qscale 6 -c copy " + newFolder + "\\output." + extension;
-    std::system(concatCmd.c_str());
+   system(concatCmd.c_str());
 
     ofSystemAlertDialog("The videos has been created!");
 
