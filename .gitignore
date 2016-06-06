@@ -1,8 +1,12 @@
 *.wav
 *.mp4
 *.m4v
-*.txt
 bin/data/.gitkeep
 *.jpg
 *.png
 *.mpeg
+bin/data/1464876525 2m 5s 20s/concat.txt
+concat.txt
+bin/data/temp/list.txt
+glyphicons_free/_changelog.txt
+glyphicons_free/_license.txt
