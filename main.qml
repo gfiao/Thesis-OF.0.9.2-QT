@@ -65,7 +65,6 @@ ApplicationWindow {
         }
     }
 
-
     Item{
         id: mediaPlayerButtons
         width: parent.width

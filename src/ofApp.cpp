@@ -1028,6 +1028,8 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
 void ofApp::algorithm() {
 
+    auto time = ofGetElapsedTimeMillis();
+
 
     vector<pair<int, vector<string>>> emotionsInSecond = emotionData->getEmotionsInSecond();
     vector<bool> eventInSecond = emotionData->getEventInSecond();
@@ -1306,5 +1308,7 @@ void ofApp::algorithm() {
              << "  -  " << c.getMovement() << endl;
 
     cutVideo(clipsInSummary);
+
+    cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
 
 }

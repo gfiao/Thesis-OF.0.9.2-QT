@@ -22,9 +22,9 @@ Project{
             "src/EmotionData.h",
             "src/EmotionInterval.cpp",
             "src/EmotionInterval.h",
-            "src/main.cpp",
-            "src/ofApp.cpp",
-            "src/ofApp.h",
+            'src/main.cpp',
+            'src/ofApp.cpp',
+            'src/ofApp.h',
         ]
 
         of.addons: [
@@ -74,6 +74,10 @@ Project{
             name: "Qt.widgets"
         }
 
+        Depends{
+            name: "Qt.charts"
+        }
+
         Group {
             name: "QML Resources"
             files: [
@@ -83,7 +87,6 @@ Project{
             ]
             qbs.install: true
         }
-
     }
 
     references: [FileInfo.joinPaths(of_root, "/libs/openFrameworksCompiled/project/qtcreator/openFrameworks.qbs")]

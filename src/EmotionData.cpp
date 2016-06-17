@@ -46,6 +46,15 @@ EmotionData::EmotionData(string filePath, int interval) {
         if(emotionsInSecond[i].first > maxValue)
             maxValue = emotionsInSecond[i].first;
     }
+
+   /* vector<EmotionInterval> intEmo = setInterval(30);
+    for(EmotionInterval e : intEmo){
+        cout << e.getTimestamp() << endl;
+    }
+    cout << endl;
+    for(EmotionInterval e : intEmo){
+        cout << e.getNumberOfEmotions() << endl;
+    }*/
 }
 
 vector<pair<int, vector<string> > > EmotionData::getEmotionsInSecond(){
