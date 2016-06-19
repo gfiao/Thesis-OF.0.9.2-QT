@@ -2,8 +2,6 @@
 *.mp4
 *.m4v
 bin/data/.gitkeep
-*.jpg
-*.png
 *.mpeg
 bin/data/1464876525 2m 5s 20s/concat.txt
 concat.txt
@@ -16,3 +14,4 @@ bin/thesis_debug.exe
 bin/libsndfile-1.dll
 bin/libsndfile-1.lib
 *.dll
+glyphicons_free/
