@@ -1013,8 +1013,9 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
         concatCmd = "ffmpeg -i \"concat:" + files + "\" -c copy " + newFolder + "\\output." + extension;
     }
     else
-        concatCmd = "ffmpeg -f concat -i " + newFolder + "\\concat.txt -qscale 6 -c copy " + newFolder + "\\output." + extension;
-   system(concatCmd.c_str());
+        concatCmd = "ffmpeg -safe 0 -f concat -i " + newFolder + "\\concat.txt -qscale 6 -c copy " + newFolder + "\\output." + extension;
+    cout << concatCmd << endl;
+    system(concatCmd.c_str());
 
     ofSystemAlertDialog("The videos has been created!");
 
@@ -1028,7 +1029,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
 void ofApp::algorithm() {
 
-    auto time = ofGetElapsedTimeMillis();
+    //auto time = ofGetElapsedTimeMillis();
 
 
     vector<pair<int, vector<string>>> emotionsInSecond = emotionData->getEmotionsInSecond();
@@ -1309,6 +1310,6 @@ void ofApp::algorithm() {
 
     cutVideo(clipsInSummary);
 
-    cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
+    //cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
 
 }
