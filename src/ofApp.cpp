@@ -142,6 +142,10 @@ void histTest(vector<ofImage> images){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    auto time = ofGetElapsedTimeMillis();
+    train();
+    cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
+
     /*video.load("WeFeel_1.mp4");
     //=======================
     video.play();
@@ -385,6 +389,72 @@ void ofApp::keyPressed(int key){
 
     QString returnedValueString = returnedValue.toString();
     cout << "QML function returned: " << returnedValueString.toStdString() << endl;*/
+}
+
+void ofApp::train(){
+
+    ofDirectory dir(TRAIN_ASSETS);
+    dir.listDir();
+    ofImage img;
+    int hbins = 180, sbins = 32;
+    float threshold;
+
+    for(int i = 0; i < dir.size(); i++){
+        //get image and the respective histogram
+        img.load(dir.getPath(i));
+        cv::MatND hist = getHistogram(img);
+
+        vector<float> sums;
+        float totalSum = 0, maxValue = 0;
+        int maxValueIndex = 0;
+        for (int h = 0; h < hbins; h++) {
+            float sum = 0;
+            for (int s = 0; s < sbins; s++) {
+                sum += hist.at<float>(h, s);
+                totalSum += hist.at<float>(h, s);
+            }
+            if(maxValue < sum){
+                maxValue = sum;
+                maxValueIndex = h;
+            }
+            sums.push_back(sum);
+        }
+        //cout << maxValue << " " << maxValueIndex << endl;
+
+        //now we need to know the percentage of green pixels in the image
+        int hMin = 0, hMax = 0;
+        for(int j = maxValueIndex; j < sums.size(); j++){
+            //cout << sums[j] << endl;
+            if(sums[j] < maxValue * 0.2){
+                hMax = j;
+                break;
+            }
+        }
+        // cout << endl;
+        for(int j = maxValueIndex; j > 0; j--){
+            // cout << sums[j] << endl;
+            if(sums[j] < maxValue * 0.2){
+                hMin = j;
+                break;
+            }
+        }
+        //cout << hMin << " - " << maxValueIndex << " - " << hMax << endl << endl;
+
+        float greenPixels = 0;
+        for(int j = hMin; j < hMax; j++){
+            greenPixels += sums[j];
+        }
+        threshold += greenPixels / totalSum;
+
+        //cout << greenPixels / totalSum  << endl;
+
+    }
+
+    threshold = threshold / dir.size();
+
+    cout << threshold << endl;
+
+
 }
 
 vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){

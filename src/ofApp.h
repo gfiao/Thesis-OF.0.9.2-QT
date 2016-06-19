@@ -30,6 +30,8 @@ static const int OUT_OF_FIELD = 2;
 static const string NOT_NUMBER = "Not a number!";
 static const string WRONG_NUMBER = "The value must be between 0 and 1!";
 
+static const string TRAIN_ASSETS = "data\\training";
+
 class ofApp : public ofBaseApp {
 private:
     //oF
@@ -74,6 +76,9 @@ public:
     void update();
     void draw();
     void keyPressed(int key);
+
+    //training for the shot detection
+    void train();
 
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
