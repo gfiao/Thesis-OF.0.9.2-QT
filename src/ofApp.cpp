@@ -393,66 +393,83 @@ void ofApp::keyPressed(int key){
 
 void ofApp::train(){
 
+    //TODO: only long shot for now
     ofDirectory dir(TRAIN_ASSETS);
     dir.listDir();
     ofImage img;
     int hbins = 180, sbins = 32;
-    float threshold;
+    float threshold = 0;
+    float totalGpixels, pOfGreenPixels;
 
     for(int i = 0; i < dir.size(); i++){
         //get image and the respective histogram
         img.load(dir.getPath(i));
-        cv::MatND hist = getHistogram(img);
 
-        vector<float> sums;
-        float totalSum = 0, maxValue = 0;
-        int maxValueIndex = 0;
-        for (int h = 0; h < hbins; h++) {
-            float sum = 0;
-            for (int s = 0; s < sbins; s++) {
-                sum += hist.at<float>(h, s);
-                totalSum += hist.at<float>(h, s);
+        totalGpixels = 0, pOfGreenPixels = 0;
+
+       // cout << dir.getName(i) << endl;
+
+        vector<ofImage> subImages = divideImage(img, 9);
+
+        for(int i = 3; i < subImages.size(); i++){
+
+            cv::MatND hist = getHistogram(subImages[i]);
+
+            vector<float> sums;
+            float totalSum = 0, maxValue = 0;
+            int maxValueIndex = 0;
+            for (int h = 0; h < hbins; h++) {
+                float sum = 0;
+                for (int s = 0; s < sbins; s++) {
+                    sum += hist.at<float>(h, s);
+                    totalSum += hist.at<float>(h, s);
+                }
+                if(maxValue < sum){
+                    maxValue = sum;
+                    maxValueIndex = h;
+                }
+                sums.push_back(sum);
             }
-            if(maxValue < sum){
-                maxValue = sum;
-                maxValueIndex = h;
+            //cout << maxValue << " " << maxValueIndex << endl;
+
+            //now we need to know the percentage of green pixels in the image
+            int hMin = 0, hMax = 0;
+            for(int j = maxValueIndex; j < sums.size(); j++){
+                //cout << sums[j] << endl;
+                if(sums[j] < maxValue * 0.2){
+                    hMax = j;
+                    break;
+                }
             }
-            sums.push_back(sum);
-        }
-        //cout << maxValue << " " << maxValueIndex << endl;
-
-        //now we need to know the percentage of green pixels in the image
-        int hMin = 0, hMax = 0;
-        for(int j = maxValueIndex; j < sums.size(); j++){
-            //cout << sums[j] << endl;
-            if(sums[j] < maxValue * 0.2){
-                hMax = j;
-                break;
+            // cout << endl;
+            for(int j = maxValueIndex; j > 0; j--){
+                // cout << sums[j] << endl;
+                if(sums[j] < maxValue * 0.2){
+                    hMin = j;
+                    break;
+                }
             }
-        }
-        // cout << endl;
-        for(int j = maxValueIndex; j > 0; j--){
-            // cout << sums[j] << endl;
-            if(sums[j] < maxValue * 0.2){
-                hMin = j;
-                break;
+            //cout << hMin << " - " << maxValueIndex << " - " << hMax << endl << endl;
+
+            float greenPixels = 0;
+            for(int j = hMin; j < hMax; j++){
+                greenPixels += sums[j];
             }
+            pOfGreenPixels = greenPixels / totalSum;
+            totalGpixels += pOfGreenPixels;
+
+            //cout << pOfGreenPixels << endl;
         }
-        //cout << hMin << " - " << maxValueIndex << " - " << hMax << endl << endl;
+        //percentage of green pixels in the image
+        totalGpixels = totalGpixels / 6;
+        cout << totalGpixels << endl;
 
-        float greenPixels = 0;
-        for(int j = hMin; j < hMax; j++){
-            greenPixels += sums[j];
-        }
-        threshold += greenPixels / totalSum;
-
-        //cout << greenPixels / totalSum  << endl;
-
+        threshold += totalGpixels;
     }
 
     threshold = threshold / dir.size();
 
-    cout << threshold << endl;
+    cout << "Long-shot threshold: " << threshold << endl;
 
 
 }
