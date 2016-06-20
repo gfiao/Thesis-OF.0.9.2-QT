@@ -878,5 +878,6 @@
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-68-snapchat.png</file>
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-69-etsy.png</file>
         <file>glyphicons_free/glyphicons-social/png/glyphicons-social-70-stackexchange.png</file>
+        <file>ChartWindow.qml</file>
     </qresource>
 </RCC>

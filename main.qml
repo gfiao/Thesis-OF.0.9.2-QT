@@ -130,7 +130,7 @@ ApplicationWindow {
             width: 242
             height: 20
             value: 0.0
-           // stepSize: 0.001
+            // stepSize: 0.001
 
             signal videoSeekSignal(var pos)
             onValueChanged: videoSeekbar.videoSeekSignal(value)
@@ -228,6 +228,11 @@ ApplicationWindow {
             id: setScoresWindow
         }
 
+        ChartWindow{
+            id: chartWindow
+            objectName: "chartWindow"
+        }
+
         RowLayout{
             Button{
                 text: "Set Scores"
@@ -240,14 +245,23 @@ ApplicationWindow {
                 text: "Run Algorithm"
                 enabled: false
             }
+
+            Button{
+                text: "Emotions Over Time"
+                objectName: "showChart"
+                id: showChart
+
+                onClicked: chartWindow.visible = true;
+            }
         }
     }
 
 
-    function myQmlFunction(msg) {
+    /*function myQmlFunction(msg) {
         console.log("Got message:", msg)
         return "some return value"
-    }
+    }*/
+
 
 
 

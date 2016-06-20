@@ -146,57 +146,6 @@ void ofApp::setup(){
     train();
     cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
 
-    /*video.load("WeFeel_1.mp4");
-    //=======================
-    video.play();
-    video.setPaused(true);
-    //=======================
-    int start = 30, end = 60;
-    video.setPosition(start / video.getDuration());//30 seconds into the video
-    ofSleepMillis(100);
-    //video.update();
-    ofImage img1;
-    img1.setFromPixels(video.getPixels());
-    img1.save("img1.jpg");
-
-    video.setPosition(end /video.getDuration());//60 seconds into the video
-    ofSleepMillis(100);
-    // video.update();
-    ofImage img2(video.getPixels());
-    img2.save("img2.jpg");*/
-
-
-
-
-    /* ofxXmlSettings xmlFile;
-    if( xmlFile.loadFile("EmotionsOverTime.xml") ){
-        cout << "xml file loaded" << endl;
-    }else{
-        cout << "xml error" << endl;
-    }
-
-    xmlFile.pushTag("emotionData", 0);
-    int numOfData = xmlFile.getNumTags("data");
-    xmlFile.pushTag("data", numOfData-1);
-    cout << xmlFile.getValue("timestamp", 0) << endl;
-
-    cout << numOfData << endl;
-
-     for(int i = 0; i < numOfData; i++){
-        xmlFile.pushTag("data", i);
-
-        if(xmlFile.tagExists("event"))
-            cout << "Timestamp: " << xmlFile.getValue("timestamp", 0) << endl;
-
-
-        //cout << "Timestamp: " << xmlFile.getValue("timestamp", 0) << " Emotion: " <<
-        //      xmlFile.getValue("emotion", "kek") << endl;
-
-        xmlFile.popTag();
-    }*/
-
-
-
 
     cout << "OpenCV version: " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << endl;
 
@@ -206,6 +155,7 @@ void ofApp::setup(){
     ofBackground(ofColor::white);
 
     qmlSetup();
+
 
     //load the default cuts file
     cuts.clear();
@@ -219,7 +169,6 @@ void ofApp::setup(){
         if (splitLine.size() != 0) // last line is empty
             cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
     }
-
 
 
 
@@ -407,7 +356,7 @@ void ofApp::train(){
 
         totalGpixels = 0, pOfGreenPixels = 0;
 
-       // cout << dir.getName(i) << endl;
+        // cout << dir.getName(i) << endl;
 
         vector<ofImage> subImages = divideImage(img, 9);
 
@@ -462,7 +411,7 @@ void ofApp::train(){
         }
         //percentage of green pixels in the image
         totalGpixels = totalGpixels / 6;
-        cout << totalGpixels << endl;
+        //cout << totalGpixels << endl;
 
         threshold += totalGpixels;
     }
@@ -917,6 +866,8 @@ void ofApp::loadDataParameters(){
         emotionData = new EmotionData(emotionDataPath); //5 second intervals
     }
 
+    populateChart();
+
     ofSystemAlertDialog("Data loaded successfully!");
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
@@ -949,7 +900,6 @@ void ofApp::loadVideoFile(){
 
         ofSystemAlertDialog("Video Loaded!");
 
-        //calcMotionDirection(0, 0);
     }
 
 }
@@ -993,6 +943,38 @@ void ofApp::stop(){
 void ofApp::videoSeekbarChanged(float pos){
     // cout << pos << endl;
     video.setPosition(pos);
+}
+
+void ofApp::populateChart(){
+
+    vector<EmotionInterval> emotions;
+    if(emotionData != nullptr)
+        emotions = emotionData->setInterval(5);
+    else{
+        cout << "Carrega dados!" << endl;
+        return;
+    }
+
+    // QQmlComponent component(&qmlEngine, QUrl(QStringLiteral("qrc:/EmotionsTab.qml")));
+    //QObject *object = component.create();
+
+    QObject* chart = qmlWindow->findChild<QObject*>("chartWindow");
+
+    QVariant returnedValue;
+    for(int i = 0; i < emotions.size(); i++){
+
+        QVariant x = emotions[i].getTimestamp();
+        QVariant y = emotions[i].getNumberOfEmotions();
+        QMetaObject::invokeMethod(chart, "populateChart",
+                                  Q_RETURN_ARG(QVariant, returnedValue),
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y));
+
+        QString returnedValueString = returnedValue.toString();
+        cout << "QML function returned: " << returnedValueString.toStdString() << endl;
+    }
+
+
+
 }
 
 void ofApp::cutVideo(vector<ClipWithScore> clips) {

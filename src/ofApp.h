@@ -110,6 +110,8 @@ public:
     void stop();
     void videoSeekbarChanged(float pos);
 
+    void populateChart();
+
     void selectRow(int row);
 };
 
