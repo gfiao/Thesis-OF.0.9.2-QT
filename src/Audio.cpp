@@ -39,7 +39,6 @@ Audio::Audio(const char* fileName) {
         if (readableValue < minValue)
             minValue = readableValue;
 
-        //buf = new float[BLOCK_SIZE * sfinfo.channels];
     }
 
     cout << "    MaxValue:  " << maxValue << endl;

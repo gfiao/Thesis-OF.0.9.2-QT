@@ -112,11 +112,11 @@ Window {
                     }
                 }*/
 
-                Item { Layout.preferredHeight: 5 } // padding
+                Item { Layout.preferredHeight: 8 } // padding
                 Button {
                     objectName: "loadDataParameters"
                     id: loadDataParameters
-                    text: qsTr("Load Data")
+                    text: qsTr("Load Files")
                 }
             }
         }
