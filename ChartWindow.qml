@@ -17,16 +17,18 @@ Window {
         antialiasing: true
 
         ValueAxis {
+            titleText: "Timestamps (seconds)"
             id: axisX
+            objectName: "axisX"
             min: 0
-            max: 900
-            //tickCount: 5*/
+            //tickCount: 100
         }
 
         ValueAxis {
+            titleText: "Number of Shared Emotions"
             id: axisY
+            objectName: "axisY"
             min: 0
-            max: 10
         }
 
         LineSeries {
@@ -38,17 +40,14 @@ Window {
 
     }
 
-    function populateChart(x, y){
+    function populateChart(x, y, maxX, maxY, tickCountX){
+        axisX.max = maxX;
+        axisY.max = maxY + 1;
+       // axisX.tickCount = tickCountX;
+
         series1.append(x, y);
-        return x + " : " + y
     }
 
-
-    /* Component.onCompleted: {
-        for (var i = 0; i <= 10; i++) {
-            series1.append(i, Math.random());
-        }
-    }*/
 }
 
 

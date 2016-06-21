@@ -951,26 +951,32 @@ void ofApp::populateChart(){
     if(emotionData != nullptr)
         emotions = emotionData->setInterval(5);
     else{
-        cout << "Carrega dados!" << endl;
+        cout << "No data loaded!" << endl;
         return;
     }
 
-    // QQmlComponent component(&qmlEngine, QUrl(QStringLiteral("qrc:/EmotionsTab.qml")));
-    //QObject *object = component.create();
+    int tickCount = emotionData->getInterval();
+    int maxX = emotions.back().getTimestamp();
+    int maxY = emotionData->getMaxValue();
 
     QObject* chart = qmlWindow->findChild<QObject*>("chartWindow");
+    //QObject* axisX = qmlWindow->findChild<QObject*>("axisX");
+
+    //axisX->setProperty("max", QVariant(maxX));
+    //chart->findChild<QObject*>("axisX")->setProperty("tickCount", QVariant(tick));
+    //chart->findChild<QObject*>("axisY")->setProperty("max", QVariant(maxY));
 
     QVariant returnedValue;
+
     for(int i = 0; i < emotions.size(); i++){
 
         QVariant x = emotions[i].getTimestamp();
         QVariant y = emotions[i].getNumberOfEmotions();
-        QMetaObject::invokeMethod(chart, "populateChart",
-                                  Q_RETURN_ARG(QVariant, returnedValue),
-                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y));
+        QMetaObject::invokeMethod(chart, "populateChart", Q_RETURN_ARG(QVariant, returnedValue),
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y),
+                                  Q_ARG(QVariant, maxX), Q_ARG(QVariant, maxY),
+                                  Q_ARG(QVariant, tickCount));
 
-        QString returnedValueString = returnedValue.toString();
-        cout << "QML function returned: " << returnedValueString.toStdString() << endl;
     }
 
 
