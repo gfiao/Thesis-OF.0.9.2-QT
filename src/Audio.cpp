@@ -5,7 +5,7 @@ code based on http://ofdsp.blogspot.pt/2011/07/loading-wav-file-with-sndfilehand
  https://github.com/erikd/libsndfile/blob/master/examples/sndfile-to-text.c
  */
 Audio::Audio(const char* fileName) {
-    maxValue, minValue = 0;
+    maxValue = 0, minValue = 0;
 
     //Bit rate = (bit depth) x (sampling rate) x (number of channels)
     SF_INFO sfinfo;
