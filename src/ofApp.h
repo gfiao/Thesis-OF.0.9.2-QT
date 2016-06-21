@@ -36,6 +36,7 @@ class ofApp : public ofBaseApp {
 private:
     //oF
     string emotionDataPath;
+    string videoPath;
     ofVideoPlayer video;
     EmotionData *emotionData;
     Audio *audio;
@@ -102,7 +103,7 @@ public:
     void qmlSetup();
     void loadVideoFile();
     void loadDataFile();
-    void loadDataParameters();
+    void loadFiles();
     void volSliderChanged(float msg);
     void clearSelection();
     void play();
@@ -130,7 +131,7 @@ public slots:
         ofAppInstance->loadDataFile();
     }
     void dataParametersSlot(){
-        ofAppInstance->loadDataParameters();
+        ofAppInstance->loadFiles();
     }
 
     void clearSelectionSlot(){

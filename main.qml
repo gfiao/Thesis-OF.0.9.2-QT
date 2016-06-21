@@ -36,16 +36,11 @@ ApplicationWindow {
             MenuItem {
 
                 objectName: "loadData"
-                text: "Load Data"
+                text: "Load Files"
                 onTriggered: {
                     loadDataWindow.visible = true
                 }
 
-            }
-
-            MenuItem {
-                objectName: "loadVideo"
-                text: "Load Video"
             }
 
             MenuSeparator{}
@@ -251,7 +246,12 @@ ApplicationWindow {
                 objectName: "showChart"
                 id: showChart
 
-                onClicked: chartWindow.visible = true;
+                onClicked: {
+                    if(chartWindow.visible)
+                        chartWindow.visible = false;
+                    else
+                        chartWindow.visible = true
+                }
             }
         }
     }

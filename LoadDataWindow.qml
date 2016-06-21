@@ -64,7 +64,21 @@ Window {
                 }
 
                 Item { Layout.preferredHeight: 5 } // padding
-                RadioButton {
+
+                RowLayout{
+                    Button {
+                        objectName: "loadVideo"
+                        text: "Load Video"
+                    }
+                    Label{
+                        objectName: "loadVideoLabel"
+                        visible: false
+                        text: ""
+                    }
+
+                }
+
+                /* RadioButton {
                     objectName: "dynInter_radio"
                     id: dynInter_radio
                     text: qsTr("Dynamic Interval")
@@ -96,7 +110,7 @@ Window {
                         placeholderText: qsTr("Value")
                         validator: IntValidator{bottom: 0; top: 100}
                     }
-                }
+                }*/
 
                 Item { Layout.preferredHeight: 5 } // padding
                 Button {

@@ -36,7 +36,6 @@ Window {
             axisX: axisX
             axisY: axisY
         }
-        // Add data dynamically to the series
 
     }
 

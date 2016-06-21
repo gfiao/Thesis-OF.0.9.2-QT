@@ -235,7 +235,7 @@ void ofApp::qmlSetup(){
     QObject::connect(qmlLoadDataParameters, SIGNAL( clicked() ),
                      &qmlCallback, SLOT( dataParametersSlot() ));
 
-    QObject::connect(qmlLoadVideo, SIGNAL( triggered() ),
+    QObject::connect(qmlLoadVideo, SIGNAL( clicked() ),
                      &qmlCallback, SLOT( loadVideoSlot() ));
     QObject::connect(qmVideoVolSlider, SIGNAL( sliderSignal(QVariant) ),
                      &qmlCallback, SLOT( sliderSlot(QVariant) ));
@@ -822,10 +822,10 @@ void ofApp::selectRow(int row){
 //--------------------------------------------------------------
 void ofApp::loadDataFile(){
 
+    //Load the emotions data
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a data file");
 
     if (openFileResult.bSuccess) {
-        ofLogVerbose("User selected a file");
         if(ofFile(openFileResult.getPath()).getExtension() != "xml"){
             ofSystemAlertDialog("That's not a XML file!");
             return;
@@ -835,24 +835,40 @@ void ofApp::loadDataFile(){
         cout << emotionDataPath << endl;
     }
 
-    QObject* label = qmlWindow->findChild<QObject*>("loadFileLabel");
+    QObject* emotionsLabel = qmlWindow->findChild<QObject*>("loadFileLabel");
     string emotionDataFileName = AuxFunc::split(emotionDataPath, '\\').back();
-    label->setProperty("visible", true);
-    label->setProperty("text", QVariant(emotionDataFileName.c_str()));
+    emotionsLabel->setProperty("visible", true);
+    emotionsLabel->setProperty("text", QVariant(emotionDataFileName.c_str()));
 }
 
-void ofApp::loadDataParameters(){
+void ofApp::loadVideoFile(){
+
+    ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a video file");
+    if(openFileResult.bSuccess){
+        videoPath = openFileResult.getPath();
+
+        cout << videoPath << endl;
+    }
+
+    QObject* videoLabel = qmlWindow->findChild<QObject*>("loadVideoLabel");
+    string videoName = AuxFunc::split(videoPath.c_str(), '\\').back();
+    videoLabel->setProperty("visible", true);
+    videoLabel->setProperty("text", QVariant(videoName.c_str()));
+
+}
+
+void ofApp::loadFiles(){
 
     QObject *interval_textfield = qmlWindow->findChild<QObject*>("interval_textfield");
     QString intervalValue = interval_textfield->property("text").toString();
     cout << intervalValue.toStdString() << endl;
 
-    QObject *dynInter_textfield = qmlWindow->findChild<QObject*>("dynInter_textfield");
-    QString dynIntValue = dynInter_textfield->property("text").toString();
+    //QObject *dynInter_textfield = qmlWindow->findChild<QObject*>("dynInter_textfield");
+    //QString dynIntValue = dynInter_textfield->property("text").toString();
 
     cout << intervalValue.size() << endl;
 
-    if (intervalValue.size() > 0 && dynIntValue.size() == 0){
+    if (intervalValue.size() > 0 /*&& dynIntValue.size() == 0*/){
         emotionData = new EmotionData(emotionDataPath, ofToInt(intervalValue.toStdString()));
     }
     /* else if (intervalValue.size() > 0 && dynIntValue.size() > 0){
@@ -868,39 +884,35 @@ void ofApp::loadDataParameters(){
 
     populateChart();
 
-    ofSystemAlertDialog("Data loaded successfully!");
+    cout << "Emotions Data Loaded!" << endl;
+
+    //====================================================
+
+    video.load(videoPath);
+
+    cout << "Video Res: " << video.getWidth() << "x" << video.getHeight() << endl;
+    cout << "Nr of frames: " << video.getTotalNumFrames() << endl;
+
+    string videoName = AuxFunc::split(video.getMoviePath().c_str(), '\\').back();
+    //audio files will use the .wav container
+    if (!boost::filesystem::exists("data\\" + AuxFunc::split(videoName, '.')[0] + ".wav")) {
+        //extract the audio from the video file
+        string cmd = "ffmpeg -i " + video.getMoviePath() + " data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
+        system(cmd.c_str());
+    }
+
+    string audioFile = "data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
+    delete audio;
+    audio = new Audio(audioFile.c_str());
+
+    video.setVolume(qmVideoVolSlider->property("value").toFloat());
+
+    cout << "Video file loaded!" << endl;
+
+
+    ofSystemAlertDialog("Files loaded successfully!");
 
     qmlWindow->findChild<QObject*>("loadDataWindow")->setProperty("visible", false);
-
-}
-
-void ofApp::loadVideoFile(){
-
-    ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a video file");
-
-    if(openFileResult.bSuccess){
-        video.load(openFileResult.getPath());
-
-        cout << "Video Res: " << video.getWidth() << "x" << video.getHeight() << endl;
-        cout << "Nr of frames: " << video.getTotalNumFrames() << endl;
-
-        string videoName = AuxFunc::split(video.getMoviePath().c_str(), '\\').back();
-        //audio files will use the .wav container
-        if (!boost::filesystem::exists("data\\" + AuxFunc::split(videoName, '.')[0] + ".wav")) {
-            //extract the audio from the video file
-            string cmd = "ffmpeg -i " + video.getMoviePath() + " data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
-            system(cmd.c_str());
-        }
-
-        string audioFile = "data\\" + AuxFunc::split(videoName, '.')[0] + ".wav";
-        delete audio;
-        audio = new Audio(audioFile.c_str());
-
-        video.setVolume(qmVideoVolSlider->property("value").toFloat());
-
-        ofSystemAlertDialog("Video Loaded!");
-
-    }
 
 }
 
@@ -911,8 +923,10 @@ void ofApp::clearSelection(){
     audio = nullptr;
     delete audio;
     emotionDataPath = "";
-    QObject* label = qmlWindow->findChild<QObject*>("loadFileLabel");
-    label->setProperty("visible", false);
+    QObject* emotionLabel = qmlWindow->findChild<QObject*>("loadFileLabel");
+    emotionLabel->setProperty("visible", false);
+    QObject* videoLabel = qmlWindow->findChild<QObject*>("loadVideoLabel");
+    videoLabel->setProperty("visible", false);
 
     QObject* tabView = qmlWindow->findChild<QObject*>("tabView");
     tabView->setProperty("enabled", false);
@@ -949,23 +963,17 @@ void ofApp::populateChart(){
 
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
-        emotions = emotionData->setInterval(5);
+        emotions = emotionData->setInterval(10);
     else{
         cout << "No data loaded!" << endl;
         return;
     }
 
-    int tickCount = emotionData->getInterval();
+    int tickCount = emotionData->getInterval();//TODO: not being used for the time being
     int maxX = emotions.back().getTimestamp();
-    int maxY = emotionData->getMaxValue();
+    int maxY = emotionData->getMaxValueInterval();
 
     QObject* chart = qmlWindow->findChild<QObject*>("chartWindow");
-    //QObject* axisX = qmlWindow->findChild<QObject*>("axisX");
-
-    //axisX->setProperty("max", QVariant(maxX));
-    //chart->findChild<QObject*>("axisX")->setProperty("tickCount", QVariant(tick));
-    //chart->findChild<QObject*>("axisY")->setProperty("max", QVariant(maxY));
-
     QVariant returnedValue;
 
     for(int i = 0; i < emotions.size(); i++){
