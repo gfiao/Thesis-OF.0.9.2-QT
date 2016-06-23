@@ -143,7 +143,7 @@ void histTest(vector<ofImage> images){
 void ofApp::setup(){
 
     auto time = ofGetElapsedTimeMillis();
-    train();
+    detectShotThreshold();
     cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
 
 
@@ -340,7 +340,7 @@ void ofApp::keyPressed(int key){
     cout << "QML function returned: " << returnedValueString.toStdString() << endl;*/
 }
 
-void ofApp::train(){
+void ofApp::detectShotThreshold(){
 
     //TODO: only long shot for now
     ofDirectory dir(TRAIN_ASSETS);
@@ -385,7 +385,7 @@ void ofApp::train(){
             int hMin = 0, hMax = 0;
             for(int j = maxValueIndex; j < sums.size(); j++){
                 //cout << sums[j] << endl;
-                if(sums[j] < maxValue * 0.2){
+                if(sums[j] < 0.2 * maxValue){
                     hMax = j;
                     break;
                 }
@@ -393,7 +393,7 @@ void ofApp::train(){
             // cout << endl;
             for(int j = maxValueIndex; j > 0; j--){
                 // cout << sums[j] << endl;
-                if(sums[j] < maxValue * 0.2){
+                if(sums[j] < 0.2 * maxValue){
                     hMin = j;
                     break;
                 }
@@ -882,8 +882,6 @@ void ofApp::loadFiles(){
         emotionData = new EmotionData(emotionDataPath); //5 second intervals
     }
 
-    populateChart();
-
     cout << "Emotions Data Loaded!" << endl;
 
     //====================================================
@@ -909,6 +907,7 @@ void ofApp::loadFiles(){
 
     cout << "Video file loaded!" << endl;
 
+    populateChart();
 
     ofSystemAlertDialog("Files loaded successfully!");
 
@@ -986,7 +985,6 @@ void ofApp::populateChart(){
                                   Q_ARG(QVariant, tickCount));
 
     }
-
 
 
 }

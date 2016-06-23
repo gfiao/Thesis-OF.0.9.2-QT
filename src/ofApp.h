@@ -79,7 +79,7 @@ public:
     void keyPressed(int key);
 
     //training for the shot detection
-    void train();
+    void detectShotThreshold();
 
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);

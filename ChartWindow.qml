@@ -37,14 +37,18 @@ Window {
             axisY: axisY
         }
 
+        LineSeries{
+            id: series2
+        }
+
     }
 
-    function populateChart(x, y, maxX, maxY, tickCountX){
+    function populateChart(emotionsX, emotionsY, maxX, maxY, tickCountX){
         axisX.max = maxX;
         axisY.max = maxY + 1;
        // axisX.tickCount = tickCountX;
 
-        series1.append(x, y);
+        series1.append(emotionsX, emotionsY);
     }
 
 }
