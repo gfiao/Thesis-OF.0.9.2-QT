@@ -42,6 +42,10 @@ private:
     Audio *audio;
     vector<string> cuts;
 
+    //thresholds
+    float longShotThreshold;
+    float closeUpThreshold;
+
     //qml
     QQmlApplicationEngine qmlEngine;
     QObject *qmlWindow;
@@ -79,11 +83,12 @@ public:
     void keyPressed(int key);
 
     //training for the shot detection
-    void detectShotThreshold();
+    float detectShotThreshold();
+    void getMinMaxOfPeak(vector<float> hist, int& hMin, int& hMax, int maxValueIndex, float maxValue);
 
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
-    cv::MatND getHistogram(ofImage fileName);
+    vector<float> getHistogram(ofImage fileName, float& totalSum, float& maxValue, int& maxValueIndex);
     int checkShotType(vector<ofImage> images);
 
     //movement
@@ -114,6 +119,7 @@ public:
     void populateChart();
 
     void selectRow(int row);
+    void getPeakPer(float totalPeakPixels, vector<float> hist, float totalSum, float pOfPeakPixels, int hMin, int hMax, float maxValue, int maxValueIndex);
 };
 
 // qml signal to slot object

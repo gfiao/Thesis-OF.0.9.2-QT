@@ -142,8 +142,55 @@ void histTest(vector<ofImage> images){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+
+
+
+    /*ofDirectory dir("data");
+    dir.allowExt("jpg");
+    dir.listDir();
+    ofImage img;
+    float totalPeakPixels, pOfPeakPixels;
+    for(int i = 0; i < dir.size(); i++){
+
+        totalPeakPixels = 0, pOfPeakPixels = 0;
+
+        img.load(dir.getPath(i));
+        cout << dir.getPath(i) << endl;
+        vector<ofImage> subImages = divideImage(img, 9);
+
+        for(int i = 3; i < subImages.size(); i++){
+
+            float totalSum = 0, maxValue = 0;
+            int maxValueIndex = 0;
+            vector<float> hist = getHistogram(img, totalSum, maxValue, maxValueIndex);
+
+            int hMin = 0, hMax = 0;
+            getMinMaxOfPeak(hist, hMin, hMax, maxValueIndex, maxValue);
+
+            float peakPixels = 0;
+            for(int j = hMin; j < hMax; j++){
+                peakPixels += hist[j];
+            }
+            pOfPeakPixels = peakPixels / totalSum;
+            totalPeakPixels += pOfPeakPixels;
+
+        }
+
+        totalPeakPixels = totalPeakPixels / 6;
+
+        cout << totalPeakPixels << endl;
+
+    }*/
+
+
+
+
+
+
+
+
     auto time = ofGetElapsedTimeMillis();
-    detectShotThreshold();
+    longShotThreshold = detectShotThreshold();
     cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
 
 
@@ -340,86 +387,84 @@ void ofApp::keyPressed(int key){
     cout << "QML function returned: " << returnedValueString.toStdString() << endl;*/
 }
 
-void ofApp::detectShotThreshold(){
+float ofApp::detectShotThreshold(){
 
     //TODO: only long shot for now
     ofDirectory dir(TRAIN_ASSETS);
     dir.listDir();
     ofImage img;
-    int hbins = 180, sbins = 32;
+
+    int subImagesToProcess = 6;
+    int nOfsubImages = 9;
+
     float threshold = 0;
-    float totalGpixels, pOfGreenPixels;
+    float totalPeakPixels, pOfPeakPixels;
 
     for(int i = 0; i < dir.size(); i++){
         //get image and the respective histogram
         img.load(dir.getPath(i));
 
-        totalGpixels = 0, pOfGreenPixels = 0;
+        totalPeakPixels = 0, pOfPeakPixels = 0;
 
         // cout << dir.getName(i) << endl;
 
-        vector<ofImage> subImages = divideImage(img, 9);
+        vector<ofImage> subImages = divideImage(img, nOfsubImages);
 
-        for(int i = 3; i < subImages.size(); i++){
+        for(int i = (nOfsubImages - subImagesToProcess); i < subImages.size(); i++){
 
-            cv::MatND hist = getHistogram(subImages[i]);
-
-            vector<float> sums;
             float totalSum = 0, maxValue = 0;
             int maxValueIndex = 0;
-            for (int h = 0; h < hbins; h++) {
-                float sum = 0;
-                for (int s = 0; s < sbins; s++) {
-                    sum += hist.at<float>(h, s);
-                    totalSum += hist.at<float>(h, s);
-                }
-                if(maxValue < sum){
-                    maxValue = sum;
-                    maxValueIndex = h;
-                }
-                sums.push_back(sum);
-            }
+            vector<float> hist = getHistogram(subImages[i], totalSum, maxValue, maxValueIndex);
+
             //cout << maxValue << " " << maxValueIndex << endl;
 
             //now we need to know the percentage of green pixels in the image
             int hMin = 0, hMax = 0;
-            for(int j = maxValueIndex; j < sums.size(); j++){
-                //cout << sums[j] << endl;
-                if(sums[j] < 0.2 * maxValue){
-                    hMax = j;
-                    break;
-                }
-            }
-            // cout << endl;
-            for(int j = maxValueIndex; j > 0; j--){
-                // cout << sums[j] << endl;
-                if(sums[j] < 0.2 * maxValue){
-                    hMin = j;
-                    break;
-                }
-            }
-            //cout << hMin << " - " << maxValueIndex << " - " << hMax << endl << endl;
+            getMinMaxOfPeak(hist, hMin, hMax, maxValueIndex, maxValue);
 
-            float greenPixels = 0;
+            float peakPixels = 0;
             for(int j = hMin; j < hMax; j++){
-                greenPixels += sums[j];
+                peakPixels += hist[j];
             }
-            pOfGreenPixels = greenPixels / totalSum;
-            totalGpixels += pOfGreenPixels;
+            pOfPeakPixels = peakPixels / totalSum;
+            totalPeakPixels += pOfPeakPixels;
 
             //cout << pOfGreenPixels << endl;
         }
         //percentage of green pixels in the image
-        totalGpixels = totalGpixels / 6;
+        totalPeakPixels = totalPeakPixels / subImagesToProcess;
         //cout << totalGpixels << endl;
 
-        threshold += totalGpixels;
+        threshold += totalPeakPixels;
     }
 
     threshold = threshold / dir.size();
 
     cout << "Long-shot threshold: " << threshold << endl;
 
+    return threshold;
+
+}
+
+//finds and return the min and max index of a peak
+void ofApp::getMinMaxOfPeak(vector<float> hist, int& hMin, int& hMax, int maxValueIndex, float maxValue){
+
+    for(int j = maxValueIndex; j < hist.size(); j++){
+        //cout << sums[j] << endl;
+        if(hist[j] < 0.2 * maxValue){
+            hMax = j;
+            break;
+        }
+    }
+    // cout << endl;
+    for(int j = maxValueIndex; j > 0; j--){
+        // cout << sums[j] << endl;
+        if(hist[j] < 0.2 * maxValue){
+            hMin = j;
+            break;
+        }
+    }
+    //cout << hMin << " - " << maxValueIndex << " - " << hMax << endl;
 
 }
 
@@ -498,7 +543,7 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
 }
 
 //code originally from http://docs.opencv.org/2.4/modules/imgproc/doc/histograms.html?highlight=calcHist
-cv::MatND ofApp::getHistogram(ofImage image) {
+vector<float> ofApp::getHistogram(ofImage image, float& totalSum, float& maxValue, int& maxValueIndex) {
 
     cv::Mat cvImg = ofxCv::toCv(image);
     cv::Mat hsvImage;
@@ -524,10 +569,23 @@ cv::MatND ofApp::getHistogram(ofImage image) {
              true, // the histogram is uniform
              false);
 
-    // ofxCv::toOf(histImg, image);
-    // image.update(); //update changes done by openCV
+    vector<float> sums;
+    for (int h = 0; h < hbins; h++) {
+        float sum = 0;
+        for (int s = 0; s < sbins; s++) {
+            sum += hist.at<float>(h, s);
+            totalSum += hist.at<float>(h, s);
+        }
+        if(maxValue < sum){
+            maxValue = sum;
+            maxValueIndex = h;
+        }
 
-    return hist;
+        sums.push_back(sum);
+    }
+    // cout << totalSum << " " << maxValue << " " << maxValueIndex << endl;
+
+    return sums;
 }
 
 //TODO: MUDAR
@@ -538,7 +596,8 @@ int ofApp::checkShotType(vector<ofImage> images) {
 
     for(int i = 0; i < images.size(); i++){
         vector<float> sums; //sum of all the pixels of given color
-        cv::MatND hist = getHistogram(images.at(i));
+        //cv::MatND hist = getHistogram(images.at(i));
+        cv::MatND hist;
         float totalSum = 0;
 
         for (int h = 0; h < hbins; h++) {
