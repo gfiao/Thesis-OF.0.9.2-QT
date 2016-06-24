@@ -611,9 +611,9 @@ int ofApp::checkShotType(ofImage frame) {
     totalPeakPixels = totalPeakPixels / subImagesToProcess;
     //cout << totalPeakPixels << endl;
 
-    if(totalPeakPixels > longShotThreshold)
+    if(totalPeakPixels >= longShotThreshold)
         return LONG_SHOT;
-    else if(totalPeakPixels < outOfFieldThreshold)
+    else if(totalPeakPixels <= outOfFieldThreshold)
         return OUT_OF_FIELD;
     else
         return CLOSEUP_SHOT;
