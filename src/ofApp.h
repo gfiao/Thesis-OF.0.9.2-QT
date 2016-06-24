@@ -44,7 +44,7 @@ private:
 
     //thresholds
     float longShotThreshold;
-    float closeUpThreshold;
+    float outOfFieldThreshold;
 
     //qml
     QQmlApplicationEngine qmlEngine;
@@ -89,13 +89,14 @@ public:
     //color
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
     vector<float> getHistogram(ofImage fileName, float& totalSum, float& maxValue, int& maxValueIndex);
-    int checkShotType(vector<ofImage> images);
+    int checkShotType(ofImage frame);
 
     //movement
     vector<cv::KeyPoint> detectKeypoints(int timestamp);
     int calcMotionDirection(int startTimestamp, int endTimestamp);
 
     //cut detetion
+    void loadDefaultCutFile();
     void detectCuts();
     void processCutsFile();
     vector<pair<int, int>> detectCutsIn(int start, int end);

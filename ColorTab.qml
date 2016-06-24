@@ -23,7 +23,7 @@ Item {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
 
-           /* CheckBox{
+            /* CheckBox{
                 id: timeframeCheckbox
                 objectName: "timeframeCheckbox"
                 text: "Specify a timeframe?"
@@ -73,7 +73,8 @@ Item {
 
             ComboBox{
                 objectName: "subimmageCB"
-                model: [ "1 (Fast)", "2", "3", "4", "5 (Slow)" ]
+                // model: [ "1 (Fast)", "2", "3", "4", "5 (Slow)" ]
+                model: ["5 (Slow)", "4", "3", "2", "1 (Fast)"]
 
             }
 

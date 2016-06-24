@@ -15,3 +15,4 @@ bin/libsndfile-1.dll
 bin/libsndfile-1.lib
 *.dll
 glyphicons_free/
+*.exe

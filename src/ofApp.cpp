@@ -143,9 +143,7 @@ void histTest(vector<ofImage> images){
 void ofApp::setup(){
 
 
-
-
-    /*ofDirectory dir("data");
+    /*ofDirectory dir("data\\temp");
     dir.allowExt("jpg");
     dir.listDir();
     ofImage img;
@@ -183,16 +181,12 @@ void ofApp::setup(){
     }*/
 
 
-
-
-
-
-
-
     auto time = ofGetElapsedTimeMillis();
     longShotThreshold = detectShotThreshold();
+    outOfFieldThreshold = 1 - longShotThreshold;
     cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
-
+    cout << "Long-shot threshold: " << longShotThreshold << endl;
+    cout << "Out-of-field threshold: " << outOfFieldThreshold << endl;
 
     cout << "OpenCV version: " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << endl;
 
@@ -202,49 +196,22 @@ void ofApp::setup(){
     ofBackground(ofColor::white);
 
     qmlSetup();
+    loadDefaultCutFile();
 
+    /* ofDirectory dir("data\\training");
+    dir.listDir();
+    ofImage img;
+    for(int i = 0; i < dir.size(); i++){
+        img.load(dir.getPath(i));
 
-    //load the default cuts file
-    cuts.clear();
-    ifstream file(DEAFULT_CUTS_FILE); //the default file has a 0.4 threshold
-    string line;
-    vector<string> splitLine;
-    while (file) {
-        getline(file, line, '\n');
-        //cout << line << endl;
-        splitLine = AuxFunc::split(line, '|');
-        if (splitLine.size() != 0) // last line is empty
-            cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
-    }
-
+        cout << dir.getPath(i) << " --> " << checkShotType(img) << endl;
+    }*/
 
 
     //TODO: code to get the text from the checkboxes, use later
     /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
     for(QObject* obj : checkboxes)
         cout << obj->property("text").toString().toStdString() << endl;*/
-
-    // int time = ofGetElapsedTimeMillis();
-
-    /* ofImage img;
-    img.load("verde2.jpg");
-    vector<ofImage> images = divideImage(img, 9);
-    int res1 = checkShotType(images);
-    cout << "verde2:  " << res1 << endl;
-
-    ofImage img2;
-    img2.load("ibra.jpg");
-    vector<ofImage> images2 = divideImage(img2, 9);
-    int res2 = checkShotType(images2);
-    cout << "ibra:  " << res2 << endl;
-
-    ofImage img3;
-    img3.load("ronaldo.jpg");
-    vector<ofImage> images3 = divideImage(img3, 9);
-    int res3 = checkShotType(images3);
-    cout << "ronaldo:  " << res3 << endl;*/
-
-    //cout << time - ofGetElapsedTimef() << endl;
 }
 
 void ofApp::qmlSetup(){
@@ -338,8 +305,6 @@ void ofApp::update(){
     if(video.isLoaded())
        // if(video.getCurrentFrame() % 100 == 0)
             qmlVideoSeekbar->setProperty("value", QVariant(ofToFloat(formatedNumber)));*/
-
-
 }
 
 //--------------------------------------------------------------
@@ -406,7 +371,7 @@ float ofApp::detectShotThreshold(){
 
         totalPeakPixels = 0, pOfPeakPixels = 0;
 
-        // cout << dir.getName(i) << endl;
+        //cout << dir.getName(i) << endl;
 
         vector<ofImage> subImages = divideImage(img, nOfsubImages);
 
@@ -433,14 +398,14 @@ float ofApp::detectShotThreshold(){
         }
         //percentage of green pixels in the image
         totalPeakPixels = totalPeakPixels / subImagesToProcess;
-        //cout << totalGpixels << endl;
+        //cout << totalPeakPixels << endl;
 
         threshold += totalPeakPixels;
     }
 
     threshold = threshold / dir.size();
 
-    cout << "Long-shot threshold: " << threshold << endl;
+    //cout << "Long-shot threshold: " << threshold << endl;
 
     return threshold;
 
@@ -537,6 +502,10 @@ vector<ofImage> ofApp::divideImage(ofImage img, int nrOfImages){
         subImages.push_back(img9);
 
         break;
+
+    default:
+        subImages.push_back(img);
+        break;
     }
 
     return subImages;
@@ -589,63 +558,66 @@ vector<float> ofApp::getHistogram(ofImage image, float& totalSum, float& maxValu
 }
 
 //TODO: MUDAR
-int ofApp::checkShotType(vector<ofImage> images) {
+int ofApp::checkShotType(ofImage frame) {
 
-    int hbins = 180, sbins = 32;
-    vector<int> types = {0,0,0};
+    QObject* model = qmlWindow->findChild<QObject*>("subimmageCB");
+    string processSpeed = model->property("currentText").toString().toStdString();
+    int nOfSubImages;
 
-    for(int i = 0; i < images.size(); i++){
-        vector<float> sums; //sum of all the pixels of given color
-        //cv::MatND hist = getHistogram(images.at(i));
-        cv::MatND hist;
-        float totalSum = 0;
+    if(processSpeed == "1 (Fast)")
+        nOfSubImages = 1;
+    else if(processSpeed == "2")
+        nOfSubImages = 2;
+    else if(processSpeed == "3")
+        nOfSubImages = 4;
+    else if(processSpeed == "4")
+        nOfSubImages = 6;
+    else if(processSpeed == "5 (Slow)")
+        nOfSubImages = 9;
+    else
+        nOfSubImages = 1;
 
-        for (int h = 0; h < hbins; h++) {
-            float sum = 0;
-            for (int s = 0; s < sbins; s++) {
-                sum += hist.at<float>(h, s);
-                totalSum += hist.at<float>(h, s);
-            }
-            sums.push_back(sum);
+    int subImagesToProcess;
+    if(nOfSubImages == 9)
+        subImagesToProcess = 6;
+    else
+        subImagesToProcess = 1;
+
+    float totalPeakPixels = 0, pOfPeakPixels = 0;
+
+    vector<ofImage> subImages = divideImage(frame, nOfSubImages);
+    for(int i = (nOfSubImages - subImagesToProcess); i < subImages.size(); i++){
+
+        float totalSum = 0, maxValue = 0;
+        int maxValueIndex = 0;
+        vector<float> hist = getHistogram(subImages[i], totalSum, maxValue, maxValueIndex);
+
+        //cout << maxValue << " " << maxValueIndex << endl;
+
+        //now we need to know the percentage of green pixels in the image
+        int hMin = 0, hMax = 0;
+        getMinMaxOfPeak(hist, hMin, hMax, maxValueIndex, maxValue);
+
+        float peakPixels = 0;
+        for(int j = hMin; j < hMax; j++){
+            peakPixels += hist[j];
         }
-        int peaks = 0;
-        int validInterval = 0;
-        for(int i = 1; i < sums.size() - 1; i++){
-            float valueBefore = sums[i-1];
-            float valueAfter = sums[i+1];
+        pOfPeakPixels = peakPixels / totalSum;
+        totalPeakPixels += pOfPeakPixels;
 
-            float sumInInterval = 0;
-
-            if(valueBefore < sums[i] && valueAfter > sums[i] && sums[i] >= 1500){
-                peaks++;
-                for(int j = i - 2; j < i + 2; j++){
-                    sumInInterval += sums[j];
-                    // cout << j << endl;
-
-                }
-                if(sumInInterval / totalSum >= 0.3)
-                    validInterval++;
-            }
-        }
-        cout << peaks << endl;
-
-        if (validInterval == 1)
-            types[LONG_SHOT]++;
-        else if (validInterval == 2 || validInterval == 3 || validInterval == 4)
-            types[CLOSEUP_SHOT]++;
-        else
-            types[OUT_OF_FIELD]++;
-
+        //cout << pOfGreenPixels << endl;
     }
+    //percentage of peak pixels in the image
+    totalPeakPixels = totalPeakPixels / subImagesToProcess;
+    //cout << totalPeakPixels << endl;
 
-    int returnValue = 0;
-    for(int i = 0; i < types.size(); i++){
-        cout << i  << " : "<< types[i] << endl;
-        if(types[i] > types[returnValue])
-            returnValue = i;
-    }
+    if(totalPeakPixels > longShotThreshold)
+        return LONG_SHOT;
+    else if(totalPeakPixels < outOfFieldThreshold)
+        return OUT_OF_FIELD;
+    else
+        return CLOSEUP_SHOT;
 
-    return returnValue;
 }
 
 
@@ -719,6 +691,23 @@ int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
     else if(leftCounter < rightCounter)
         return RIGHT;
     return UNDEFINED;
+}
+
+void ofApp::loadDefaultCutFile(){
+
+    //load the default cuts file
+    cuts.clear();
+    ifstream file(DEAFULT_CUTS_FILE); //the default file has a 0.4 threshold
+    string line;
+    vector<string> splitLine;
+    while (file) {
+        getline(file, line, '\n');
+        //cout << line << endl;
+        splitLine = AuxFunc::split(line, '|');
+        if (splitLine.size() != 0) // last line is empty
+            cuts.push_back(AuxFunc::split(splitLine[4], '=')[1]);
+    }
+
 }
 
 //detects sudden cuts between two timestamps
