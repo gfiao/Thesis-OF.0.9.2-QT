@@ -113,6 +113,23 @@ Item {
                     }
                 }
             }
+            ChartWindow{
+                id: chartWindow
+                objectName: "chartWindow"
+            }
+
+            Button{
+                text: "Emotions Over Time"
+                objectName: "showChart"
+                id: showChart
+
+                onClicked: {
+                    if(chartWindow.visible)
+                        chartWindow.visible = false;
+                    else
+                        chartWindow.visible = true
+                }
+            }
         }
     }
 }

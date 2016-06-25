@@ -223,10 +223,10 @@ ApplicationWindow {
             id: setScoresWindow
         }
 
-        ChartWindow{
+        /*ChartWindow{
             id: chartWindow
             objectName: "chartWindow"
-        }
+        }*/
 
         RowLayout{
             Button{
@@ -241,7 +241,7 @@ ApplicationWindow {
                 enabled: false
             }
 
-            Button{
+           /* Button{
                 text: "Emotions Over Time"
                 objectName: "showChart"
                 id: showChart
@@ -252,7 +252,7 @@ ApplicationWindow {
                     else
                         chartWindow.visible = true
                 }
-            }
+            }*/
         }
     }
 

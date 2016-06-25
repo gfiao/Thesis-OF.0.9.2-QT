@@ -1010,7 +1010,7 @@ void ofApp::populateChart(){
 
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
-        emotions = emotionData->setInterval(10);
+        emotions = emotionData->setInterval(15);
     else{
         cout << "No data loaded!" << endl;
         return;
