@@ -1008,7 +1008,7 @@ void ofApp::videoSeekbarChanged(float pos){
 
 void ofApp::populateChart(){
 
-    int interval = 15;
+    int interval = 30;
 
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
@@ -1034,13 +1034,14 @@ void ofApp::populateChart(){
 
     }
 
-    vector<float> audioValues = audio->setInterval(interval);
+    int maxValue = 0;
+    vector<float> audioValues = audio->setInterval(interval, maxValue);
     for(int i = 0; i < audioValues.size(); i++){
 
         QVariant x = interval * i;
         QVariant y = audioValues[i];
         QMetaObject::invokeMethod(chart, "populateAudio", Q_RETURN_ARG(QVariant, returnedValue),
-                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y));
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y), Q_ARG(QVariant, maxValue));
 
     }
 

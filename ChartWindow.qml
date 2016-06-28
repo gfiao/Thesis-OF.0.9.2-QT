@@ -34,14 +34,22 @@ Window {
         }
 
         LineSeries {
+            name: "Emotions"
             id: series1
             axisX: axisX
             axisY: axisY
         }
 
+        ValueAxis{
+            titleText: "Audio Values"
+            id: audioY
+        }
+
         LineSeries{
+            name: "Audio"
             id: series2
             visible: false
+            axisY: audioY
         }
 
     }
@@ -63,7 +71,9 @@ Window {
         series1.append(emotionsX, emotionsY);
     }
 
-    function populateAudio(x, y){
+    function populateAudio(x, y, maxY){
+        audioY.max = maxY;
+
         series2.append(x, y);
     }
 

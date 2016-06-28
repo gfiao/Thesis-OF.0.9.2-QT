@@ -65,7 +65,7 @@ float Audio::getMinValue() {
     return minValue;
 }
 
-vector<float> Audio::setInterval(int interval){
+vector<float> Audio::setInterval(int interval, int& maxValue){
 
     vector<float> ret;
     for(int i = 0; i < samples.size(); i+=interval){
@@ -75,10 +75,9 @@ vector<float> Audio::setInterval(int interval){
             audioValues += samples[j];
         }
 
-        //if(maxValueInterval < emotions.size())
-        //  maxValueInterval = emotions.size();
+        if(maxValue < audioValues)
+            maxValue = audioValues;
 
-        //EmotionInterval retEle(i, emotions);
         ret.push_back(audioValues);
     }
     return ret;
