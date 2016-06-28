@@ -1008,15 +1008,16 @@ void ofApp::videoSeekbarChanged(float pos){
 
 void ofApp::populateChart(){
 
+    int interval = 15;
+
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
-        emotions = emotionData->setInterval(15);
+        emotions = emotionData->setInterval(interval);
     else{
         cout << "No data loaded!" << endl;
         return;
     }
 
-    int tickCount = emotionData->getInterval();//TODO: not being used for the time being
     int maxX = emotions.back().getTimestamp();
     int maxY = emotionData->getMaxValueInterval();
 
@@ -1029,8 +1030,17 @@ void ofApp::populateChart(){
         QVariant y = emotions[i].getNumberOfEmotions();
         QMetaObject::invokeMethod(chart, "populateChart", Q_RETURN_ARG(QVariant, returnedValue),
                                   Q_ARG(QVariant, x), Q_ARG(QVariant, y),
-                                  Q_ARG(QVariant, maxX), Q_ARG(QVariant, maxY),
-                                  Q_ARG(QVariant, tickCount));
+                                  Q_ARG(QVariant, maxX), Q_ARG(QVariant, maxY));
+
+    }
+
+    vector<float> audioValues = audio->setInterval(interval);
+    for(int i = 0; i < audioValues.size(); i++){
+
+        QVariant x = interval * i;
+        QVariant y = audioValues[i];
+        QMetaObject::invokeMethod(chart, "populateAudio", Q_RETURN_ARG(QVariant, returnedValue),
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y));
 
     }
 

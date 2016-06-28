@@ -29,7 +29,7 @@ Item {
                 checked: true
 
                 onCheckedChanged: {
-                    if(useEmotions.checked == false){
+                    if(!useEmotions.checked){
                         checkboxRow.enabled = false
                         minNrEmotionsRow.enabled = false
                         emotionsLabel.enabled = false

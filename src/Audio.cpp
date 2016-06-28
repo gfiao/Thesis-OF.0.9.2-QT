@@ -46,8 +46,8 @@ Audio::Audio(const char* fileName) {
 
     cout << "    Samples Size:   " << samples.size() << endl;
 
-     //for (int i = 0; i < samples.size(); i++)
-       // cout << samples[i] << endl;
+    //for (int i = 0; i < samples.size(); i++)
+    // cout << samples[i] << endl;
 
     cout << "Audio Loaded\n" << endl;
 
@@ -63,4 +63,24 @@ float Audio::getMaxValue() {
 
 float Audio::getMinValue() {
     return minValue;
+}
+
+vector<float> Audio::setInterval(int interval){
+
+    vector<float> ret;
+    for(int i = 0; i < samples.size(); i+=interval){
+
+        float audioValues = 0;
+        for(int j = i; j < i+interval && j < samples.size(); j++){
+            audioValues += samples[j];
+        }
+
+        //if(maxValueInterval < emotions.size())
+        //  maxValueInterval = emotions.size();
+
+        //EmotionInterval retEle(i, emotions);
+        ret.push_back(audioValues);
+    }
+    return ret;
+
 }

@@ -27,7 +27,7 @@ Item {
                 text: "Use movement in the algorithm?"
 
                 onCheckedChanged: {
-                    if(useMov.checked == false){
+                    if(!useMov.checked){
                         firstDirectionRow.enabled = false
                         timeframeRow.enabled = false
                         secondDirectionRow.enabled = false

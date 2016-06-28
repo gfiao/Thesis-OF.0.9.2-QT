@@ -28,9 +28,17 @@ private:
     //right - 2
     int movement;
 
+    //long-shot, closeup, out-of-field
+    //LONG_SHOT = 0;
+    //CLOSEUP_SHOT = 1;
+    //OUT_OF_FIELD = 2;
+    //-1 is undefined
+    int shotType;
+
 public:
 
-    ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues, int mov = 0);
+    ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues,
+                  int mov = 0, int shotType = -1);
 
     pair<int, int> getTimestamps();
     void setTimestamps(int start, int end);
@@ -46,4 +54,7 @@ public:
 
     void setMovement(int mov);
     int getMovement();
+
+    void setShotType(int type);
+    int getShotType();
 };

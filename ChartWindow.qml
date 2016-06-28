@@ -1,4 +1,6 @@
 import QtQuick 2.5
+import QtQuick.Controls 1.4
+import QtQuick.Layouts 1.1
 import QtQuick.Window 2.0
 import QtCharts 2.1
 
@@ -39,16 +41,30 @@ Window {
 
         LineSeries{
             id: series2
+            visible: false
         }
 
     }
+    Button{
+        id: audioLine
+        text: "Show Audio Values"
 
-    function populateChart(emotionsX, emotionsY, maxX, maxY, tickCountX){
+        onClicked: {
+            if(series2.visible)
+                series2.visible = false
+            else series2.visible = true
+        }
+    }
+
+    function populateChart(emotionsX, emotionsY, maxX, maxY){
         axisX.max = maxX;
         axisY.max = maxY + 1;
-       // axisX.tickCount = tickCountX;
 
         series1.append(emotionsX, emotionsY);
+    }
+
+    function populateAudio(x, y){
+        series2.append(x, y);
     }
 
 }

@@ -3,12 +3,14 @@ using namespace std;
 #include "ClipWithScore.h"
 
 
-ClipWithScore::ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues, int mov){
+ClipWithScore::ClipWithScore(pair<int, int> timestamps, double numberOfEmotions, float audioValues,
+                             int mov, int shotType){
     this->timestamps = timestamps;
     this->nrOfEmotions = numberOfEmotions;
     this->audioValues = audioValues;
     finalScore = 0;
     movement = mov;
+    this->shotType = shotType;
 }
 
 pair<int, int> ClipWithScore::getTimestamps(){
@@ -55,4 +57,12 @@ void ClipWithScore::setMovement(int mov){
 
 int ClipWithScore::getMovement(){
     return movement;
+}
+
+void ClipWithScore::setShotType(int type){
+    shotType = type;
+}
+
+int ClipWithScore::getShotType(){
+    return shotType;
 }

@@ -24,4 +24,6 @@ public:
 	float getMaxValue();
 	float getMinValue();
 
+    vector<float> setInterval(int interval);
+
 };
