@@ -75,8 +75,12 @@ Window {
 
         RowLayout{
             Label{
-                text: "Interval: "
+                text: "Interval(in seconds): "
                 font.bold: true
+            }
+            Label{
+                objectName: "intervalValue"
+                text: "30"
             }
 
             Slider{

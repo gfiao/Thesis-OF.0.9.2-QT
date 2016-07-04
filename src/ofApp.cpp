@@ -1055,10 +1055,6 @@ void ofApp::populateChart(){
 
 void ofApp::changeChartInterval(int interval){
 
-
-    //QLineSeries* emotionsLine = qmlWindow->findChild<QLineSeries*>("emotionsLine");
-    //QObject* audioLine = qmlWindow->findChild<QObject*>("audioLine");
-
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
         emotions = emotionData->setInterval(interval);
@@ -1067,9 +1063,8 @@ void ofApp::changeChartInterval(int interval){
         return;
     }
 
-    //QLineSeries* line = new QLineSeries(emotionsLine);
-    //line->clear();
-    //cout << emotionsLine->count() << endl;
+    QObject* intervalLabel = qmlWindow->findChild<QObject*>("intervalValue");
+    intervalLabel->setProperty("text", interval);
 
     int maxX = emotions.back().getTimestamp();
     int maxY = emotionData->getMaxValueInterval();
