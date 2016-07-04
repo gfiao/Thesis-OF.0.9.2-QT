@@ -16,6 +16,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 #include <QObject>
+#include <QtCharts>
+
+using namespace QtCharts;
 
 static const int VIDEO_OFFSET_WIDTH = 10;
 static const int VIDEO_OFFSET_HEIGHT = 10;
@@ -59,6 +62,9 @@ private:
     QObject *qmlLoadDataParameters;
 
     QObject *qmlClearSelection;
+
+    //charts
+    QObject *chartInterval;
 
     //cut detection buttons
     QObject *qmlNewCutButton;
@@ -118,9 +124,9 @@ public:
     void videoSeekbarChanged(float pos);
 
     void populateChart();
+    void changeChartInterval(int interval);
 
     void selectRow(int row);
-    void getPeakPer(float totalPeakPixels, vector<float> hist, float totalSum, float pOfPeakPixels, int hMin, int hMax, float maxValue, int maxValueIndex);
 };
 
 // qml signal to slot object
@@ -160,6 +166,10 @@ public slots:
 
     void sliderSlot(QVariant msg) {
         ofAppInstance->volSliderChanged(msg.toFloat());
+    }
+
+    void chartIntervalSlot(QVariant msg){
+        ofAppInstance->changeChartInterval(msg.toInt());
     }
 
     void newCutButtonSlot(){

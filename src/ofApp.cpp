@@ -143,7 +143,7 @@ void histTest(vector<ofImage> images){
 void ofApp::setup(){
 
 
-    /*ofDirectory dir("data\\temp");
+    /* ofDirectory dir("data");
     dir.allowExt("jpg");
     dir.listDir();
     ofImage img;
@@ -241,6 +241,8 @@ void ofApp::qmlSetup(){
 
     qmlRunAlgorithm = qmlWindow->findChild<QObject*>("runAlgorithm");
 
+    chartInterval = qmlWindow->findChild<QObject*>("chartInterval");
+
     // connect qml signals and slots
     qmlCallback.ofAppInstance = this;
 
@@ -276,6 +278,9 @@ void ofApp::qmlSetup(){
 
     QObject::connect(qmlRunAlgorithm, SIGNAL( clicked() ),
                      &qmlCallback, SLOT(runAlgorithmSlot()));
+
+    QObject::connect(chartInterval, SIGNAL( chartSignal(QVariant) ),
+                     &qmlCallback, SLOT( chartIntervalSlot(QVariant) ));
 }
 
 //--------------------------------------------------------------
@@ -1048,6 +1053,56 @@ void ofApp::populateChart(){
 
 }
 
+void ofApp::changeChartInterval(int interval){
+
+
+    //QLineSeries* emotionsLine = qmlWindow->findChild<QLineSeries*>("emotionsLine");
+    //QObject* audioLine = qmlWindow->findChild<QObject*>("audioLine");
+
+    vector<EmotionInterval> emotions;
+    if(emotionData != nullptr)
+        emotions = emotionData->setInterval(interval);
+    else{
+        cout << "No data loaded!" << endl;
+        return;
+    }
+
+    //QLineSeries* line = new QLineSeries(emotionsLine);
+    //line->clear();
+    //cout << emotionsLine->count() << endl;
+
+    int maxX = emotions.back().getTimestamp();
+    int maxY = emotionData->getMaxValueInterval();
+
+    QObject* chart = qmlWindow->findChild<QObject*>("chartWindow");
+    QVariant returnedValue;
+
+    //clear charts
+    QMetaObject::invokeMethod(chart, "clearSeries", Q_RETURN_ARG(QVariant, returnedValue));
+
+    for(int i = 0; i < emotions.size(); i++){
+
+        QVariant x = emotions[i].getTimestamp();
+        QVariant y = emotions[i].getNumberOfEmotions();
+        QMetaObject::invokeMethod(chart, "populateChart", Q_RETURN_ARG(QVariant, returnedValue),
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y),
+                                  Q_ARG(QVariant, maxX), Q_ARG(QVariant, maxY));
+
+    }
+
+    int maxValue = 0;
+    vector<float> audioValues = audio->setInterval(interval, maxValue);
+    for(int i = 0; i < audioValues.size(); i++){
+
+        QVariant x = interval * i;
+        QVariant y = audioValues[i];
+        QMetaObject::invokeMethod(chart, "populateAudio", Q_RETURN_ARG(QVariant, returnedValue),
+                                  Q_ARG(QVariant, x), Q_ARG(QVariant, y), Q_ARG(QVariant, maxValue));
+
+    }
+
+}
+
 void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
     //create a folder for each run of the algorithm
@@ -1362,16 +1417,6 @@ void ofApp::algorithm() {
             ClipWithScore currClip = clips[i];
             ClipWithScore nextClip = clips[i+1];
 
-            /*  if(currClip.getTimestamps().first == nextClip.getTimestamps().first){
-                int currClipDur = currClip.getTimestamps().second - currClip.getTimestamps().first;
-                int nextClipDur = nextClip.getTimestamps().second - nextClip.getTimestamps().first;
-
-                if(currClipDur > nextClipDur){
-                    clips.erase(clips.begin()+(i+1));
-                }
-                else
-                    clips.erase(clips.begin()+i);
-            }*/
             if(currClip.getTimestamps().second > nextClip.getTimestamps().first){
                 if(currClip.getFinalScore() > nextClip.getFinalScore()){
                     clips.erase(clips.begin()+(i+1));
