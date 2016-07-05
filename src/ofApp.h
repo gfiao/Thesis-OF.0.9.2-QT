@@ -96,6 +96,7 @@ public:
     vector<ofImage> divideImage(ofImage img, int nrOfImages);
     vector<float> getHistogram(ofImage fileName, float& totalSum, float& maxValue, int& maxValueIndex);
     int checkShotType(ofImage frame);
+    float getPctInPeak(ofImage img, int nOfSubImages, int subImagesToProcess);
 
     //movement
     vector<cv::KeyPoint> detectKeypoints(int timestamp);

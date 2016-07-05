@@ -142,6 +142,50 @@ void histTest(vector<ofImage> images){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    /*video.load("WeFeel_1.mp4");
+    video.play();
+    video.setPaused(true);
+
+    ofxXmlSettings xml;
+    bool loadedFile = xml.load("colorData.xml");
+    xml.save("colorData.xml");
+
+    xml.addTag("colorData");
+    xml.pushTag("colorData");
+
+    for(int i = 0; i < video.getTotalNumFrames(); i++){
+        ofImage img;
+        img.setFromPixels(video.getPixels());
+
+        float pctInPeak = getPctInPeak(img, 9, 6);
+
+        xml.addTag("data");
+        xml.pushTag("data", i);
+
+        xml.addValue("frame", i);
+        xml.addValue("value", pctInPeak);
+
+        xml.popTag();
+        video.nextFrame();
+
+        xml.saveFile();
+    }*/
+
+
+
+    /*video.load("WeFeel_1.mp4");
+    video.play();
+    video.setPaused(true);
+
+    for(int i = 0; i < video.getTotalNumFrames(); i++){
+        ofImage img;
+        img.setFromPixels(video.getPixels());
+        string s = "teste\\" + to_string(i) + ".jpg";
+        img.save(s);
+        video.nextFrame();
+    }*/
+
+
 
     /* ofDirectory dir("data");
     dir.allowExt("jpg");
@@ -625,6 +669,39 @@ int ofApp::checkShotType(ofImage frame) {
 
 }
 
+float ofApp::getPctInPeak(ofImage frame, int nOfSubImages, int subImagesToProcess){
+
+    float totalPeakPixels = 0, pOfPeakPixels = 0;
+
+    vector<ofImage> subImages = divideImage(frame, nOfSubImages);
+    for(int i = (nOfSubImages - subImagesToProcess); i < subImages.size(); i++){
+
+        float totalSum = 0, maxValue = 0;
+        int maxValueIndex = 0;
+        vector<float> hist = getHistogram(subImages[i], totalSum, maxValue, maxValueIndex);
+
+        //cout << maxValue << " " << maxValueIndex << endl;
+
+        //now we need to know the percentage of green pixels in the image
+        int hMin = 0, hMax = 0;
+        getMinMaxOfPeak(hist, hMin, hMax, maxValueIndex, maxValue);
+
+        float peakPixels = 0;
+        for(int j = hMin; j < hMax; j++){
+            peakPixels += hist[j];
+        }
+        pOfPeakPixels = peakPixels / totalSum;
+        totalPeakPixels += pOfPeakPixels;
+
+        //cout << pOfGreenPixels << endl;
+    }
+    //percentage of peak pixels in the image
+    totalPeakPixels = totalPeakPixels / subImagesToProcess;
+
+    return totalPeakPixels;
+
+}
+
 
 vector<cv::KeyPoint> ofApp::detectKeypoints(int timestamp) {
 
@@ -898,6 +975,11 @@ void ofApp::loadVideoFile(){
 
     ofFileDialogResult openFileResult = ofSystemLoadDialog("Select a video file");
     if(openFileResult.bSuccess){
+        string extension = ofFile(openFileResult.getPath()).getExtension();
+        if(extension != "mp4" && extension != "mpeg"){
+            ofSystemAlertDialog("That's not a video file!");
+            return;
+        }
         videoPath = openFileResult.getPath();
 
         cout << videoPath << endl;
@@ -1399,6 +1481,8 @@ void ofApp::algorithm() {
         }
     }
     else if(!useEmotions && useMov){//extract clips based only on movement
+
+
 
     }
 
