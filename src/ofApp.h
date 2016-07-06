@@ -110,7 +110,10 @@ public:
     void motionHelper(int start, int end, ClipWithScore& newClip);
 
     void cutVideo(vector<ClipWithScore> clips);
-    void algorithm();
+
+    //algorithm
+    void useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore>& clips);
+    void algorithm(); //main function
 
     // qml
     void qmlSetup();

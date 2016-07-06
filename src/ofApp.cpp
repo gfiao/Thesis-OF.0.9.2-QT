@@ -147,7 +147,7 @@ void ofApp::setup(){
     video.setPaused(true);
 
     ofxXmlSettings xml;
-    bool loadedFile = xml.load("colorData.xml");
+    bool loadedFile = xml.loadFile("colorData.xml");
     xml.save("colorData.xml");
 
     xml.addTag("colorData");
@@ -1023,6 +1023,7 @@ void ofApp::loadFiles(){
 
     video.load(videoPath);
 
+    cout << "Video duration: " << video.getDuration() << endl;
     cout << "Video Res: " << video.getWidth() << "x" << video.getHeight() << endl;
     cout << "Nr of frames: " << video.getTotalNumFrames() << endl;
 
@@ -1299,6 +1300,49 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
 }
 
+void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips){
+
+    int duration = video.getDuration();
+    int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
+    if(clipDuration == 0) clipDuration = 20;
+
+    int nrOfClips = duration / clipDuration;
+
+    for(int i = 1;i < duration; i += clipDuration){
+
+        int startTimestamp = i;
+        int endTimestamp = i + clipDuration;
+
+        if(useCuts)//check for a cut 5 seconds before the start timestamp
+            for(string cutTimestamp : cuts)
+                if(ofToInt(cutTimestamp) < startTimestamp && startTimestamp - ofToInt(cutTimestamp) <= 5)
+                    startTimestamp = ofToInt(cutTimestamp);
+
+
+        //we need to get the audio values associated with the timestamps
+        float audioValues = 0;
+        if(useAudio){
+            for(int i = startTimestamp; i < endTimestamp; i++){
+                float normalizedAudio = audio->getSamples()[i] / audio->getMaxValue();
+                audioValues += normalizedAudio;
+            }
+        }
+
+        pair<int, int> ts(startTimestamp, endTimestamp);
+        ClipWithScore newClip(ts, 0, audioValues);
+        if(useAudio)
+            newClip.calcFinalScore(0, audioWeight);
+        else
+            newClip.calcFinalScore(0, 0);
+
+        if(useMov) motionHelper(startTimestamp, endTimestamp, newClip);
+
+        clips.push_back(newClip);
+
+    }
+
+}
+
 void ofApp::algorithm() {
 
     //auto time = ofGetElapsedTimeMillis();
@@ -1351,6 +1395,7 @@ void ofApp::algorithm() {
     double audioWeight = qmlWindow->findChild<QObject*>("audioSlider")->property("value").toDouble();
 
     if(useEmotions){
+
         for(int i = 1; i < emotionsInterval.size() - 1; i++){
 
             int numberOfEmotions = emotionsInterval[i].getNumberOfEmotions();
@@ -1482,7 +1527,7 @@ void ofApp::algorithm() {
     }
     else if(!useEmotions && useMov){//extract clips based only on movement
 
-
+        useOnlyMov(useAudio, useCuts, clips);
 
     }
 
