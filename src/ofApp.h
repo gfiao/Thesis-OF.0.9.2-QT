@@ -112,6 +112,7 @@ public:
     void cutVideo(vector<ClipWithScore> clips);
 
     //algorithm
+    int checkShotTypeClip(int startTimestamp, int endTimestamp);
     void useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore>& clips);
     void algorithm(); //main function
 

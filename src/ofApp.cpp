@@ -143,6 +143,10 @@ void histTest(vector<ofImage> images){
 void ofApp::setup(){
 
     /*video.load("WeFeel_1.mp4");
+    videoPath = "C:\\openFrameworks-master\\apps\\myApps\\thesis\\bin\\data\\WeFeel_1.mp4";
+    cout << checkShotTypeClip(50, 75) << endl;*/
+
+    /*video.load("WeFeel_1.mp4");
     video.play();
     video.setPaused(true);
 
@@ -818,7 +822,7 @@ vector<pair<int, int>> ofApp::detectCutsIn(int start, int end){
 void ofApp::motionHelper(int start, int end, ClipWithScore& newClip){
     int motion = 0;
     vector<pair<int, int>> ts = detectCutsIn(start, end);
-    cout << "detectCutsIn size: " << ts.size() << endl;
+    //cout << "detectCutsIn size: " << ts.size() << endl;
     if(!ts.empty()){
         vector<int> movRes = {0, 0, 0};
         for(int i = 0; i < ts.size(); i++){
@@ -1300,13 +1304,54 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
 }
 
+int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
+
+    ofxXmlSettings xml;
+    string fileName = AuxFunc::split( ofFile(videoPath).getFileName(), '.')[0];
+    cout << fileName << endl;
+    if(!xml.load("color\\" + fileName + ".xml")){
+        //criar ficheiro mais tarde
+        cout << "criar ficheiro" << endl;
+        return -1;
+    }
+
+    vector<int> types = {0, 0, 0};
+    video.setPosition(startTimestamp / video.getDuration());
+    int startFrame = video.getCurrentFrame();
+    video.setPosition(endTimestamp / video.getDuration());
+    int endFrame = video.getCurrentFrame();
+
+    xml.pushTag("colorData");
+
+    for(int i = startFrame; i < endFrame; i++){
+
+        xml.pushTag("data", i);
+
+        if(xml.getValue("value", 0) >= longShotThreshold)
+            types[LONG_SHOT]++;
+        else if(xml.getValue("value", 0) <= outOfFieldThreshold)
+            types[OUT_OF_FIELD]++;
+        else types[CLOSEUP_SHOT]++;
+
+        xml.popTag();
+
+    }
+
+    int nOfFrames = endFrame - startFrame;
+    if(types[LONG_SHOT] / nOfFrames >= 0.7)
+        return LONG_SHOT;
+    else if(types[OUT_OF_FIELD] / nOfFrames >= 0.25)
+        return OUT_OF_FIELD;
+    else return CLOSEUP_SHOT;
+
+
+}
+
 void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips){
 
     int duration = video.getDuration();
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
     if(clipDuration == 0) clipDuration = 20;
-
-    int nrOfClips = duration / clipDuration;
 
     for(int i = 1;i < duration; i += clipDuration){
 
@@ -1331,11 +1376,11 @@ void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips
         pair<int, int> ts(startTimestamp, endTimestamp);
         ClipWithScore newClip(ts, 0, audioValues);
         if(useAudio)
-            newClip.calcFinalScore(0, audioWeight);
+            newClip.calcFinalScore(0, 1);
         else
             newClip.calcFinalScore(0, 0);
 
-        if(useMov) motionHelper(startTimestamp, endTimestamp, newClip);
+        motionHelper(startTimestamp, endTimestamp, newClip);
 
         clips.push_back(newClip);
 
@@ -1358,13 +1403,14 @@ void ofApp::algorithm() {
     bool useEmotions = qmlWindow->findChild<QObject*>("useEmotions")->property("checked").toBool();
     bool useAudio = qmlWindow->findChild<QObject*>("soundCheckbox")->property("checked").toBool();
     bool useMov = qmlWindow->findChild<QObject*>("useMov")->property("checked").toBool();
+    bool useColor = qmlWindow->findChild<QObject*>("useColor")->property("checked").toBool();
     bool useCuts = qmlWindow->findChild<QObject*>("useCuts")->property("checked").toBool();
 
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
     if(clipDuration == 0) clipDuration = 20;
 
-    if(!useEmotions && !useAudio){
-        ofSystemAlertDialog("You need to use emotions data and/or audio data!");
+    if(!useEmotions && !useAudio && !useMov && !useColor){
+        ofSystemAlertDialog("You need to use a data source!");
         return;
     }
 
