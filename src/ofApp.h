@@ -113,7 +113,7 @@ public:
 
     //algorithm
     int checkShotTypeClip(int startTimestamp, int endTimestamp);
-    void useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore>& clips);
+    void useOnlyMov(bool useAudio, bool useCuts, bool useColor, vector<ClipWithScore>& clips);
     void algorithm(); //main function
 
     // qml
@@ -132,6 +132,11 @@ public:
     void changeChartInterval(int interval);
 
     void selectRow(int row);
+    void selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, vector<ClipWithScore>& clips,
+                       vector<ClipWithScore>& clipsInSummary, int& index, bool useColor, bool longShot,
+                       bool closeup, bool offField);
+    void selectClipColor(vector<ClipWithScore>& clips, vector<ClipWithScore>& clipsInSummary,
+                         bool longShot, bool closeup, bool offField, int& totalDuration, int& index);
 };
 
 // qml signal to slot object

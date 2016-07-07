@@ -1347,7 +1347,7 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
 
 }
 
-void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips){
+void ofApp::useOnlyMov(bool useAudio, bool useCuts, bool useColor, vector<ClipWithScore> &clips){
 
     int duration = video.getDuration();
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
@@ -1375,6 +1375,12 @@ void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips
 
         pair<int, int> ts(startTimestamp, endTimestamp);
         ClipWithScore newClip(ts, 0, audioValues);
+
+        if(useColor){
+            int shotType = checkShotTypeClip(startTimestamp, endTimestamp);
+            newClip.setShotType(shotType);
+        }
+
         if(useAudio)
             newClip.calcFinalScore(0, 1);
         else
@@ -1384,6 +1390,66 @@ void ofApp::useOnlyMov(bool useAudio, bool useCuts, vector<ClipWithScore> &clips
 
         clips.push_back(newClip);
 
+    }
+
+}
+
+void ofApp::selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, vector<ClipWithScore>& clips,
+                          vector<ClipWithScore>& clipsInSummary, int& index, bool useColor, bool longShot,
+                          bool closeup, bool offField){
+
+    if(useColor){
+        int type = clips[index].getShotType();
+        if(!longShot && type == LONG_SHOT){
+            return;
+        }
+        else if(!closeup && type == CLOSEUP_SHOT){
+            return;
+        }
+        else if(!offField && type == OUT_OF_FIELD){
+            return;
+        }
+    }
+
+    bool leftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
+    bool rightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
+    if(leftCheckbox && !rightCheckbox){
+        if(clips[index].getMovement() == LEFT){
+            clipsInSummary.push_back(clips[index]);
+            pair<int, int> ts = clips[index].getTimestamps();
+            totalDuration += (ts.second - ts.first);
+        }
+    }
+    else if(rightCheckbox && !leftCheckbox){
+        if(clips[index].getMovement() == RIGHT){
+            clipsInSummary.push_back(clips[index]);
+            pair<int, int> ts = clips[index].getTimestamps();
+            totalDuration += (ts.second - ts.first);
+        }
+    }
+    else{//any direction
+        clipsInSummary.push_back(clips[index]);
+        pair<int, int> ts = clips[index].getTimestamps();
+        totalDuration += (ts.second - ts.first);
+    }
+}
+
+void ofApp::selectClipColor(vector<ClipWithScore> &clips, vector<ClipWithScore> &clipsInSummary,
+                            bool longShot,bool closeup, bool offField, int& totalDuration, int& index){
+
+    pair<int, int> ts = clips[index].getTimestamps();
+    int type = clips[index].getShotType();
+    if(longShot && type == LONG_SHOT){
+        clipsInSummary.push_back(clips[index]);
+        totalDuration += (ts.second - ts.first);
+    }
+    else if(closeup && type == CLOSEUP_SHOT){
+        clipsInSummary.push_back(clips[index]);
+        totalDuration += (ts.second - ts.first);
+    }
+    else if(offField && type == OUT_OF_FIELD){
+        clipsInSummary.push_back(clips[index]);
+        totalDuration += (ts.second - ts.first);
     }
 
 }
@@ -1405,6 +1471,23 @@ void ofApp::algorithm() {
     bool useMov = qmlWindow->findChild<QObject*>("useMov")->property("checked").toBool();
     bool useColor = qmlWindow->findChild<QObject*>("useColor")->property("checked").toBool();
     bool useCuts = qmlWindow->findChild<QObject*>("useCuts")->property("checked").toBool();
+
+
+    //=======================================================
+    bool longShot = false, closeup = false, offField = false;
+    QObjectList checkboxes = qmlWindow->findChild<QObject*>("shotCheckboxes")->children();
+    for(QObject* obj : checkboxes){
+
+        if(obj->property("checked").toBool())
+            if(obj->property("objectName") == "LONG_SHOT")
+                longShot = true;
+            else if(obj->property("objectName") == "CLOSEUP_SHOT")
+                closeup = true;
+            else if(obj->property("objectName") == "OUT_OF_FIELD")
+                offField = true;
+    }
+    //=======================================================
+
 
     int clipDuration = qmlWindow->findChild<QObject*>("clipDuration")->property("text").toInt();
     if(clipDuration == 0) clipDuration = 20;
@@ -1486,6 +1569,12 @@ void ofApp::algorithm() {
 
                 pair<int, int> ts(startTimestamp, endTimestamp);
                 ClipWithScore newClip(ts, emotionsInClip, audioValues);
+
+                if(useColor){
+                    int shotType = checkShotTypeClip(startTimestamp, endTimestamp);
+                    newClip.setShotType(shotType);
+                }
+
                 if(useAudio)
                     newClip.calcFinalScore(emotionWeight, audioWeight);
                 else
@@ -1558,10 +1647,15 @@ void ofApp::algorithm() {
 
                 pair<int, int> ts(startTimestamp, endTimestamp);
                 ClipWithScore newClip(ts, 0, audioValues);
+
+                if(useColor){
+                    int shotType = checkShotTypeClip(startTimestamp, endTimestamp);
+                    newClip.setShotType(shotType);
+                }
+
                 newClip.calcFinalScore(0, 1);
 
                 if(useMov) motionHelper(startTimestamp, endTimestamp, newClip);
-
 
                 clips.push_back(newClip);
 
@@ -1573,8 +1667,12 @@ void ofApp::algorithm() {
     }
     else if(!useEmotions && useMov){//extract clips based only on movement
 
-        useOnlyMov(useAudio, useCuts, clips);
+        useOnlyMov(useAudio, useCuts, useColor, clips);
 
+    }
+
+    else if(!useEmotions && useColor){
+        //TODO: vale a pena? mesma maneira que mov?
     }
 
 
@@ -1618,40 +1716,27 @@ void ofApp::algorithm() {
 
     ofSort(clips, sortByScore);
     int totalDuration = clipsInSummary.size() * clipDuration;
-    int i = 0;
-    while(totalDuration < summaryDuration * 60 && i < clips.size()){
+    int index = 0;
+    while(totalDuration < summaryDuration * 60 && index < clips.size()){
         //TODO: falta halfTime
         if(useMov){
-            bool leftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
-            bool rightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
-            if(leftCheckbox && !rightCheckbox){
-                if(clips[i].getMovement() == LEFT){
-                    clipsInSummary.push_back(clips[i]);
-                    pair<int, int> ts = clips[i].getTimestamps();
-                    totalDuration += (ts.second - ts.first);
-                }
-            }
-            else if(rightCheckbox && !leftCheckbox){
-                if(clips[i].getMovement() == RIGHT){
-                    clipsInSummary.push_back(clips[i]);
-                    pair<int, int> ts = clips[i].getTimestamps();
-                    totalDuration += (ts.second - ts.first);
-                }
-            }
-            else{//any direction
-                clipsInSummary.push_back(clips[i]);
-                pair<int, int> ts = clips[i].getTimestamps();
-                totalDuration += (ts.second - ts.first);
-            }
+
+            selectClipMov(firstHalfCheckboxes, totalDuration, clips, clipsInSummary, index,
+                          useColor, longShot, closeup, offField);
+
+        }
+        else if(useColor){
+
+
 
         }
         else{
-            clipsInSummary.push_back(clips[i]);
-            pair<int, int> ts = clips[i].getTimestamps();
+            clipsInSummary.push_back(clips[index]);
+            pair<int, int> ts = clips[index].getTimestamps();
             totalDuration += (ts.second - ts.first);
         }
 
-        i++;
+        index++;
     }
     ofSort(clipsInSummary, sortClips);
 

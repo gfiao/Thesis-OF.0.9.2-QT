@@ -78,14 +78,17 @@ Item {
 
                 CheckBox{
                     text: "Long Shot"
+                    objectName: "LONG_SHOT"
                     checked: true
                 }
                 CheckBox{
                     text: "Closeup Shot"
+                    objectName: "CLOSEUP_SHOT"
                     checked: true
                 }
                 CheckBox{
                     text: "Out of Field Shot"
+                    objectName: "OUT_OF_FIELD"
                     checked: true
                 }
             }
