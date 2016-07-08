@@ -1180,11 +1180,9 @@ void ofApp::changeChartInterval(int interval){
 void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
     //create a folder for each run of the algorithm
-    //code originally from http://en.cppreference.com/w/cpp/chrono/c/time and http://stackoverflow.com/a/997531
-    time_t folderName = time(nullptr);
-    string newFolder = "data\\" + to_string(folderName);
+    string newFolder = "data\\" + ofGetTimestampString();
     boost::filesystem::create_directory(newFolder);
-    string tempFolder = "data\\" + to_string(folderName) + "\\temp";
+    string tempFolder = "data\\" + ofGetTimestampString() + "\\temp";
     boost::filesystem::create_directory(tempFolder);
 
     //the created clips will have the same extension as the input
@@ -1328,7 +1326,7 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
             types[OUT_OF_FIELD]++;
         else types[CLOSEUP_SHOT]++;
 
-        cout << xml.getValue("value", 0.0) << endl;
+        //cout << xml.getValue("value", 0.0) << endl;
 
         xml.popTag();
 
@@ -1340,11 +1338,11 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
     cout << types[OUT_OF_FIELD] <<"/"<< nOfFrames << "=" << (types[OUT_OF_FIELD] / nOfFrames) << endl;
 
     cout << endl;
-    if(types[OUT_OF_FIELD] / nOfFrames >= 0.25){
+    if(types[OUT_OF_FIELD] / nOfFrames >= 0.2){
         cout << "set as OUT_OF_FIELD" << endl;
         return OUT_OF_FIELD;
     }
-    else if(types[LONG_SHOT] / nOfFrames >= 0.6){
+    else if(types[LONG_SHOT] / nOfFrames >= 0.4){
         cout << "set as LONG_SHOT" << endl;
         return LONG_SHOT;
     }
