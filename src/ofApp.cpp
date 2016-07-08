@@ -255,11 +255,6 @@ void ofApp::setup(){
         cout << dir.getPath(i) << " --> " << checkShotType(img) << endl;
     }*/
 
-
-    //TODO: code to get the text from the checkboxes, use later
-    /* QObjectList checkboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
-    for(QObject* obj : checkboxes)
-        cout << obj->property("text").toString().toStdString() << endl;*/
 }
 
 void ofApp::qmlSetup(){
@@ -407,7 +402,6 @@ void ofApp::keyPressed(int key){
 
 float ofApp::detectShotThreshold(){
 
-    //TODO: only long shot for now
     ofDirectory dir(TRAIN_ASSETS);
     dir.listDir();
     ofImage img;
@@ -610,7 +604,6 @@ vector<float> ofApp::getHistogram(ofImage image, float& totalSum, float& maxValu
     return sums;
 }
 
-//TODO: MUDAR
 int ofApp::checkShotType(ofImage frame) {
 
     QObject* model = qmlWindow->findChild<QObject*>("subimmageCB");
@@ -731,7 +724,6 @@ vector<cv::KeyPoint> ofApp::detectKeypoints(int timestamp) {
 
 }
 
-//TODO: for now use only the first and last frame
 int ofApp::calcMotionDirection(int startTimestamp, int endTimestamp) {
 
     //=======================
@@ -1308,14 +1300,17 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
 
     ofxXmlSettings xml;
     string fileName = AuxFunc::split( ofFile(videoPath).getFileName(), '.')[0];
-    cout << fileName << endl;
+    // cout << fileName << endl;
     if(!xml.load("color\\" + fileName + ".xml")){
         //criar ficheiro mais tarde
         cout << "criar ficheiro" << endl;
         return -1;
     }
+    else{
+        //cout << "acessing xml" << endl;
+    }
 
-    vector<int> types = {0, 0, 0};
+    vector<float> types = {0.0, 0.0, 0.0};
     video.setPosition(startTimestamp / video.getDuration());
     int startFrame = video.getCurrentFrame();
     video.setPosition(endTimestamp / video.getDuration());
@@ -1326,23 +1321,37 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
     for(int i = startFrame; i < endFrame; i++){
 
         xml.pushTag("data", i);
-
-        if(xml.getValue("value", 0) >= longShotThreshold)
+        //cout << xml.getValue("value", 0.0) << endl;
+        if(xml.getValue("value", 0.0) >= longShotThreshold)
             types[LONG_SHOT]++;
-        else if(xml.getValue("value", 0) <= outOfFieldThreshold)
+        else if(xml.getValue("value", 0.0) <= outOfFieldThreshold)
             types[OUT_OF_FIELD]++;
         else types[CLOSEUP_SHOT]++;
+
+        cout << xml.getValue("value", 0.0) << endl;
 
         xml.popTag();
 
     }
 
-    int nOfFrames = endFrame - startFrame;
-    if(types[LONG_SHOT] / nOfFrames >= 0.7)
-        return LONG_SHOT;
-    else if(types[OUT_OF_FIELD] / nOfFrames >= 0.25)
+    float nOfFrames = endFrame - startFrame;
+    cout << types[LONG_SHOT] <<"/"<< nOfFrames << "=" << types[LONG_SHOT] / nOfFrames << endl;
+    cout << types[CLOSEUP_SHOT] <<"/"<< nOfFrames << "=" << types[CLOSEUP_SHOT] / nOfFrames << endl;
+    cout << types[OUT_OF_FIELD] <<"/"<< nOfFrames << "=" << (types[OUT_OF_FIELD] / nOfFrames) << endl;
+
+    cout << endl;
+    if(types[OUT_OF_FIELD] / nOfFrames >= 0.25){
+        cout << "set as OUT_OF_FIELD" << endl;
         return OUT_OF_FIELD;
-    else return CLOSEUP_SHOT;
+    }
+    else if(types[LONG_SHOT] / nOfFrames >= 0.6){
+        cout << "set as LONG_SHOT" << endl;
+        return LONG_SHOT;
+    }
+    else{
+        cout << "set as CLOSEUP_SHOT" << endl;
+        return CLOSEUP_SHOT;
+    }
 
 
 }
@@ -1435,7 +1444,7 @@ void ofApp::selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, v
 }
 
 void ofApp::selectClipColor(vector<ClipWithScore> &clips, vector<ClipWithScore> &clipsInSummary,
-                            bool longShot,bool closeup, bool offField, int& totalDuration, int& index){
+                            bool longShot, bool closeup, bool offField, int& totalDuration, int& index){
 
     pair<int, int> ts = clips[index].getTimestamps();
     int type = clips[index].getShotType();
@@ -1486,6 +1495,8 @@ void ofApp::algorithm() {
             else if(obj->property("objectName") == "OUT_OF_FIELD")
                 offField = true;
     }
+
+    cout << longShot << " " << closeup << " " << offField << endl;
     //=======================================================
 
 
@@ -1536,8 +1547,8 @@ void ofApp::algorithm() {
                     /*&& numberOfEmotions >= minNumberOfEmotions*/) {
 
                 //discard clips with a low number of emotions
-                if(numberOfEmotions <= emotionData->getMaxValueInterval() / 2)
-                    continue;
+                //if(numberOfEmotions <= emotionData->getMaxValueInterval() / 2)
+                //  continue;
 
                 // two thirds of the duration before the peak, the rest after the peak
                 int startTimestamp = emotionsInterval[i].getTimestamp() - (clipDuration * 3/4);
@@ -1701,7 +1712,7 @@ void ofApp::algorithm() {
     cout << endl;
     for(ClipWithScore c : clips)
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
-             << " - " << c.getMovement() << endl;
+             << " - shot: " << c.getShotType() << endl;
 
     //movement parameters
     string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
@@ -1718,6 +1729,7 @@ void ofApp::algorithm() {
     int totalDuration = clipsInSummary.size() * clipDuration;
     int index = 0;
     while(totalDuration < summaryDuration * 60 && index < clips.size()){
+        // cout << index << endl;
         //TODO: falta halfTime
         if(useMov){
 
@@ -1727,7 +1739,8 @@ void ofApp::algorithm() {
         }
         else if(useColor){
 
-
+            selectClipColor(clips, clipsInSummary, longShot, closeup, offField, totalDuration,
+                            index);
 
         }
         else{
@@ -1746,9 +1759,10 @@ void ofApp::algorithm() {
 
     for(ClipWithScore c : clipsInSummary)
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
-             << "  -  " << c.getMovement() << endl;
+             << "  -  shot: " << c.getShotType() << endl;
 
-    cutVideo(clipsInSummary);
+    //cutVideo(clipsInSummary);
+
 
     //cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
 
