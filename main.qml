@@ -237,7 +237,7 @@ ApplicationWindow {
 
             Button{
                 objectName: "runAlgorithm"
-                text: "Run Algorithm"
+                text: "Create Video"
                 enabled: false
             }
 

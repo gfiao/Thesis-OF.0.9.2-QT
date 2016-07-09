@@ -19,9 +19,16 @@ Item {
             bottom: parent.bottom
             leftMargin: 12
         }
+
         ColumnLayout {
             spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
+
+            Label{
+                text: "The color is used to distinguish between the different types of shots present in the video."
+            }
+
+           // Item { Layout.preferredHeight: 5 } // padding
 
             CheckBox{
                 text: "Use color?"
@@ -50,7 +57,7 @@ Item {
                 id: processLabel
                 enabled: false
                 font.bold: true
-                text: "How precise do you want the color processing to be?:"
+                text: "Process accuracy:"
             }
 
             ComboBox{
@@ -58,7 +65,9 @@ Item {
                 enabled: false
                 objectName: "subimmageCB"
                 // model: [ "1 (Fast)", "2", "3", "4", "5 (Slow)" ]
-                model: ["5 (Slow)", "4", "3", "2", "1 (Fast)"]
+                //model: ["5 (Slow)", "4", "3", "2", "1 (Fast)"]
+                //corresponde a 5, 3, 1
+                model: ["Best", "Better", "Good"]
 
             }
 
@@ -67,7 +76,7 @@ Item {
             Label{
                 id: shotLabel
                 enabled: false
-                text: "What type of shots are you looking for?"
+                text: "Type of shots to use:"
                 font.bold: true
             }
             RowLayout{
@@ -76,21 +85,39 @@ Item {
                 objectName: "shotCheckboxes"
                 spacing: 25
 
-                CheckBox{
-                    text: "Long Shot"
-                    objectName: "LONG_SHOT"
-                    checked: true
+                ColumnLayout{
+                    CheckBox{
+                        text: "Long Shot"
+                        objectName: "LONG_SHOT"
+                        checked: true
+                    }
+                    Label{
+                        text: " E.g. shots of the field."
+                    }
                 }
-                CheckBox{
-                    text: "Closeup Shot"
-                    objectName: "CLOSEUP_SHOT"
-                    checked: true
+
+                ColumnLayout{
+                    CheckBox{
+                        text: "Closeup Shot"
+                        objectName: "CLOSEUP_SHOT"
+                        checked: true
+                    }
+                    Label{
+                        text: "E.g. shots of individual players."
+                    }
                 }
-                CheckBox{
-                    text: "Out of Field Shot"
-                    objectName: "OUT_OF_FIELD"
-                    checked: true
+
+                ColumnLayout{
+                    CheckBox{
+                        text: "Out of Field Shot"
+                        objectName: "OUT_OF_FIELD"
+                        checked: true
+                    }
+                    Label{
+                        text: "E.g. shots of the audience."
+                    }
                 }
+
             }
 
         }

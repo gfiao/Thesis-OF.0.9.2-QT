@@ -17,14 +17,21 @@ Item {
             leftMargin: 12
         }
         ColumnLayout {
-            spacing: 10
+            spacing: 8
             Item { Layout.preferredHeight: 4 } // padding
+
+            Label{
+                text: "The movement is used to distinguish between which direction the play is going."
+            }
+
+            //Item { Layout.preferredHeight: 5 } // padding
+
 
             CheckBox{
                 id: useMov
                 objectName: "useMov"
                 checked: false
-                text: "Use movement in the algorithm?"
+                text: "Use movement"
 
                 onCheckedChanged: {
                     if(!useMov.checked){
@@ -49,26 +56,27 @@ Item {
 
             Label{
                 id: firstHalf
-                text: "First half:"
+                text: "Extract clips from the first half:"
                 font.bold: true
                 enabled: false
             }
-            RowLayout{
+            ColumnLayout{
+                spacing: 8
                 id: firstDirectionRow
                 objectName: "firstDirectionRow"
                 enabled: false
 
                 CheckBox{
-                    text: "Left"
+                    text: "Team attacking on the left"
                     checked: true
                 }
                 CheckBox{
-                    text: "Right"
+                    text: "Team attacking on the right"
                     checked: true
                 }
             }
 
-            Label{
+            /*Label{
                 id: timeframe
                 text: "Half-time:"
                 font.bold: true
@@ -84,25 +92,26 @@ Item {
                     placeholderText: qsTr("When is half-time?(minutes)")
                     validator: IntValidator{bottom: 0; top: 10000}
                 }
-            }
+            }*/
 
             Label{
                 id: secondHalf
-                text: "Second half:"
+                text: "Extract clips from the second half:"
                 font.bold: true
                 enabled: false
             }
-            RowLayout{
+            ColumnLayout{
+                spacing: 8
                 id: secondDirectionRow
                 objectName: "secondDirectionRow"
                 enabled: false
 
                 CheckBox{
-                    text: "Left"
+                    text: "Team attacking on the left"
                     checked: true
                 }
                 CheckBox{
-                    text: "Right"
+                    text: "Team attacking on the right"
                     checked: true
                 }
             }

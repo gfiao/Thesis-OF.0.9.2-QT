@@ -25,7 +25,7 @@ Item {
             CheckBox{
                 id: useEmotions
                 objectName: "useEmotions"
-                text: "Use the emotions data in the algorithm?"
+                text: "Use emotions"
                 checked: true
 
                 onCheckedChanged: {
@@ -45,7 +45,7 @@ Item {
             Label {
                 id: emotionsLabel
                 font.bold: true
-                text: "What emotions will be used?:"
+                text: "Emotions to be used:"
             }
 
             RowLayout{
@@ -92,10 +92,11 @@ Item {
                 }
             }*/
 
-            RowLayout{
+            ColumnLayout{
+                spacing: 10
                 id: intervalRow
                 Label{
-                    text: "Interval:"
+                    text: "Clustering interval:"
                     font.bold: true
                 }
                 TextField{
@@ -104,14 +105,14 @@ Item {
                     placeholderText: "Default is 5"
                     validator: IntValidator{bottom: 1; top: 100}
                 }
-                Label{
+               /* Label{
                     text: {
                         if(emotionInterval.text != "")
                             "Interval is set at " + emotionInterval.text + " seconds"
                         else
                             "Interval is set at 5 seconds"
                     }
-                }
+                }*/
             }
             ChartWindow{
                 id: chartWindow
@@ -119,7 +120,7 @@ Item {
             }
 
             Button{
-                text: "Emotions Over Time"
+                text: "See Emotions Chart Over Time"
                 objectName: "showChart"
                 id: showChart
 

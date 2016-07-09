@@ -23,7 +23,7 @@ Item {
 
 
             Label{
-                text: "Maximum duration of the final summary:"
+                text: "Max length of the highlight video:"
                 font.bold: true
             }
             TextField{
@@ -32,7 +32,7 @@ Item {
             }
 
             Label{
-                text: "Maximum duration of each clip:"
+                text: "Max length of each clip:"
                 font.bold: true
             }
             TextField{
@@ -43,19 +43,25 @@ Item {
 
             CheckBox{
                 objectName: "soundCheckbox"
-                text: "Use the sound values in the algorithm?"
+                text: "Use sound"
                 checked: true
+            }
+            Label{
+                text: "This feature might be useful to extract clips that have high frequency values."
             }
 
             CheckBox{
                 id: useCuts
                 objectName: "useCuts"
-                text: "Use cuts? (Might extract better clips)"
+                text: "Use cuts"
+            }
+            Label{
+                text: "This feature might be useful to extract clips that focus on the sports event’s action."
             }
 
             CheckBox{
                 objectName: "fadeInOut"
-                text: "Fade in/out between clips?"
+                text: "Fade between clips"
                 checked: false
             }
 

@@ -50,7 +50,7 @@ Window {
                 RowLayout{
                     Label {
                         id: interval_label
-                        text: qsTr("Interval:")
+                        text: qsTr("Clustering interval:")
                         font.bold: true
                     }
 
