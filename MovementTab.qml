@@ -36,18 +36,14 @@ Item {
                 onCheckedChanged: {
                     if(!useMov.checked){
                         firstDirectionRow.enabled = false
-                        timeframeRow.enabled = false
                         secondDirectionRow.enabled = false
                         firstHalf.enabled = false
-                        timeframe.enabled = false
                         secondHalf.enabled = false
                     }
                     else{
                         firstDirectionRow.enabled = true
-                        timeframeRow.enabled = true
                         secondDirectionRow.enabled = true
                         firstHalf.enabled = true
-                        timeframe.enabled = true
                         secondHalf.enabled = true
                     }
                 }
@@ -75,24 +71,6 @@ Item {
                     checked: true
                 }
             }
-
-            /*Label{
-                id: timeframe
-                text: "Half-time:"
-                font.bold: true
-                enabled: false
-            }
-            RowLayout{
-                id: timeframeRow
-                objectName: "timeframeRow"
-                enabled: false
-
-                TextField {
-                    objectName: "halfTime"
-                    placeholderText: qsTr("When is half-time?(minutes)")
-                    validator: IntValidator{bottom: 0; top: 10000}
-                }
-            }*/
 
             Label{
                 id: secondHalf

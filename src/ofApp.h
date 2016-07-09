@@ -132,7 +132,7 @@ public:
     void changeChartInterval(int interval);
 
     void selectRow(int row);
-    void selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, vector<ClipWithScore>& clips,
+    void selectClipMov(int& totalDuration, vector<ClipWithScore>& clips,
                        vector<ClipWithScore>& clipsInSummary, int& index, bool useColor, bool longShot,
                        bool closeup, bool offField);
     void selectClipColor(vector<ClipWithScore>& clips, vector<ClipWithScore>& clipsInSummary,

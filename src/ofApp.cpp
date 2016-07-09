@@ -1401,7 +1401,7 @@ void ofApp::useOnlyMov(bool useAudio, bool useCuts, bool useColor, vector<ClipWi
 
 }
 
-void ofApp::selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, vector<ClipWithScore>& clips,
+void ofApp::selectClipMov(int& totalDuration, vector<ClipWithScore>& clips,
                           vector<ClipWithScore>& clipsInSummary, int& index, bool useColor, bool longShot,
                           bool closeup, bool offField){
 
@@ -1418,26 +1418,56 @@ void ofApp::selectClipMov(QObjectList firstHalfCheckboxes, int& totalDuration, v
         }
     }
 
-    bool leftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
-    bool rightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
-    if(leftCheckbox && !rightCheckbox){
-        if(clips[index].getMovement() == LEFT){
+    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
+    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
+
+    bool firstLeftCheckbox = firstHalfCheckboxes[0]->property("checked").toBool();
+    bool firstRightCheckbox = firstHalfCheckboxes[1]->property("checked").toBool();
+
+    bool secondLeftCheckbox = secondHalfCheckboxes[0]->property("checked").toBool();
+    bool secondRightCheckbox = secondHalfCheckboxes[1]->property("checked").toBool();
+
+    int halfTime = video.getDuration() / 2;
+    pair<int, int> ts = clips[index].getTimestamps();
+
+    if(ts.first < halfTime){
+
+        if(firstLeftCheckbox && !firstRightCheckbox){
+            if(clips[index].getMovement() == LEFT){
+                clipsInSummary.push_back(clips[index]);
+                totalDuration += (ts.second - ts.first);
+            }
+        }
+        else if(firstRightCheckbox && !firstLeftCheckbox){
+            if(clips[index].getMovement() == RIGHT){
+                clipsInSummary.push_back(clips[index]);
+                totalDuration += (ts.second - ts.first);
+            }
+        }
+        else{//any direction
             clipsInSummary.push_back(clips[index]);
-            pair<int, int> ts = clips[index].getTimestamps();
             totalDuration += (ts.second - ts.first);
         }
     }
-    else if(rightCheckbox && !leftCheckbox){
-        if(clips[index].getMovement() == RIGHT){
+    else{
+
+        if(secondLeftCheckbox && !secondRightCheckbox){
+            if(clips[index].getMovement() == LEFT){
+                clipsInSummary.push_back(clips[index]);
+                totalDuration += (ts.second - ts.first);
+            }
+        }
+        else if(secondRightCheckbox && !secondLeftCheckbox){
+            if(clips[index].getMovement() == RIGHT){
+                clipsInSummary.push_back(clips[index]);
+                totalDuration += (ts.second - ts.first);
+            }
+        }
+        else{//any direction
             clipsInSummary.push_back(clips[index]);
-            pair<int, int> ts = clips[index].getTimestamps();
             totalDuration += (ts.second - ts.first);
         }
-    }
-    else{//any direction
-        clipsInSummary.push_back(clips[index]);
-        pair<int, int> ts = clips[index].getTimestamps();
-        totalDuration += (ts.second - ts.first);
+
     }
 }
 
@@ -1712,13 +1742,6 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << " - shot: " << c.getShotType() << endl;
 
-    //movement parameters
-    string halfTime = qmlWindow->findChild<QObject*>("halfTime")->property("text").toString().toStdString();
-    int halfTimeSecond = ofToInt(halfTime) * 60;
-    QObjectList firstHalfCheckboxes = qmlWindow->findChild<QObject*>("firstDirectionRow")->children();
-    QObjectList secondHalfCheckboxes = qmlWindow->findChild<QObject*>("secondDirectionRow")->children();
-    // for(int i = 0; i < checkboxes.size()-1; i++)
-    //   cout << checkboxes[i]->property("checked").toBool() << endl;
 
     int summaryDuration = qmlWindow->findChild<QObject*>("summaryDuration")->property("text").toInt();
     if(summaryDuration == 0) summaryDuration = 3;
@@ -1731,7 +1754,7 @@ void ofApp::algorithm() {
         //TODO: falta halfTime
         if(useMov){
 
-            selectClipMov(firstHalfCheckboxes, totalDuration, clips, clipsInSummary, index,
+            selectClipMov(totalDuration, clips, clipsInSummary, index,
                           useColor, longShot, closeup, offField);
 
         }
