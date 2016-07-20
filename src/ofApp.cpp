@@ -1180,9 +1180,14 @@ void ofApp::changeChartInterval(int interval){
 void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
     //create a folder for each run of the algorithm
-    string newFolder = "data\\" + ofGetTimestampString();
+    /*string newFolder = "data\\" + ofGetTimestampString();
     boost::filesystem::create_directory(newFolder);
     string tempFolder = "data\\" + ofGetTimestampString() + "\\temp";
+    boost::filesystem::create_directory(tempFolder);*/
+    time_t folderName = time(nullptr);
+    string newFolder = "data\\" + to_string(folderName);
+    boost::filesystem::create_directory(newFolder);
+    string tempFolder = "data\\" + to_string(folderName) + "\\temp";
     boost::filesystem::create_directory(tempFolder);
 
     //the created clips will have the same extension as the input
@@ -1190,7 +1195,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     file.open(video.getMoviePath());
     string extension = file.getExtension();
     vector<string> clipNames;
-    ofVideoPlayer clip;
+    //ofVideoPlayer clip;
 
     string extractCmd = "ffmpeg -i " + video.getMoviePath();
     //extract each clip and apply the fade in/out effect
@@ -1296,6 +1301,10 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
 
 int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
 
+    //TODO: resultados mais interessantes
+    longShotThreshold = 0.6;
+    outOfFieldThreshold = 0.15;
+
     ofxXmlSettings xml;
     string fileName = AuxFunc::split( ofFile(videoPath).getFileName(), '.')[0];
     // cout << fileName << endl;
@@ -1333,21 +1342,21 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
     }
 
     float nOfFrames = endFrame - startFrame;
-    cout << types[LONG_SHOT] <<"/"<< nOfFrames << "=" << types[LONG_SHOT] / nOfFrames << endl;
+    /* cout << types[LONG_SHOT] <<"/"<< nOfFrames << "=" << types[LONG_SHOT] / nOfFrames << endl;
     cout << types[CLOSEUP_SHOT] <<"/"<< nOfFrames << "=" << types[CLOSEUP_SHOT] / nOfFrames << endl;
     cout << types[OUT_OF_FIELD] <<"/"<< nOfFrames << "=" << (types[OUT_OF_FIELD] / nOfFrames) << endl;
 
-    cout << endl;
+    cout << endl;*/
     if(types[OUT_OF_FIELD] / nOfFrames >= 0.2){
-        cout << "set as OUT_OF_FIELD" << endl;
+        // cout << "set as OUT_OF_FIELD" << endl;
         return OUT_OF_FIELD;
     }
-    else if(types[LONG_SHOT] / nOfFrames >= 0.4){
-        cout << "set as LONG_SHOT" << endl;
+    else if(types[LONG_SHOT] / nOfFrames >= 0.55){
+        //cout << "set as LONG_SHOT" << endl;
         return LONG_SHOT;
     }
     else{
-        cout << "set as CLOSEUP_SHOT" << endl;
+        //cout << "set as CLOSEUP_SHOT" << endl;
         return CLOSEUP_SHOT;
     }
 
@@ -1509,20 +1518,9 @@ void ofApp::algorithm() {
     bool useColor = qmlWindow->findChild<QObject*>("useColor")->property("checked").toBool();
     bool useCuts = qmlWindow->findChild<QObject*>("useCuts")->property("checked").toBool();
 
-
-    //=======================================================
-    bool longShot = false, closeup = false, offField = false;
-    QObjectList checkboxes = qmlWindow->findChild<QObject*>("shotCheckboxes")->children();
-    for(QObject* obj : checkboxes){
-
-        if(obj->property("checked").toBool())
-            if(obj->property("objectName") == "LONG_SHOT")
-                longShot = true;
-            else if(obj->property("objectName") == "CLOSEUP_SHOT")
-                closeup = true;
-            else if(obj->property("objectName") == "OUT_OF_FIELD")
-                offField = true;
-    }
+    bool longShot = qmlWindow->findChild<QObject*>("LONG_SHOT")->property("checked").toBool();
+    bool closeup = qmlWindow->findChild<QObject*>("CLOSEUP_SHOT")->property("checked").toBool();
+    bool offField = qmlWindow->findChild<QObject*>("OUT_OF_FIELD")->property("checked").toBool();
 
     cout << longShot << " " << closeup << " " << offField << endl;
     //=======================================================
@@ -1782,7 +1780,7 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  shot: " << c.getShotType() << endl;
 
-    //cutVideo(clipsInSummary);
+    cutVideo(clipsInSummary);
 
 
     //cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
