@@ -1,0 +1,1955 @@
+<?xml version="1.0"?>
+<results_table>
+<row id="1">
+<emotion>worry</emotion>
+<timestamp>61</timestamp>
+</row>
+<row id="2">
+<emotion>worry</emotion>
+<timestamp>106</timestamp>
+</row>
+<row id="3">
+<emotion>worry</emotion>
+<timestamp>128</timestamp>
+</row>
+<row id="4">
+<emotion>connectedness</emotion>
+<timestamp>149</timestamp>
+</row>
+<row id="5">
+<emotion>connectedness</emotion>
+<timestamp>195</timestamp>
+</row>
+<row id="6">
+<emotion>worry</emotion>
+<timestamp>201</timestamp>
+</row>
+<row id="7">
+<emotion>elation</emotion>
+<timestamp>224</timestamp>
+</row>
+<row id="8">
+<emotion>connectedness</emotion>
+<timestamp>231</timestamp>
+</row>
+<row id="9">
+<emotion>connectedness</emotion>
+<timestamp>247</timestamp>
+</row>
+<row id="10">
+<emotion>elation</emotion>
+<timestamp>258</timestamp>
+</row>
+<row id="11">
+<emotion>anger</emotion>
+<timestamp>291</timestamp>
+</row>
+<row id="12">
+<emotion>worry</emotion>
+<timestamp>337</timestamp>
+</row>
+<row id="13">
+<emotion>worry</emotion>
+<timestamp>386</timestamp>
+</row>
+<row id="14">
+<emotion>connectedness</emotion>
+<timestamp>392</timestamp>
+</row>
+<row id="15">
+<emotion>anger</emotion>
+<timestamp>399</timestamp>
+</row>
+<row id="16">
+<emotion>connectedness</emotion>
+<timestamp>441</timestamp>
+</row>
+<row id="17">
+<emotion>worry</emotion>
+<timestamp>466</timestamp>
+</row>
+<row id="18">
+<emotion>anger</emotion>
+<timestamp>469</timestamp>
+</row>
+<row id="19">
+<emotion>worry</emotion>
+<timestamp>490</timestamp>
+</row>
+<row id="20">
+<emotion>worry</emotion>
+<timestamp>514</timestamp>
+</row>
+<row id="21">
+<emotion>connectedness</emotion>
+<timestamp>518</timestamp>
+</row>
+<row id="22">
+<emotion>elation</emotion>
+<timestamp>528</timestamp>
+</row>
+<row id="23">
+<emotion>worry</emotion>
+<timestamp>545</timestamp>
+</row>
+<row id="24">
+<emotion>worry</emotion>
+<timestamp>555</timestamp>
+</row>
+<row id="25">
+<emotion>worry</emotion>
+<timestamp>569</timestamp>
+</row>
+<row id="26">
+<emotion>elation</emotion>
+<timestamp>581</timestamp>
+</row>
+<row id="27">
+<emotion>worry</emotion>
+<timestamp>590</timestamp>
+</row>
+<row id="28">
+<emotion>worry</emotion>
+<timestamp>593</timestamp>
+</row>
+<row id="29">
+<emotion>worry</emotion>
+<timestamp>597</timestamp>
+</row>
+<row id="30">
+<emotion>worry</emotion>
+<timestamp>608</timestamp>
+</row>
+<row id="31">
+<emotion>worry</emotion>
+<timestamp>628</timestamp>
+</row>
+<row id="32">
+<emotion>elation</emotion>
+<timestamp>642</timestamp>
+</row>
+<row id="33">
+<emotion>elation</emotion>
+<timestamp>643</timestamp>
+</row>
+<row id="34">
+<emotion>anger</emotion>
+<timestamp>678</timestamp>
+</row>
+<row id="35">
+<emotion>worry</emotion>
+<timestamp>690</timestamp>
+</row>
+<row id="36">
+<emotion>elation</emotion>
+<timestamp>694</timestamp>
+</row>
+<row id="37">
+<emotion>elation</emotion>
+<timestamp>696</timestamp>
+</row>
+<row id="38">
+<emotion>connectedness</emotion>
+<timestamp>732</timestamp>
+</row>
+<row id="39">
+<emotion>connectedness</emotion>
+<timestamp>747</timestamp>
+</row>
+<row id="40">
+<emotion>elation</emotion>
+<timestamp>753</timestamp>
+</row>
+<row id="41">
+<emotion>connectedness</emotion>
+<timestamp>768</timestamp>
+</row>
+<row id="42">
+<emotion>connectedness</emotion>
+<timestamp>798</timestamp>
+</row>
+<row id="43">
+<emotion>connectedness</emotion>
+<timestamp>807</timestamp>
+</row>
+<row id="44">
+<emotion>elation</emotion>
+<timestamp>810</timestamp>
+</row>
+<row id="45">
+<emotion>elation</emotion>
+<timestamp>811</timestamp>
+</row>
+<row id="46">
+<emotion>worry</emotion>
+<timestamp>814</timestamp>
+</row>
+<row id="47">
+<emotion>elation</emotion>
+<timestamp>818</timestamp>
+</row>
+<row id="48">
+<emotion>connectedness</emotion>
+<timestamp>843</timestamp>
+</row>
+<row id="49">
+<emotion>elation</emotion>
+<timestamp>850</timestamp>
+</row>
+<row id="50">
+<emotion>worry</emotion>
+<timestamp>886</timestamp>
+</row>
+<row id="51">
+<emotion>connectedness</emotion>
+<timestamp>893</timestamp>
+</row>
+<row id="52">
+<emotion>connectedness</emotion>
+<timestamp>895</timestamp>
+</row>
+<row id="53">
+<emotion>elation</emotion>
+<timestamp>901</timestamp>
+</row>
+<row id="54">
+<emotion>anger</emotion>
+<timestamp>922</timestamp>
+</row>
+<row id="55">
+<emotion>anger</emotion>
+<timestamp>924</timestamp>
+</row>
+<row id="56">
+<emotion>worry</emotion>
+<timestamp>953</timestamp>
+</row>
+<row id="57">
+<emotion>anger</emotion>
+<timestamp>999</timestamp>
+</row>
+<row id="58">
+<emotion>elation</emotion>
+<timestamp>1005</timestamp>
+</row>
+<row id="59">
+<emotion>connectedness</emotion>
+<timestamp>1011</timestamp>
+</row>
+<row id="60">
+<emotion>connectedness</emotion>
+<timestamp>1039</timestamp>
+</row>
+<row id="61">
+<emotion>connectedness</emotion>
+<timestamp>1054</timestamp>
+</row>
+<row id="62">
+<emotion>elation</emotion>
+<timestamp>1057</timestamp>
+</row>
+<row id="63">
+<emotion>elation</emotion>
+<timestamp>1107</timestamp>
+</row>
+<row id="64">
+<emotion>elation</emotion>
+<timestamp>1111</timestamp>
+</row>
+<row id="65">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="66">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="67">
+<emotion>connectedness</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="68">
+<emotion>connectedness</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="69">
+<emotion>connectedness</emotion>
+<timestamp>1115</timestamp>
+</row>
+<row id="70">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="71">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="72">
+<emotion>connectedness</emotion>
+<timestamp>1124</timestamp>
+</row>
+<row id="73">
+<emotion>elation</emotion>
+<timestamp>1126</timestamp>
+</row>
+<row id="74">
+<emotion>connectedness</emotion>
+<timestamp>1160</timestamp>
+</row>
+<row id="75">
+<emotion>elation</emotion>
+<timestamp>1161</timestamp>
+</row>
+<row id="76">
+<emotion>elation</emotion>
+<timestamp>1165</timestamp>
+</row>
+<row id="77">
+<emotion>elation</emotion>
+<timestamp>1202</timestamp>
+</row>
+<row id="78">
+<emotion>elation</emotion>
+<timestamp>1218</timestamp>
+</row>
+<row id="79">
+<emotion>connectedness</emotion>
+<timestamp>1234</timestamp>
+</row>
+<row id="80">
+<emotion>worry</emotion>
+<timestamp>1265</timestamp>
+</row>
+<row id="81">
+<emotion>worry</emotion>
+<timestamp>1270</timestamp>
+</row>
+<row id="82">
+<emotion>elation</emotion>
+<timestamp>1273</timestamp>
+</row>
+<row id="83">
+<emotion>worry</emotion>
+<timestamp>1283</timestamp>
+</row>
+<row id="84">
+<emotion>worry</emotion>
+<timestamp>1303</timestamp>
+</row>
+<row id="85">
+<emotion>elation</emotion>
+<timestamp>1309</timestamp>
+</row>
+<row id="86">
+<emotion>connectedness</emotion>
+<timestamp>1313</timestamp>
+</row>
+<row id="87">
+<emotion>worry</emotion>
+<timestamp>1346</timestamp>
+</row>
+<row id="88">
+<emotion>worry</emotion>
+<timestamp>1353</timestamp>
+</row>
+<row id="89">
+<emotion>worry</emotion>
+<timestamp>1361</timestamp>
+</row>
+<row id="90">
+<emotion>connectedness</emotion>
+<timestamp>1363</timestamp>
+</row>
+<row id="91">
+<emotion>elation</emotion>
+<timestamp>1378</timestamp>
+</row>
+<row id="92">
+<emotion>connectedness</emotion>
+<timestamp>1380</timestamp>
+</row>
+<row id="93">
+<emotion>connectedness</emotion>
+<timestamp>1383</timestamp>
+</row>
+<row id="94">
+<emotion>connectedness</emotion>
+<timestamp>1392</timestamp>
+</row>
+<row id="95">
+<emotion>connectedness</emotion>
+<timestamp>1403</timestamp>
+</row>
+<row id="96">
+<emotion>connectedness</emotion>
+<timestamp>1416</timestamp>
+</row>
+<row id="97">
+<emotion>anger</emotion>
+<timestamp>1423</timestamp>
+</row>
+<row id="98">
+<emotion>anger</emotion>
+<timestamp>1425</timestamp>
+</row>
+<row id="99">
+<emotion>worry</emotion>
+<timestamp>1433</timestamp>
+</row>
+<row id="100">
+<emotion>worry</emotion>
+<timestamp>1434</timestamp>
+</row>
+<row id="101">
+<emotion>worry</emotion>
+<timestamp>1438</timestamp>
+</row>
+<row id="102">
+<emotion>elation</emotion>
+<timestamp>1445</timestamp>
+</row>
+<row id="103">
+<emotion>connectedness</emotion>
+<timestamp>1446</timestamp>
+</row>
+<row id="104">
+<emotion>anger</emotion>
+<timestamp>1450</timestamp>
+</row>
+<row id="105">
+<emotion>anger</emotion>
+<timestamp>1451</timestamp>
+</row>
+<row id="106">
+<emotion>connectedness</emotion>
+<timestamp>1469</timestamp>
+</row>
+<row id="107">
+<emotion>worry</emotion>
+<timestamp>1498</timestamp>
+</row>
+<row id="108">
+<emotion>worry</emotion>
+<timestamp>1504</timestamp>
+</row>
+<row id="109">
+<emotion>elation</emotion>
+<timestamp>1507</timestamp>
+</row>
+<row id="110">
+<emotion>connectedness</emotion>
+<timestamp>1528</timestamp>
+</row>
+<row id="111">
+<emotion>elation</emotion>
+<timestamp>1538</timestamp>
+</row>
+<row id="112">
+<emotion>connectedness</emotion>
+<timestamp>1543</timestamp>
+</row>
+<row id="113">
+<emotion>connectedness</emotion>
+<timestamp>1543</timestamp>
+</row>
+<row id="114">
+<emotion>worry</emotion>
+<timestamp>1551</timestamp>
+</row>
+<row id="115">
+<emotion>worry</emotion>
+<timestamp>1554</timestamp>
+</row>
+<row id="116">
+<emotion>worry</emotion>
+<timestamp>1566</timestamp>
+</row>
+<row id="117">
+<emotion>connectedness</emotion>
+<timestamp>1595</timestamp>
+</row>
+<row id="118">
+<emotion>elation</emotion>
+<timestamp>1612</timestamp>
+</row>
+<row id="119">
+<emotion>elation</emotion>
+<timestamp>1631</timestamp>
+</row>
+<row id="120">
+<emotion>connectedness</emotion>
+<timestamp>1675</timestamp>
+</row>
+<row id="121">
+<emotion>connectedness</emotion>
+<timestamp>1702</timestamp>
+</row>
+<row id="122">
+<emotion>connectedness</emotion>
+<timestamp>1711</timestamp>
+</row>
+<row id="123">
+<emotion>connectedness</emotion>
+<timestamp>1741</timestamp>
+</row>
+<row id="124">
+<emotion>connectedness</emotion>
+<timestamp>1753</timestamp>
+</row>
+<row id="125">
+<emotion>elation</emotion>
+<timestamp>1754</timestamp>
+</row>
+<row id="126">
+<emotion>connectedness</emotion>
+<timestamp>1780</timestamp>
+</row>
+<row id="127">
+<emotion>connectedness</emotion>
+<timestamp>7</timestamp>
+</row>
+<row id="128">
+<emotion>elation</emotion>
+<timestamp>1802</timestamp>
+</row>
+<row id="129">
+<emotion>elation</emotion>
+<timestamp>1803</timestamp>
+</row>
+<row id="130">
+<emotion>elation</emotion>
+<timestamp>1813</timestamp>
+</row>
+<row id="131">
+<emotion>elation</emotion>
+<timestamp>1814</timestamp>
+</row>
+<row id="132">
+<emotion>anger</emotion>
+<timestamp>1820</timestamp>
+</row>
+<row id="133">
+<emotion>anger</emotion>
+<timestamp>1822</timestamp>
+</row>
+<row id="134">
+<emotion>worry</emotion>
+<timestamp>50</timestamp>
+</row>
+<row id="135">
+<emotion>elation</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="136">
+<emotion>connectedness</emotion>
+<timestamp>80</timestamp>
+</row>
+<row id="137">
+<emotion>worry</emotion>
+<timestamp>1877</timestamp>
+</row>
+<row id="138">
+<emotion>worry</emotion>
+<timestamp>1886</timestamp>
+</row>
+<row id="139">
+<emotion>worry</emotion>
+<timestamp>1888</timestamp>
+</row>
+<row id="140">
+<emotion>worry</emotion>
+<timestamp>106</timestamp>
+</row>
+<row id="141">
+<emotion>elation</emotion>
+<timestamp>1895</timestamp>
+</row>
+<row id="142">
+<emotion>worry</emotion>
+<timestamp>122</timestamp>
+</row>
+<row id="143">
+<emotion>connectedness</emotion>
+<timestamp>1912</timestamp>
+</row>
+<row id="144">
+<emotion>worry</emotion>
+<timestamp>126</timestamp>
+</row>
+<row id="145">
+<emotion>worry</emotion>
+<timestamp>126</timestamp>
+</row>
+<row id="146">
+<emotion>elation</emotion>
+<timestamp>1917</timestamp>
+</row>
+<row id="147">
+<emotion>elation</emotion>
+<timestamp>1925</timestamp>
+</row>
+<row id="148">
+<emotion>elation</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="149">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="150">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="151">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="152">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="153">
+<emotion>elation</emotion>
+<timestamp>1949</timestamp>
+</row>
+<row id="154">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="155">
+<emotion>connectedness</emotion>
+<timestamp>194</timestamp>
+</row>
+<row id="156">
+<emotion>connectedness</emotion>
+<timestamp>224</timestamp>
+</row>
+<row id="157">
+<emotion>anger</emotion>
+<timestamp>226</timestamp>
+</row>
+<row id="158">
+<emotion>anger</emotion>
+<timestamp>240</timestamp>
+</row>
+<row id="159">
+<emotion>connectedness</emotion>
+<timestamp>244</timestamp>
+</row>
+<row id="160">
+<emotion>connectedness</emotion>
+<timestamp>244</timestamp>
+</row>
+<row id="161">
+<emotion>connectedness</emotion>
+<timestamp>244</timestamp>
+</row>
+<row id="162">
+<emotion>connectedness</emotion>
+<timestamp>244</timestamp>
+</row>
+<row id="163">
+<emotion>unhappiness</emotion>
+<timestamp>261</timestamp>
+</row>
+<row id="164">
+<emotion>unhappiness</emotion>
+<timestamp>262</timestamp>
+</row>
+<row id="165">
+<emotion>unhappiness</emotion>
+<timestamp>262</timestamp>
+</row>
+<row id="166">
+<emotion>unhappiness</emotion>
+<timestamp>262</timestamp>
+</row>
+<row id="167">
+<emotion>worry</emotion>
+<timestamp>301</timestamp>
+</row>
+<row id="168">
+<emotion>worry</emotion>
+<timestamp>334</timestamp>
+</row>
+<row id="169">
+<emotion>elation</emotion>
+<timestamp>339</timestamp>
+</row>
+<row id="170">
+<emotion>connectedness</emotion>
+<timestamp>377</timestamp>
+</row>
+<row id="171">
+<emotion>connectedness</emotion>
+<timestamp>377</timestamp>
+</row>
+<row id="172">
+<emotion>elation</emotion>
+<timestamp>401</timestamp>
+</row>
+<row id="173">
+<emotion>connectedness</emotion>
+<timestamp>437</timestamp>
+</row>
+<row id="174">
+<emotion>connectedness</emotion>
+<timestamp>437</timestamp>
+</row>
+<row id="175">
+<emotion>worry</emotion>
+<timestamp>465</timestamp>
+</row>
+<row id="176">
+<emotion>worry</emotion>
+<timestamp>465</timestamp>
+</row>
+<row id="177">
+<emotion>anger</emotion>
+<timestamp>466</timestamp>
+</row>
+<row id="178">
+<emotion>surprise</emotion>
+<timestamp>486</timestamp>
+</row>
+<row id="179">
+<emotion>worry</emotion>
+<timestamp>497</timestamp>
+</row>
+<row id="180">
+<emotion>worry</emotion>
+<timestamp>497</timestamp>
+</row>
+<row id="181">
+<emotion>worry</emotion>
+<timestamp>512</timestamp>
+</row>
+<row id="182">
+<emotion>connectedness</emotion>
+<timestamp>516</timestamp>
+</row>
+<row id="183">
+<emotion>elation</emotion>
+<timestamp>516</timestamp>
+</row>
+<row id="184">
+<emotion>connectedness</emotion>
+<timestamp>519</timestamp>
+</row>
+<row id="185">
+<emotion>connectedness</emotion>
+<timestamp>519</timestamp>
+</row>
+<row id="186">
+<emotion>anger</emotion>
+<timestamp>522</timestamp>
+</row>
+<row id="187">
+<emotion>worry</emotion>
+<timestamp>543</timestamp>
+</row>
+<row id="188">
+<emotion>worry</emotion>
+<timestamp>543</timestamp>
+</row>
+<row id="189">
+<emotion>worry</emotion>
+<timestamp>544</timestamp>
+</row>
+<row id="190">
+<emotion>worry</emotion>
+<timestamp>544</timestamp>
+</row>
+<row id="191">
+<emotion>worry</emotion>
+<timestamp>575</timestamp>
+</row>
+<row id="192">
+<emotion>worry</emotion>
+<timestamp>576</timestamp>
+</row>
+<row id="193">
+<emotion>worry</emotion>
+<timestamp>578</timestamp>
+</row>
+<row id="194">
+<emotion>elation</emotion>
+<timestamp>581</timestamp>
+</row>
+<row id="195">
+<emotion>worry</emotion>
+<timestamp>591</timestamp>
+</row>
+<row id="196">
+<emotion>worry</emotion>
+<timestamp>591</timestamp>
+</row>
+<row id="197">
+<emotion>worry</emotion>
+<timestamp>596</timestamp>
+</row>
+<row id="198">
+<emotion>worry</emotion>
+<timestamp>639</timestamp>
+</row>
+<row id="199">
+<emotion>worry</emotion>
+<timestamp>639</timestamp>
+</row>
+<row id="200">
+<emotion>worry</emotion>
+<timestamp>667</timestamp>
+</row>
+<row id="201">
+<emotion>elation</emotion>
+<timestamp>694</timestamp>
+</row>
+<row id="202">
+<emotion>elation</emotion>
+<timestamp>734</timestamp>
+</row>
+<row id="203">
+<emotion>connectedness</emotion>
+<timestamp>734</timestamp>
+</row>
+<row id="204">
+<emotion>connectedness</emotion>
+<timestamp>734</timestamp>
+</row>
+<row id="205">
+<emotion>connectedness</emotion>
+<timestamp>744</timestamp>
+</row>
+<row id="206">
+<emotion>connectedness</emotion>
+<timestamp>744</timestamp>
+</row>
+<row id="207">
+<emotion>connectedness</emotion>
+<timestamp>744</timestamp>
+</row>
+<row id="208">
+<emotion>connectedness</emotion>
+<timestamp>761</timestamp>
+</row>
+<row id="209">
+<emotion>connectedness</emotion>
+<timestamp>761</timestamp>
+</row>
+<row id="210">
+<emotion>connectedness</emotion>
+<timestamp>761</timestamp>
+</row>
+<row id="211">
+<emotion>connectedness</emotion>
+<timestamp>761</timestamp>
+</row>
+<row id="212">
+<emotion>connectedness</emotion>
+<timestamp>761</timestamp>
+</row>
+<row id="213">
+<emotion>connectedness</emotion>
+<timestamp>762</timestamp>
+</row>
+<row id="214">
+<emotion>connectedness</emotion>
+<timestamp>805</timestamp>
+</row>
+<row id="215">
+<emotion>connectedness</emotion>
+<timestamp>805</timestamp>
+</row>
+<row id="216">
+<emotion>connectedness</emotion>
+<timestamp>807</timestamp>
+</row>
+<row id="217">
+<emotion>connectedness</emotion>
+<timestamp>807</timestamp>
+</row>
+<row id="218">
+<emotion>elation</emotion>
+<timestamp>808</timestamp>
+</row>
+<row id="219">
+<emotion>elation</emotion>
+<timestamp>808</timestamp>
+</row>
+<row id="220">
+<emotion>anger</emotion>
+<timestamp>810</timestamp>
+</row>
+<row id="221">
+<emotion>anger</emotion>
+<timestamp>810</timestamp>
+</row>
+<row id="222">
+<emotion>anger</emotion>
+<timestamp>811</timestamp>
+</row>
+<row id="223">
+<emotion>unhappiness</emotion>
+<timestamp>811</timestamp>
+</row>
+<row id="224">
+<emotion>unhappiness</emotion>
+<timestamp>811</timestamp>
+</row>
+<row id="225">
+<emotion>unhappiness</emotion>
+<timestamp>812</timestamp>
+</row>
+<row id="226">
+<emotion>worry</emotion>
+<timestamp>815</timestamp>
+</row>
+<row id="227">
+<emotion>worry</emotion>
+<timestamp>815</timestamp>
+</row>
+<row id="228">
+<emotion>worry</emotion>
+<timestamp>815</timestamp>
+</row>
+<row id="229">
+<emotion>connectedness</emotion>
+<timestamp>846</timestamp>
+</row>
+<row id="230">
+<emotion>connectedness</emotion>
+<timestamp>846</timestamp>
+</row>
+<row id="231">
+<emotion>connectedness</emotion>
+<timestamp>846</timestamp>
+</row>
+<row id="232">
+<emotion>connectedness</emotion>
+<timestamp>900</timestamp>
+</row>
+<row id="233">
+<emotion>elation</emotion>
+<timestamp>904</timestamp>
+</row>
+<row id="234">
+<emotion>connectedness</emotion>
+<timestamp>913</timestamp>
+</row>
+<row id="235">
+<emotion>connectedness</emotion>
+<timestamp>913</timestamp>
+</row>
+<row id="236">
+<emotion>connectedness</emotion>
+<timestamp>913</timestamp>
+</row>
+<row id="237">
+<emotion>connectedness</emotion>
+<timestamp>913</timestamp>
+</row>
+<row id="238">
+<emotion>connectedness</emotion>
+<timestamp>914</timestamp>
+</row>
+<row id="239">
+<emotion>connectedness</emotion>
+<timestamp>963</timestamp>
+</row>
+<row id="240">
+<emotion>connectedness</emotion>
+<timestamp>963</timestamp>
+</row>
+<row id="241">
+<emotion>connectedness</emotion>
+<timestamp>964</timestamp>
+</row>
+<row id="242">
+<emotion>unhappiness</emotion>
+<timestamp>967</timestamp>
+</row>
+<row id="243">
+<emotion>connectedness</emotion>
+<timestamp>996</timestamp>
+</row>
+<row id="244">
+<emotion>connectedness</emotion>
+<timestamp>996</timestamp>
+</row>
+<row id="245">
+<emotion>connectedness</emotion>
+<timestamp>996</timestamp>
+</row>
+<row id="246">
+<emotion>surprise</emotion>
+<timestamp>1028</timestamp>
+</row>
+<row id="247">
+<emotion>surprise</emotion>
+<timestamp>1028</timestamp>
+</row>
+<row id="248">
+<emotion>surprise</emotion>
+<timestamp>1028</timestamp>
+</row>
+<row id="249">
+<emotion>surprise</emotion>
+<timestamp>1028</timestamp>
+</row>
+<row id="250">
+<emotion>surprise</emotion>
+<timestamp>1033</timestamp>
+</row>
+<row id="251">
+<emotion>connectedness</emotion>
+<timestamp>1044</timestamp>
+</row>
+<row id="252">
+<emotion>connectedness</emotion>
+<timestamp>1044</timestamp>
+</row>
+<row id="253">
+<emotion>surprise</emotion>
+<timestamp>1054</timestamp>
+</row>
+<row id="254">
+<emotion>surprise</emotion>
+<timestamp>1054</timestamp>
+</row>
+<row id="255">
+<emotion>worry</emotion>
+<timestamp>1092</timestamp>
+</row>
+<row id="256">
+<emotion>worry</emotion>
+<timestamp>1092</timestamp>
+</row>
+<row id="257">
+<emotion>connectedness</emotion>
+<timestamp>1108</timestamp>
+</row>
+<row id="258">
+<emotion>connectedness</emotion>
+<timestamp>1108</timestamp>
+</row>
+<row id="259">
+<emotion>connectedness</emotion>
+<timestamp>1108</timestamp>
+</row>
+<row id="260">
+<emotion>connectedness</emotion>
+<timestamp>1108</timestamp>
+</row>
+<row id="261">
+<emotion>connectedness</emotion>
+<timestamp>1109</timestamp>
+</row>
+<row id="262">
+<emotion>elation</emotion>
+<timestamp>1111</timestamp>
+</row>
+<row id="263">
+<emotion>elation</emotion>
+<timestamp>1111</timestamp>
+</row>
+<row id="264">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="265">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="266">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="267">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="268">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="269">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="270">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="271">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="272">
+<emotion>elation</emotion>
+<timestamp>1112</timestamp>
+</row>
+<row id="273">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="274">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="275">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="276">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="277">
+<emotion>elation</emotion>
+<timestamp>1113</timestamp>
+</row>
+<row id="278">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="279">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="280">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="281">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="282">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="283">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="284">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="285">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="286">
+<emotion>elation</emotion>
+<timestamp>1114</timestamp>
+</row>
+<row id="287">
+<emotion>anger</emotion>
+<timestamp>1116</timestamp>
+</row>
+<row id="288">
+<emotion>elation</emotion>
+<timestamp>1116</timestamp>
+</row>
+<row id="289">
+<emotion>elation</emotion>
+<timestamp>1116</timestamp>
+</row>
+<row id="290">
+<emotion>elation</emotion>
+<timestamp>1116</timestamp>
+</row>
+<row id="291">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="292">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="293">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="294">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="295">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="296">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="297">
+<emotion>elation</emotion>
+<timestamp>1117</timestamp>
+</row>
+<row id="298">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="299">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="300">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="301">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="302">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="303">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="304">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="305">
+<emotion>elation</emotion>
+<timestamp>1118</timestamp>
+</row>
+<row id="306">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="307">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="308">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="309">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="310">
+<emotion>elation</emotion>
+<timestamp>1119</timestamp>
+</row>
+<row id="311">
+<emotion>elation</emotion>
+<timestamp>1120</timestamp>
+</row>
+<row id="312">
+<emotion>elation</emotion>
+<timestamp>1120</timestamp>
+</row>
+<row id="313">
+<emotion>elation</emotion>
+<timestamp>1120</timestamp>
+</row>
+<row id="314">
+<emotion>elation</emotion>
+<timestamp>1120</timestamp>
+</row>
+<row id="315">
+<emotion>elation</emotion>
+<timestamp>1121</timestamp>
+</row>
+<row id="316">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="317">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="318">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="319">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="320">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="321">
+<emotion>elation</emotion>
+<timestamp>1122</timestamp>
+</row>
+<row id="322">
+<emotion>elation</emotion>
+<timestamp>1128</timestamp>
+</row>
+<row id="323">
+<emotion>elation</emotion>
+<timestamp>1128</timestamp>
+</row>
+<row id="324">
+<emotion>elation</emotion>
+<timestamp>1128</timestamp>
+</row>
+<row id="325">
+<emotion>elation</emotion>
+<timestamp>1128</timestamp>
+</row>
+<row id="326">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="327">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="328">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="329">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="330">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="331">
+<emotion>elation</emotion>
+<timestamp>1129</timestamp>
+</row>
+<row id="332">
+<emotion>elation</emotion>
+<timestamp>1130</timestamp>
+</row>
+<row id="333">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="334">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="335">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="336">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="337">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="338">
+<emotion>elation</emotion>
+<timestamp>1131</timestamp>
+</row>
+<row id="339">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="340">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="341">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="342">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="343">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="344">
+<emotion>elation</emotion>
+<timestamp>1132</timestamp>
+</row>
+<row id="345">
+<emotion>elation</emotion>
+<timestamp>1190</timestamp>
+</row>
+<row id="346">
+<emotion>elation</emotion>
+<timestamp>1191</timestamp>
+</row>
+<row id="347">
+<emotion>elation</emotion>
+<timestamp>1191</timestamp>
+</row>
+<row id="348">
+<emotion>connectedness</emotion>
+<timestamp>1191</timestamp>
+</row>
+<row id="349">
+<emotion>connectedness</emotion>
+<timestamp>1191</timestamp>
+</row>
+<row id="350">
+<emotion>connectedness</emotion>
+<timestamp>1191</timestamp>
+</row>
+<row id="351">
+<emotion>connectedness</emotion>
+<timestamp>1192</timestamp>
+</row>
+<row id="352">
+<emotion>connectedness</emotion>
+<timestamp>1192</timestamp>
+</row>
+<row id="353">
+<emotion>connectedness</emotion>
+<timestamp>1192</timestamp>
+</row>
+<row id="354">
+<emotion>connectedness</emotion>
+<timestamp>1192</timestamp>
+</row>
+<row id="355">
+<emotion>connectedness</emotion>
+<timestamp>1192</timestamp>
+</row>
+<row id="356">
+<emotion>connectedness</emotion>
+<timestamp>1232</timestamp>
+</row>
+<row id="357">
+<emotion>connectedness</emotion>
+<timestamp>1232</timestamp>
+</row>
+<row id="358">
+<emotion>connectedness</emotion>
+<timestamp>1232</timestamp>
+</row>
+<row id="359">
+<emotion>connectedness</emotion>
+<timestamp>1232</timestamp>
+</row>
+<row id="360">
+<emotion>connectedness</emotion>
+<timestamp>1233</timestamp>
+</row>
+<row id="361">
+<emotion>worry</emotion>
+<timestamp>1256</timestamp>
+</row>
+<row id="362">
+<emotion>worry</emotion>
+<timestamp>1256</timestamp>
+</row>
+<row id="363">
+<emotion>worry</emotion>
+<timestamp>1271</timestamp>
+</row>
+<row id="364">
+<emotion>connectedness</emotion>
+<timestamp>1272</timestamp>
+</row>
+<row id="365">
+<emotion>worry</emotion>
+<timestamp>1284</timestamp>
+</row>
+<row id="366">
+<emotion>worry</emotion>
+<timestamp>1284</timestamp>
+</row>
+<row id="367">
+<emotion>worry</emotion>
+<timestamp>1284</timestamp>
+</row>
+<row id="368">
+<emotion>connectedness</emotion>
+<timestamp>1310</timestamp>
+</row>
+<row id="369">
+<emotion>elation</emotion>
+<timestamp>1310</timestamp>
+</row>
+<row id="370">
+<emotion>connectedness</emotion>
+<timestamp>1311</timestamp>
+</row>
+<row id="371">
+<emotion>connectedness</emotion>
+<timestamp>1311</timestamp>
+</row>
+<row id="372">
+<emotion>worry</emotion>
+<timestamp>1376</timestamp>
+</row>
+<row id="373">
+<emotion>worry</emotion>
+<timestamp>1377</timestamp>
+</row>
+<row id="374">
+<emotion>connectedness</emotion>
+<timestamp>1378</timestamp>
+</row>
+<row id="375">
+<emotion>connectedness</emotion>
+<timestamp>1378</timestamp>
+</row>
+<row id="376">
+<emotion>worry</emotion>
+<timestamp>1381</timestamp>
+</row>
+<row id="377">
+<emotion>worry</emotion>
+<timestamp>1381</timestamp>
+</row>
+<row id="378">
+<emotion>connectedness</emotion>
+<timestamp>1381</timestamp>
+</row>
+<row id="379">
+<emotion>connectedness</emotion>
+<timestamp>1382</timestamp>
+</row>
+<row id="380">
+<emotion>connectedness</emotion>
+<timestamp>1382</timestamp>
+</row>
+<row id="381">
+<emotion>connectedness</emotion>
+<timestamp>1385</timestamp>
+</row>
+<row id="382">
+<emotion>connectedness</emotion>
+<timestamp>1385</timestamp>
+</row>
+<row id="383">
+<emotion>connectedness</emotion>
+<timestamp>1385</timestamp>
+</row>
+<row id="384">
+<emotion>connectedness</emotion>
+<timestamp>1385</timestamp>
+</row>
+<row id="385">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="386">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="387">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="388">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="389">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="390">
+<emotion>elation</emotion>
+<timestamp>1386</timestamp>
+</row>
+<row id="391">
+<emotion>unhappiness</emotion>
+<timestamp>1402</timestamp>
+</row>
+<row id="392">
+<emotion>anger</emotion>
+<timestamp>1423</timestamp>
+</row>
+<row id="393">
+<emotion>anger</emotion>
+<timestamp>1423</timestamp>
+</row>
+<row id="394">
+<emotion>anger</emotion>
+<timestamp>1423</timestamp>
+</row>
+<row id="395">
+<emotion>worry</emotion>
+<timestamp>1435</timestamp>
+</row>
+<row id="396">
+<emotion>worry</emotion>
+<timestamp>1435</timestamp>
+</row>
+<row id="397">
+<emotion>worry</emotion>
+<timestamp>1435</timestamp>
+</row>
+<row id="398">
+<emotion>worry</emotion>
+<timestamp>1437</timestamp>
+</row>
+<row id="399">
+<emotion>connectedness</emotion>
+<timestamp>1441</timestamp>
+</row>
+<row id="400">
+<emotion>connectedness</emotion>
+<timestamp>1442</timestamp>
+</row>
+<row id="401">
+<emotion>anger</emotion>
+<timestamp>1447</timestamp>
+</row>
+<row id="402">
+<emotion>anger</emotion>
+<timestamp>1448</timestamp>
+</row>
+<row id="403">
+<emotion>worry</emotion>
+<timestamp>1498</timestamp>
+</row>
+<row id="404">
+<emotion>worry</emotion>
+<timestamp>1499</timestamp>
+</row>
+<row id="405">
+<emotion>elation</emotion>
+<timestamp>1507</timestamp>
+</row>
+<row id="406">
+<emotion>worry</emotion>
+<timestamp>1546</timestamp>
+</row>
+<row id="407">
+<emotion>anger</emotion>
+<timestamp>1669</timestamp>
+</row>
+<row id="408">
+<emotion>connectedness</emotion>
+<timestamp>1712</timestamp>
+</row>
+<row id="409">
+<emotion>connectedness</emotion>
+<timestamp>1713</timestamp>
+</row>
+<row id="410">
+<emotion>connectedness</emotion>
+<timestamp>1749</timestamp>
+</row>
+<row id="411">
+<emotion>connectedness</emotion>
+<timestamp>1749</timestamp>
+</row>
+<row id="412">
+<emotion>connectedness</emotion>
+<timestamp>1750</timestamp>
+</row>
+<row id="413">
+<emotion>connectedness</emotion>
+<timestamp>1751</timestamp>
+</row>
+<row id="414">
+<emotion>connectedness</emotion>
+<timestamp>1751</timestamp>
+</row>
+<row id="415">
+<emotion>connectedness</emotion>
+<timestamp>1751</timestamp>
+</row>
+<row id="416">
+<emotion>connectedness</emotion>
+<timestamp>1752</timestamp>
+</row>
+<row id="417">
+<emotion>connectedness</emotion>
+<timestamp>1752</timestamp>
+</row>
+<row id="418">
+<emotion>connectedness</emotion>
+<timestamp>1752</timestamp>
+</row>
+<row id="419">
+<emotion>connectedness</emotion>
+<timestamp>1752</timestamp>
+</row>
+<row id="420">
+<emotion>connectedness</emotion>
+<timestamp>1753</timestamp>
+</row>
+<row id="421">
+<emotion>connectedness</emotion>
+<timestamp>1753</timestamp>
+</row>
+<row id="422">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="423">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="424">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="425">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="426">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="427">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="428">
+<emotion>connectedness</emotion>
+<timestamp>1817</timestamp>
+</row>
+<row id="429">
+<emotion>anger</emotion>
+<timestamp>1819</timestamp>
+</row>
+<row id="430">
+<emotion>anger</emotion>
+<timestamp>1819</timestamp>
+</row>
+<row id="431">
+<emotion>anger</emotion>
+<timestamp>1820</timestamp>
+</row>
+<row id="432">
+<emotion>worry</emotion>
+<timestamp>1865</timestamp>
+</row>
+<row id="433">
+<emotion>worry</emotion>
+<timestamp>1865</timestamp>
+</row>
+<row id="434">
+<emotion>connectedness</emotion>
+<timestamp>1866</timestamp>
+</row>
+<row id="435">
+<emotion>connectedness</emotion>
+<timestamp>1866</timestamp>
+</row>
+<row id="436">
+<emotion>connectedness</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="437">
+<emotion>elation</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="438">
+<emotion>elation</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="439">
+<emotion>elation</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="440">
+<emotion>elation</emotion>
+<timestamp>1867</timestamp>
+</row>
+<row id="441">
+<emotion>connectedness</emotion>
+<timestamp>1868</timestamp>
+</row>
+<row id="442">
+<emotion>connectedness</emotion>
+<timestamp>1868</timestamp>
+</row>
+<row id="443">
+<emotion>elation</emotion>
+<timestamp>1868</timestamp>
+</row>
+<row id="444">
+<emotion>connectedness</emotion>
+<timestamp>1868</timestamp>
+</row>
+<row id="445">
+<emotion>worry</emotion>
+<timestamp>1878</timestamp>
+</row>
+<row id="446">
+<emotion>worry</emotion>
+<timestamp>1878</timestamp>
+</row>
+<row id="447">
+<emotion>worry</emotion>
+<timestamp>1883</timestamp>
+</row>
+<row id="448">
+<emotion>worry</emotion>
+<timestamp>1887</timestamp>
+</row>
+<row id="449">
+<emotion>worry</emotion>
+<timestamp>1888</timestamp>
+</row>
+<row id="450">
+<emotion>worry</emotion>
+<timestamp>1888</timestamp>
+</row>
+<row id="451">
+<emotion>elation</emotion>
+<timestamp>1891</timestamp>
+</row>
+<row id="452">
+<emotion>elation</emotion>
+<timestamp>1891</timestamp>
+</row>
+<row id="453">
+<emotion>connectedness</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="454">
+<emotion>connectedness</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="455">
+<emotion>connectedness</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="456">
+<emotion>connectedness</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="457">
+<emotion>elation</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="458">
+<emotion>elation</emotion>
+<timestamp>1944</timestamp>
+</row>
+<row id="459">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="460">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="461">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="462">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="463">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="464">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="465">
+<emotion>elation</emotion>
+<timestamp>1945</timestamp>
+</row>
+<row id="466">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="467">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="468">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="469">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="470">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="471">
+<emotion>elation</emotion>
+<timestamp>1946</timestamp>
+</row>
+<row id="472">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="473">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="474">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="475">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="476">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="477">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="478">
+<emotion>elation</emotion>
+<timestamp>1947</timestamp>
+</row>
+<row id="479">
+<emotion>elation</emotion>
+<timestamp>1948</timestamp>
+</row>
+<row id="480">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="481">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="482">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="483">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="484">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="485">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="486">
+<emotion>elation</emotion>
+<timestamp>1950</timestamp>
+</row>
+<row id="487">
+<emotion>elation</emotion>
+<timestamp>1951</timestamp>
+</row>
+<row id="488">
+<emotion>elation</emotion>
+<timestamp>1951</timestamp>
+</row>
+</results_table>
