@@ -43,6 +43,10 @@ vector<string> EmotionInterval::getEmotions() {
     return emotions;
 }
 
+void EmotionInterval::setEmotions(vector<string> newEmotions){
+    emotions = newEmotions;
+}
+
 void EmotionInterval::setAudioValues(float newValue){
     audioValues = newValue;
 }

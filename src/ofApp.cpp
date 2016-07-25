@@ -177,19 +177,6 @@ void ofApp::setup(){
 
 
 
-    /*video.load("WeFeel_1.mp4");
-    video.play();
-    video.setPaused(true);
-
-    for(int i = 0; i < video.getTotalNumFrames(); i++){
-        ofImage img;
-        img.setFromPixels(video.getPixels());
-        string s = "teste\\" + to_string(i) + ".jpg";
-        img.save(s);
-        video.nextFrame();
-    }*/
-
-
 
     /* ofDirectory dir("data");
     dir.allowExt("jpg");
@@ -228,13 +215,13 @@ void ofApp::setup(){
 
     }*/
 
-
-    auto time = ofGetElapsedTimeMillis();
-    longShotThreshold = detectShotThreshold();
-    outOfFieldThreshold = 1 - longShotThreshold;
-    cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
-    cout << "Long-shot threshold: " << longShotThreshold << endl;
-    cout << "Out-of-field threshold: " << outOfFieldThreshold << endl;
+    //TODO: isto aqui
+    //    auto time = ofGetElapsedTimeMillis();
+    //    longShotThreshold = detectShotThreshold();
+    //    outOfFieldThreshold = 1 - longShotThreshold;
+    //    cout << "Time to train: " << ofGetElapsedTimeMillis() - time << endl;
+    //    cout << "Long-shot threshold: " << longShotThreshold << endl;
+    //    cout << "Out-of-field threshold: " << outOfFieldThreshold << endl;
 
     cout << "OpenCV version: " << CV_MAJOR_VERSION << "." << CV_MINOR_VERSION << endl;
 
@@ -245,15 +232,6 @@ void ofApp::setup(){
 
     qmlSetup();
     loadDefaultCutFile();
-
-    /* ofDirectory dir("data\\training");
-    dir.listDir();
-    ofImage img;
-    for(int i = 0; i < dir.size(); i++){
-        img.load(dir.getPath(i));
-
-        cout << dir.getPath(i) << " --> " << checkShotType(img) << endl;
-    }*/
 
 }
 
@@ -1094,6 +1072,14 @@ void ofApp::populateChart(){
 
     int interval = 30;
 
+    //check what emotions are to be used in the algorithm
+    //    vector<string> emotionCheckboxesStd;
+    //    QObjectList emotionCheckboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    //    for(int i = 0; i < emotionCheckboxes.size()-1; i++){
+    //        if(emotionCheckboxes[i]->property("checked").toBool())
+    //            emotionCheckboxesStd.push_back(emotionCheckboxes[i]->property("text").toString().toStdString());
+    //    }
+
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
         emotions = emotionData->setInterval(interval);
@@ -1133,6 +1119,14 @@ void ofApp::populateChart(){
 }
 
 void ofApp::changeChartInterval(int interval){
+
+    //check what emotions are to be used in the algorithm
+    //    vector<string> emotionCheckboxesStd;
+    //    QObjectList emotionCheckboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    //    for(int i = 0; i < emotionCheckboxes.size()-1; i++){
+    //        if(emotionCheckboxes[i]->property("checked").toBool())
+    //            emotionCheckboxesStd.push_back(emotionCheckboxes[i]->property("text").toString().toStdString());
+    //    }
 
     vector<EmotionInterval> emotions;
     if(emotionData != nullptr)
@@ -1296,6 +1290,34 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
                         to_string(folderName) + "\\output.m4v";
                         system(concatCmd.c_str());
                         system("ffmpeg -f concat -i concat.txt -codec copy data\\output.m4v");*/
+
+}
+
+bool ofApp::useAllEmotions(){
+
+    bool res = true;
+    QObjectList emotionCheckboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    for(int i = 0; i < emotionCheckboxes.size()-1; i++){
+        if(!emotionCheckboxes[i]->property("checked").toBool())
+            res = false;
+    }
+
+    return res;
+}
+
+void ofApp::setEmotionsToUse(EmotionInterval &ei){
+
+    vector<string> emotions;
+    QObjectList emotionCheckboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    for(string s : ei.getEmotions()){
+        for(int i = 0; i < emotionCheckboxes.size()-1; i++){
+            string emotion = emotionCheckboxes[i]->property("text").toString().toStdString();
+            bool compare = boost::iequals(s, emotion);
+            if(compare && emotionCheckboxes[i]->property("checked").toBool())
+                emotions.push_back(s);
+        }
+    }
+    ei.setEmotions(emotions);
 
 }
 
@@ -1522,7 +1544,7 @@ void ofApp::algorithm() {
     bool closeup = qmlWindow->findChild<QObject*>("CLOSEUP_SHOT")->property("checked").toBool();
     bool offField = qmlWindow->findChild<QObject*>("OUT_OF_FIELD")->property("checked").toBool();
 
-    cout << longShot << " " << closeup << " " << offField << endl;
+
     //=======================================================
 
 
@@ -1563,6 +1585,13 @@ void ofApp::algorithm() {
     if(useEmotions){
 
         for(int i = 1; i < emotionsInterval.size() - 1; i++){
+
+            if(!useAllEmotions()){
+                setEmotionsToUse(emotionsInterval[i]);
+                setEmotionsToUse(emotionsInterval[i - 1]);
+                setEmotionsToUse(emotionsInterval[i + 1]);
+            }
+
 
             int numberOfEmotions = emotionsInterval[i].getNumberOfEmotions();
             int valueBefore = emotionsInterval[i - 1].getNumberOfEmotions();
@@ -1780,7 +1809,7 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  shot: " << c.getShotType() << endl;
 
-    cutVideo(clipsInSummary);
+    //cutVideo(clipsInSummary);
 
 
     //cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;

@@ -12,6 +12,7 @@
 #include <vector>
 #include <fstream>
 #include "ClipWithScore.h"
+#include <boost/algorithm/string.hpp>
 
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
@@ -112,6 +113,9 @@ public:
     void cutVideo(vector<ClipWithScore> clips);
 
     //algorithm
+    bool useAllEmotions();
+    //in case not all emotions are selected, select the ones to be used
+    void setEmotionsToUse(EmotionInterval &ei);
     int checkShotTypeClip(int startTimestamp, int endTimestamp);
     void useOnlyMov(bool useAudio, bool useCuts, bool useColor, vector<ClipWithScore>& clips);
     void algorithm(); //main function

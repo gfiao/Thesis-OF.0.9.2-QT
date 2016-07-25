@@ -27,6 +27,7 @@ public:
 	int getNumberOfEmotions();
 
 	vector<string> getEmotions();
+    void setEmotions(vector<string> newEmotions);
 
     void setAudioValues(float newValue);
     float getAudioValues();
