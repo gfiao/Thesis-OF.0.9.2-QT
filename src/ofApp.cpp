@@ -1527,7 +1527,7 @@ void ofApp::algorithm() {
     //auto time = ofGetElapsedTimeMillis();
 
 
-    vector<pair<int, vector<string>>> emotionsInSecond = emotionData->getEmotionsInSecond();
+    vector<vector<string>> emotionsInSecond = emotionData->getEmotionsInSecond();
     vector<bool> eventInSecond = emotionData->getEventInSecond();
 
     vector<ClipWithScore> clips;
@@ -1586,11 +1586,31 @@ void ofApp::algorithm() {
 
         for(int i = 1; i < emotionsInterval.size() - 1; i++){
 
+            for(string s : emotionsInterval[i-1].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
+            for(string s : emotionsInterval[i].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
+            for(string s : emotionsInterval[i+1].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
+
             if(!useAllEmotions()){
                 setEmotionsToUse(emotionsInterval[i]);
                 setEmotionsToUse(emotionsInterval[i - 1]);
                 setEmotionsToUse(emotionsInterval[i + 1]);
             }
+
+            for(string s : emotionsInterval[i-1].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
+            for(string s : emotionsInterval[i].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
+            for(string s : emotionsInterval[i+1].getEmotions())
+                cout << s << endl;
+            cout << "-----" << endl;
 
 
             int numberOfEmotions = emotionsInterval[i].getNumberOfEmotions();
@@ -1617,7 +1637,7 @@ void ofApp::algorithm() {
                 //we need to get the number of emotions associated with the timestamps
                 double emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
-                    double normalizedEmotions = emotionsInSecond[i].first / (float)emotionData->getMaxValue();
+                    double normalizedEmotions = emotionsInSecond[i].size() / (float)emotionData->getMaxValue();
                     //cout << emotionsInSecond[i].first /(float) emotionData->getMaxValue() << endl;
                     emotionsInClip += normalizedEmotions;
                 }

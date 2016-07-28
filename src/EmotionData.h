@@ -12,7 +12,7 @@ class EmotionData {
 
 private:
 
-    vector<pair<int, vector<string>>> emotionsInSecond;
+    vector<vector<string>> emotionsInSecond;
     vector<bool> eventInSecond;
 
     int interval;
@@ -27,7 +27,7 @@ public:
 
     EmotionData(string filePath, int interval = 5);
 
-    vector<pair<int, vector<string>>> getEmotionsInSecond();
+    vector<vector<string>> getEmotionsInSecond();
     vector<bool> getEventInSecond();
 
     int getInterval();

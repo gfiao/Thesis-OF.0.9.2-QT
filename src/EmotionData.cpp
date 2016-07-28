@@ -31,8 +31,8 @@ EmotionData::EmotionData(string filePath, int interval) {
         int timestamp = xmlFile.getValue("timestamp", 0);
 
         if(xmlFile.tagExists("emotion")){
-            emotionsInSecond[timestamp].first++;
-            emotionsInSecond[timestamp].second.push_back(xmlFile.getValue("timestamp", ""));
+            //            emotionsInSecond[timestamp].first++;
+            emotionsInSecond[timestamp].push_back(xmlFile.getValue("emotion", ""));
         }
 
         if(xmlFile.tagExists("event"))
@@ -43,11 +43,11 @@ EmotionData::EmotionData(string filePath, int interval) {
 
     maxValue = 0;
     for(int i = 0; i < emotionsInSecond.size(); i++){
-        if(emotionsInSecond[i].first > maxValue)
-            maxValue = emotionsInSecond[i].first;
+        if(emotionsInSecond[i].size() > maxValue)
+            maxValue = emotionsInSecond[i].size();
     }
 
-   /* vector<EmotionInterval> intEmo = setInterval(30);
+    /* vector<EmotionInterval> intEmo = setInterval(30);
     for(EmotionInterval e : intEmo){
         cout << e.getTimestamp() << endl;
     }
@@ -57,7 +57,7 @@ EmotionData::EmotionData(string filePath, int interval) {
     }*/
 }
 
-vector<pair<int, vector<string> > > EmotionData::getEmotionsInSecond(){
+vector<vector<string>> EmotionData::getEmotionsInSecond(){
     return emotionsInSecond;
 }
 
@@ -77,7 +77,7 @@ vector<EmotionInterval> EmotionData::setInterval(int interval){
 
         vector<string> emotions;
         for(int j = i; j < i+interval && j < emotionsInSecond.size(); j++){
-            for(string e : emotionsInSecond[j].second)
+            for(string e : emotionsInSecond[j])
                 emotions.push_back(e);
         }
 
