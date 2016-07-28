@@ -1662,6 +1662,7 @@ void ofApp::algorithm() {
                     //cout << emotionsInSecond[i].first /(float) emotionData->getMaxValue() << endl;
                     emotionsInClip += normalizedEmotions;
                 }
+                if(emotionsInClip == 0) continue;
                 //cout << "MaxValue: " << maxValue << endl;
                 //cout << emotionsInClip << endl;
 
