@@ -116,6 +116,7 @@ public:
     bool useAllEmotions();
     //in case not all emotions are selected, select the ones to be used
     void setEmotionsToUse(EmotionInterval &ei);
+    void setEmotionsToUseVec(vector<string> &emotions);
     int checkShotTypeClip(int startTimestamp, int endTimestamp);
     void useOnlyMov(bool useAudio, bool useCuts, bool useColor, vector<ClipWithScore>& clips);
     void algorithm(); //main function

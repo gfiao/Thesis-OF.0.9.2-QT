@@ -1321,6 +1321,22 @@ void ofApp::setEmotionsToUse(EmotionInterval &ei){
 
 }
 
+void ofApp::setEmotionsToUseVec(vector<string> &emotions){
+
+    vector<string> newEmotions;
+    QObjectList emotionCheckboxes = qmlWindow->findChild<QObject*>("checkboxRow")->children();
+    for(string s : emotions){
+        for(int i = 0; i < emotionCheckboxes.size()-1; i++){
+            string emotion = emotionCheckboxes[i]->property("text").toString().toStdString();
+            bool compare = boost::iequals(s, emotion);
+            if(compare && emotionCheckboxes[i]->property("checked").toBool())
+                newEmotions.push_back(s);
+        }
+    }
+    emotions = newEmotions;
+
+}
+
 int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
 
     //TODO: resultados mais interessantes
@@ -1586,31 +1602,32 @@ void ofApp::algorithm() {
 
         for(int i = 1; i < emotionsInterval.size() - 1; i++){
 
-            for(string s : emotionsInterval[i-1].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
-            for(string s : emotionsInterval[i].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
-            for(string s : emotionsInterval[i+1].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
-
             if(!useAllEmotions()){
-                setEmotionsToUse(emotionsInterval[i]);
+                //                for(string s : emotionsInterval[i-1].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "now becomes" << endl;
                 setEmotionsToUse(emotionsInterval[i - 1]);
-                setEmotionsToUse(emotionsInterval[i + 1]);
-            }
+                //                for(string s : emotionsInterval[i-1].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "-----" << endl;
 
-            for(string s : emotionsInterval[i-1].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
-            for(string s : emotionsInterval[i].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
-            for(string s : emotionsInterval[i+1].getEmotions())
-                cout << s << endl;
-            cout << "-----" << endl;
+                //                for(string s : emotionsInterval[i].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "now becomes" << endl;
+                setEmotionsToUse(emotionsInterval[i]);
+                //                for(string s : emotionsInterval[i].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "-----" << endl;
+
+                //                for(string s : emotionsInterval[i+1].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "now becomes" << endl;
+                setEmotionsToUse(emotionsInterval[i + 1]);
+                //                for(string s : emotionsInterval[i+1].getEmotions())
+                //                    cout << s << endl;
+                //                cout << "-----" << endl;
+
+            }
 
 
             int numberOfEmotions = emotionsInterval[i].getNumberOfEmotions();
@@ -1637,6 +1654,10 @@ void ofApp::algorithm() {
                 //we need to get the number of emotions associated with the timestamps
                 double emotionsInClip = 0;
                 for(int i = startTimestamp; i < endTimestamp; i++){
+
+                    if(!useAllEmotions())
+                        setEmotionsToUseVec(emotionsInSecond[i]);
+
                     double normalizedEmotions = emotionsInSecond[i].size() / (float)emotionData->getMaxValue();
                     //cout << emotionsInSecond[i].first /(float) emotionData->getMaxValue() << endl;
                     emotionsInClip += normalizedEmotions;
