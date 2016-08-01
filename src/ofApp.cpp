@@ -10,6 +10,9 @@ bool sortClips(ClipWithScore clip1, ClipWithScore clip2){
 bool sortByScore(ClipWithScore clip1, ClipWithScore clip2){
     return (clip1.getFinalScore() > clip2.getFinalScore());
 }
+bool sortXml(pair<int, string> p1, pair<int, string> p2){
+    return (p1.first < p2.first);
+}
 
 void histTest(vector<ofImage> images){
 
@@ -146,36 +149,51 @@ void ofApp::setup(){
     videoPath = "C:\\openFrameworks-master\\apps\\myApps\\thesis\\bin\\data\\WeFeel_1.mp4";
     cout << checkShotTypeClip(50, 75) << endl;*/
 
-    /*video.load("WeFeel_1.mp4");
-    video.play();
-    video.setPaused(true);
+    //    video.load("WeFeel_1.mp4");
+    //    video.play();
+    //    video.setPaused(true);
 
-    ofxXmlSettings xml;
-    bool loadedFile = xml.loadFile("colorData.xml");
-    xml.save("colorData.xml");
+    /*ofxXmlSettings xmlFile, newXml;
+    xmlFile.loadFile("export.xml");
 
-    xml.addTag("colorData");
-    xml.pushTag("colorData");
+    xmlFile.pushTag("results_table", 0);
+    int numOfData = xmlFile.getNumTags("row");
+    xmlFile.pushTag("row", numOfData-1);
+    xmlFile.popTag();
 
-    for(int i = 0; i < video.getTotalNumFrames(); i++){
-        ofImage img;
-        img.setFromPixels(video.getPixels());
+    //    cout << numOfData << endl;
 
-        float pctInPeak = getPctInPeak(img, 9, 6);
+    vector<pair<int, string>> vec;
+    for(int i = 0; i < numOfData; i++){
+        xmlFile.pushTag("row", i);
+        int timestamp = xmlFile.getValue("timestamp", 0);
+        string emotion = xmlFile.getValue("emotion", "");
+        xmlFile.popTag();
 
-        xml.addTag("data");
-        xml.pushTag("data", i);
+        pair<int, string> p(timestamp, emotion);
+        vec.push_back(p);
 
-        xml.addValue("frame", i);
-        xml.addValue("value", pctInPeak);
+    }
 
-        xml.popTag();
-        video.nextFrame();
+    ofSort(vec, sortXml);
 
-        xml.saveFile();
+    newXml.loadFile("newFile.xml");
+    newXml.save("newFile.xml");
+
+    newXml.addTag("emotionData");
+    newXml.pushTag("emotionData");
+
+    for(int i = 0; i < vec.size(); i++){
+
+        newXml.addTag("data");
+        newXml.pushTag("data", i);
+
+        newXml.addValue("timestamp", vec[i].first);
+        newXml.addValue("emotion", vec[i].second);
+        newXml.popTag();
+
+        newXml.saveFile();
     }*/
-
-
 
 
     /* ofDirectory dir("data");
