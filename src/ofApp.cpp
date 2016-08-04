@@ -18,11 +18,11 @@ bool sortXml(pair<int, string> p1, pair<int, string> p2){
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-//    video.load("PTvsFR.mp4");
-//    video.play();
-//    video.setPaused(true);
+    //    video.load("PTvsFR.mp4");
+    //    video.play();
+    //    video.setPaused(true);
 
-//    checkShotTypeClip(30, 50);
+    //    //    checkShotTypeClip(30, 50);
 
     //    cout << video.getTotalNumFrames() << endl;
 
@@ -34,6 +34,9 @@ void ofApp::setup(){
     //    xml.pushTag("colorData");
 
     //    for(int i = 0; i < video.getTotalNumFrames(); i++){
+    //        if(video.getCurrentFrame() % 10000 == 0)
+    //            cout << video.getCurrentFrame() << endl;
+
     //        ofImage img;
     //        img.setFromPixels(video.getPixels());
 
@@ -49,7 +52,7 @@ void ofApp::setup(){
     //        video.nextFrame();
 
     //    }
-    //        xml.saveFile();
+    //    xml.saveFile();
 
     //    ofxXmlSettings xml;
     //    xml.loadFile("colorData.xml");
