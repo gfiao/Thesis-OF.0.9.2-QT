@@ -4,6 +4,7 @@
 // global qml signal to slot object instance
 QMLCallback qmlCallback;
 
+//sorting functions
 bool sortClips(ClipWithScore clip1, ClipWithScore clip2){
     return (clip1.getTimestamps().first < clip2.getTimestamps().first);
 }
@@ -14,224 +15,67 @@ bool sortXml(pair<int, string> p1, pair<int, string> p2){
     return (p1.first < p2.first);
 }
 
-void histTest(vector<ofImage> images){
-
-    for(int i = 0; i < images.size(); i++){
-        ofImage image = images[i];
-
-        cv::Mat cvImg = ofxCv::toCv(image);
-        cv::Mat hsvImage;
-
-        cvtColor(cvImg, hsvImage, CV_RGB2HSV);
-
-        // Quantize the hue to 50 levels
-        // and the saturation to 32 levels
-        int hbins = 180, sbins = 32;
-        int histSize[] = { hbins, sbins };
-        // hue varies from 0 to 179, see cvtColor
-        float hranges[] = { 0, 180 };
-        // saturation varies from 0 (black-gray-white) to
-        // 255 (pure spectrum color)
-        float sranges[] = { 0, 256 };
-        const float* ranges[] = { hranges, sranges };
-        cv::MatND hist;
-        // we compute the histogram from the 0-th and 1-st channels
-        int channels[] = { 0, 1 };
-
-        calcHist(&hsvImage, 1, channels, cv::Mat(), // do not use mask
-                 hist, 2, histSize, ranges,
-                 true, // the histogram is uniform
-                 false);
-        double maxVal = 0;
-        minMaxLoc(hist, 0, &maxVal, 0, 0);
-
-        int scale = 10;
-        cv::Mat histImg = cv::Mat::zeros(sbins*scale, hbins * 10, CV_8UC3);
-
-        ofstream outFile;
-        outFile.open(to_string(i) + ".txt");
-        for (int h = 0; h < hbins; h++) {
-            float sum = 0;
-            for (int s = 0; s < sbins; s++)
-            {
-                //cout << hist.at<float>(i) << endl;
-                sum += hist.at<float>(h, s);
-            }
-
-            string sSum = AuxFunc::split(to_string(sum), '.')[0];
-            outFile << sSum + "\n";
-
-
-        }
-        outFile.close();
-
-
-
-        ifstream f1, f2, f3, f4, f5, f6, f7, f8, f9;
-        string line1, line2, line3, line4, line5, line6, line7, line8, line9;
-        if(images.size() == 2){
-            f1.open("0.txt"), f2.open("1.txt");
-
-            ofstream finalFile;
-            finalFile.open(to_string(images.size()) + ".csv");
-
-            while(f1){
-                getline(f1, line1, '\n'); getline(f2, line2, '\n');
-                finalFile << line1 << ";;;;;;;;;;" << line2 << "\n";
-            }
-
-        }
-        else if(images.size() == 4){
-            f1.open("0.txt"), f2.open("1.txt"), f3.open("2.txt"), f4.open("3.txt");
-
-            ofstream finalFile;
-            finalFile.open(to_string(images.size()) + ".csv");
-
-            while(f1){
-                getline(f1, line1, '\n'); getline(f2, line2, '\n');
-                getline(f3, line3, '\n'); getline(f4, line4, '\n');
-                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
-                          << line4 << "\n";
-            }
-
-        }
-        if(images.size() == 6){
-            f1.open("0.txt"), f2.open("1.txt"), f3.open("2.txt"),
-                    f4.open("3.txt"), f5.open("4.txt"), f6.open("5.txt");
-
-            ofstream finalFile;
-            finalFile.open(to_string(images.size()) + ".csv");
-
-            while(f1){
-                getline(f1, line1, '\n'); getline(f2, line2, '\n');
-                getline(f3, line3, '\n'); getline(f4, line4, '\n');
-                getline(f5, line5, '\n'); getline(f6, line6, '\n');
-                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
-                          << line4 << ";;;;;;;;;;" << line5 << ";;;;;;;;;;" << line6 << "\n";
-            }
-
-        }
-        else if(images.size() == 9){
-            f1.open("0.txt");
-            f2.open("1.txt");
-            f3.open("2.txt");
-            f4.open("3.txt");
-            f5.open("4.txt");
-            f6.open("5.txt");
-            f7.open("6.txt");
-            f8.open("7.txt");
-            f9.open("8.txt");
-
-            ofstream finalFile;
-            finalFile.open(to_string(images.size()) + ".csv");
-
-            while(f1){
-                getline(f1, line1, '\n'); getline(f2, line2, '\n');
-                getline(f3, line3, '\n'); getline(f4, line4, '\n');
-                getline(f5, line5, '\n'); getline(f6, line6, '\n');
-                getline(f7, line7, '\n'); getline(f8, line8, '\n');
-                getline(f9, line9, '\n');
-                finalFile << line1 << ";;;;;;;;;;" << line2 << ";;;;;;;;;;" << line3 << ";;;;;;;;;;"
-                          << line4 << ";;;;;;;;;;" << line5 << ";;;;;;;;;;" << line6 << ";;;;;;;;;;"
-                          << line7 << ";;;;;;;;;;" << line8 << ";;;;;;;;;;" << line9 << "\n";
-            }
-
-        }
-
-
-    }
-}
-
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-    /*video.load("WeFeel_1.mp4");
-    videoPath = "C:\\openFrameworks-master\\apps\\myApps\\thesis\\bin\\data\\WeFeel_1.mp4";
-    cout << checkShotTypeClip(50, 75) << endl;*/
+//    video.load("PTvsFR.mp4");
+//    video.play();
+//    video.setPaused(true);
 
-    //    video.load("WeFeel_1.mp4");
-    //    video.play();
-    //    video.setPaused(true);
+//    checkShotTypeClip(30, 50);
 
-    /*ofxXmlSettings xmlFile, newXml;
-    xmlFile.loadFile("export.xml");
+    //    cout << video.getTotalNumFrames() << endl;
 
-    xmlFile.pushTag("results_table", 0);
-    int numOfData = xmlFile.getNumTags("row");
-    xmlFile.pushTag("row", numOfData-1);
-    xmlFile.popTag();
+    //    ofxXmlSettings xml;
+    //    xml.loadFile("colorData.xml");
+    //    xml.save("colorData.xml");
 
-    //    cout << numOfData << endl;
+    //    xml.addTag("colorData");
+    //    xml.pushTag("colorData");
 
-    vector<pair<int, string>> vec;
-    for(int i = 0; i < numOfData; i++){
-        xmlFile.pushTag("row", i);
-        int timestamp = xmlFile.getValue("timestamp", 0);
-        string emotion = xmlFile.getValue("emotion", "");
-        xmlFile.popTag();
+    //    for(int i = 0; i < video.getTotalNumFrames(); i++){
+    //        ofImage img;
+    //        img.setFromPixels(video.getPixels());
 
-        pair<int, string> p(timestamp, emotion);
-        vec.push_back(p);
+    //        float pctInPeak = getPctInPeak(img, 9, 6);
 
-    }
+    //        xml.addTag("data");
+    //        xml.pushTag("data", i);
 
-    ofSort(vec, sortXml);
+    //        xml.addValue("frame", i);
+    //        xml.addValue("value", pctInPeak);
 
-    newXml.loadFile("newFile.xml");
-    newXml.save("newFile.xml");
+    //        xml.popTag();
+    //        video.nextFrame();
 
-    newXml.addTag("emotionData");
-    newXml.pushTag("emotionData");
+    //    }
+    //        xml.saveFile();
 
-    for(int i = 0; i < vec.size(); i++){
+    //    ofxXmlSettings xml;
+    //    xml.loadFile("colorData.xml");
+    //    xml.pushTag("colorData");
+    //    int numOfTags = xml.getNumTags("data");
+    //    //    cout << numOfTags << endl;
+    //    video.setFrame(numOfTags);
 
-        newXml.addTag("data");
-        newXml.pushTag("data", i);
+    //    for(int i = video.getCurrentFrame()+1; i < video.getTotalNumFrames(); i++){
 
-        newXml.addValue("timestamp", vec[i].first);
-        newXml.addValue("emotion", vec[i].second);
-        newXml.popTag();
+    //        ofImage img;
+    //        img.setFromPixels(video.getPixels());
 
-        newXml.saveFile();
-    }*/
+    //        float pctInPeak = getPctInPeak(img, 9, 6);
 
+    //        xml.addTag("data");
+    //        xml.pushTag("data", i);
 
-    /* ofDirectory dir("data");
-    dir.allowExt("jpg");
-    dir.listDir();
-    ofImage img;
-    float totalPeakPixels, pOfPeakPixels;
-    for(int i = 0; i < dir.size(); i++){
+    //        xml.addValue("frame", i);
+    //        xml.addValue("value", pctInPeak);
 
-        totalPeakPixels = 0, pOfPeakPixels = 0;
+    //        xml.popTag();
+    //        video.nextFrame();
+    //        xml.saveFile();
+    //    }
 
-        img.load(dir.getPath(i));
-        cout << dir.getPath(i) << endl;
-        vector<ofImage> subImages = divideImage(img, 9);
-
-        for(int i = 3; i < subImages.size(); i++){
-
-            float totalSum = 0, maxValue = 0;
-            int maxValueIndex = 0;
-            vector<float> hist = getHistogram(img, totalSum, maxValue, maxValueIndex);
-
-            int hMin = 0, hMax = 0;
-            getMinMaxOfPeak(hist, hMin, hMax, maxValueIndex, maxValue);
-
-            float peakPixels = 0;
-            for(int j = hMin; j < hMax; j++){
-                peakPixels += hist[j];
-            }
-            pOfPeakPixels = peakPixels / totalSum;
-            totalPeakPixels += pOfPeakPixels;
-
-        }
-
-        totalPeakPixels = totalPeakPixels / 6;
-
-        cout << totalPeakPixels << endl;
-
-    }*/
 
     //TODO: isto aqui
     //    auto time = ofGetElapsedTimeMillis();
@@ -1361,40 +1205,51 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
     longShotThreshold = 0.6;
     outOfFieldThreshold = 0.15;
 
-    ofxXmlSettings xml;
-    string fileName = AuxFunc::split( ofFile(videoPath).getFileName(), '.')[0];
-    // cout << fileName << endl;
-    if(!xml.load("color\\" + fileName + ".xml")){
-        //criar ficheiro mais tarde
-        cout << "criar ficheiro" << endl;
-        return -1;
-    }
-    else{
-        //cout << "acessing xml" << endl;
-    }
-
     vector<float> types = {0.0, 0.0, 0.0};
+
     video.setPosition(startTimestamp / video.getDuration());
     int startFrame = video.getCurrentFrame();
     video.setPosition(endTimestamp / video.getDuration());
     int endFrame = video.getCurrentFrame();
 
-    xml.pushTag("colorData");
+    ofxXmlSettings xml;
+    string fileName = AuxFunc::split( ofFile(videoPath).getFileName(), '.')[0];
+    bool fileExists = xml.load("color\\" + fileName + ".xml");
 
-    for(int i = startFrame; i < endFrame; i++){
+    if(!fileExists){ //if file doesn't exist, go to the frames directly
+        ofImage img;
+        for(int i = startFrame; i < endFrame; i++){
 
-        xml.pushTag("data", i);
-        //cout << xml.getValue("value", 0.0) << endl;
-        if(xml.getValue("value", 0.0) >= longShotThreshold)
-            types[LONG_SHOT]++;
-        else if(xml.getValue("value", 0.0) <= outOfFieldThreshold)
-            types[OUT_OF_FIELD]++;
-        else types[CLOSEUP_SHOT]++;
+            img.setFromPixels(video.getPixels());
+            float pctInPeak = getPctInPeak(img, 9, 6);
 
-        //cout << xml.getValue("value", 0.0) << endl;
+            if(pctInPeak >= longShotThreshold)
+                types[LONG_SHOT]++;
+            else if(pctInPeak <= outOfFieldThreshold)
+                types[OUT_OF_FIELD]++;
+            else types[CLOSEUP_SHOT]++;
 
-        xml.popTag();
+        }
+    }
 
+    else{ //if xml exist, use it
+        xml.pushTag("colorData");
+
+        for(int i = startFrame; i < endFrame; i++){
+
+            xml.pushTag("data", i);
+            //cout << xml.getValue("value", 0.0) << endl;
+            if(xml.getValue("value", 0.0) >= longShotThreshold)
+                types[LONG_SHOT]++;
+            else if(xml.getValue("value", 0.0) <= outOfFieldThreshold)
+                types[OUT_OF_FIELD]++;
+            else types[CLOSEUP_SHOT]++;
+
+            //cout << xml.getValue("value", 0.0) << endl;
+
+            xml.popTag();
+
+        }
     }
 
     float nOfFrames = endFrame - startFrame;
