@@ -1148,7 +1148,7 @@ void ofApp::cutVideo(vector<ClipWithScore> clips) {
     cout << concatCmd << endl;
     system(concatCmd.c_str());
 
-    ofSystemAlertDialog("The videos has been created!");
+    ofSystemAlertDialog("The video has been created!");
 
     //this command is faster, but loses frames after the second clip
     /*string concatCmd = "ffmpeg -f concat -i data\\" + to_string(folderName) + "\\concat.txt -codec copy -r 25 data\\" +
@@ -1265,7 +1265,7 @@ int ofApp::checkShotTypeClip(int startTimestamp, int endTimestamp){
         // cout << "set as OUT_OF_FIELD" << endl;
         return OUT_OF_FIELD;
     }
-    else if(types[LONG_SHOT] / nOfFrames >= 0.55){
+    else if(types[LONG_SHOT] / nOfFrames >= 0.7){
         //cout << "set as LONG_SHOT" << endl;
         return LONG_SHOT;
     }
@@ -1696,7 +1696,6 @@ void ofApp::algorithm() {
     int index = 0;
     while(totalDuration < summaryDuration * 60 && index < clips.size()){
         // cout << index << endl;
-        //TODO: falta halfTime
         if(useMov){
 
             selectClipMov(totalDuration, clips, clipsInSummary, index,
@@ -1727,7 +1726,7 @@ void ofApp::algorithm() {
         cout << c.getTimestamps().first << " - " << c.getTimestamps().second << " === " << c.getFinalScore()
              << "  -  shot: " << c.getShotType() << endl;
 
-    //cutVideo(clipsInSummary);
+    cutVideo(clipsInSummary);
 
 
     //cout << "Elapsed time: " << ofGetElapsedTimeMillis() - time << endl;
